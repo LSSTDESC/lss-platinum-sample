@@ -9,10 +9,8 @@ print("[OII] 3726/3729 unresolved doublet, Hbeta 4861, [OIII] 4959/5007, Halpha 
 emline = input("Plot Schechter Luminosity Function for which emission line?  (sample input: Halpha)")
 print("emline = ", emline)
 
-#this is a work in progress (by Lana)
 
 import numpy
-#should reorganize this somehow
 from matplotlib.pyplot import *
 import scipy
 from scipy import integrate
@@ -414,63 +412,39 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	if filter=="uband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
+		ABmag = 26.1
 		lambdalow = 305.30 #in nm
 		lambdahigh = 408.60 #in nm
-		lambdaarray = filter_int(filter = filter)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
 
 	if filter=="gband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.4
+		ABmag = 27.4
 		lambdalow = 386.30 #in nm
 		lambdahigh = 567.00 #in nm
-		lambdaarray = filter_int(filter = filter)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
 
 	if filter=="rband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.5
+		ABmag = 27.5
 		lambdalow = 536.90 #in nm
 		lambdahigh = 706.00 #in nm
-		lambdaarray = filter_int(filter = filter)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
 
 	if filter=="iband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.8
+		ABmag = 26.8
 		lambdalow = 675.90 #in nm
 		lambdahigh = 833.00 #in nm
-		lambdaarray = filter_int(filter = filter)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
 
 	if filter=="zband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
+		ABmag = 26.1
 		lambdalow = 802.90 #in nm
 		lambdahigh = 938.60 #in nm
-		lambdaarray = filter_int(filter = filter)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
 
 	if filter=="yband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 24.9
+		ABmag = 24.9
 		lambdalow = 908.30 #in nm
 		lambdahigh = 1099.60 #in nm
-		lambdaarray = filter_int(filter = filter)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
 
 	#uses previously defined function to get median transmission wavelenth
 	lambdaarray = filter_int(filter = filter)
@@ -538,90 +512,22 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	#EDIT HERE
 	#to be able to use for not just median transmission wavelength
-	#want to find expected number density within FWHM - eventually want to integrate over entire filter, but for now gradually stepping up in improvements
 
-	#first define array of 100 evenly spaced wavelengths
-
-	FWHMlow = lambdaarray[1]
-	FWHMhigh = lambdaarray[2]
-	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
-	#print("lambdaFWHMarray",lambdaFWHMarray)
-	#print("LOOK HERE",len(lambdaFWHMarray))
-
-	#use these to get an array of redshifts with which to get the comoving volume, for each of them
-
-	#defines stuff to use in next part
-	lambda_OII = 372.7
-	lambda_OIII = 500.7
-	lambda_Halpha = 656.3
-	lambda_Lymanalpha = 121.6
-
-	#finds lambda corresponding to emission line
-	if z==zOII:
-		lambdaem = lambda_OII
-	if z==zOIII:
-		lambdaem = lambda_OIII
-	if z==zHalpha:
-		lambdaem = lambda_Halpha
-	if z==zLymanalpha:
-		lambdaem = lambda_Lymanalpha
-
-	zFWHMarray = numpy.zeros(100)
-	#print("LOOK HERE",len(zFWHMarray))
-
-	#constructs z array from wavelength array within FWHM
-	for l in range(len(lambdaFWHMarray)):
-		zFWHMarray[l] = (lambdaFWHMarray[l]/lambdaem)-1
-	#print(zFWHMarray)
-
-	#ASK IF THIS MAKES SENSE TO DO
-	#don't want negative redshifts
-	zFWHMarray = zFWHMarray[numpy.where(zFWHMarray>=0)]
-
-	#basically getting the thing I found below but for everything across the FWHM
-
-	#set up empty array for comoving volumes in evenly spaced wavelength intervals
-	#comovingvolarray= numpy.zeros(100) unless positive redshifts
-	if len(zFWHMarray)!=0:
-		comovingvolarray = numpy.zeros(len(zFWHMarray))
-
-		#now find comoving volumes
-		#need to "integrate" or sum because not linear as function of redshift of lambda
-		#can just ignore everything with redshift 0 (bc cosmological volume will be 0)
-		for r in range(len(zFWHMarray)):
-			partr = cosmo.comoving_volume(zFWHMarray[r]) #units are in Mpc^3
-			#change tuple to value
-			partr = partr.value
-			comovingvolarray[r] = partr
-
-	if len(zFWHMarray)==0:
-		print("could not find comoving volume because not in this filter")
-
-	#NOW JUST NEED TO INTEGRATE THE ARRAY
-	comovingvol = numpy.trapz(comovingvolarray) #integrated
-	print("comovingvol =",comovingvol,"Mpc^3")
-
-	#COMMENTED THE NEXT PART OUT, WAS INCORRECT ANYWAYS?
 	#uses astropy.cosmology.Planck15 to find comoving volume in shell between redshifts at each end of the z filter
-	#comovingvolmin = cosmo.comoving_volume(filterendlow) #units are in Mpc^3
-	#comovingvolmax = cosmo.comoving_volume(filterendhigh) #units are in Mpc^3
-	#comovingvol = comovingvolmax-comovingvolmin
-	#comovingvol = comovingvol.value
-	#print("comovingvol =",comovingvol,"Mpc^3")
+	comovingvolmin = cosmo.comoving_volume(filterendlow) #units are in Mpc^3
+	comovingvolmax = cosmo.comoving_volume(filterendhigh) #units are in Mpc^3
+	comovingvol = comovingvolmax-comovingvolmin
+	comovingvol = comovingvol.value
+	print("comovingvol =",comovingvol,"Mpc^3")
 
 	#shortens the array to be above the luminosity limit, then integrates to get comoving number density
 	philim = phi[numpy.where(L>center)]
-	#test = numpy.arange(30,55,0.01)
-	#L = (10**test)
 	testarraydos = test[numpy.where(L>center)]
 	comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
-	#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
 	print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 
 	#finds total number of galaxies and areal number density
-	#totalnumgalaxies = comovingphi*comovingvol
-	totalnumgalaxiesarray = comovingphi*comovingvolarray
-	totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
+	totalnumgalaxies = comovingphi*comovingvol
 	arealphi = totalnumgalaxies/(4*numpy.pi)
 	print("arealphi =",arealphi,"steradian^-1")
 
