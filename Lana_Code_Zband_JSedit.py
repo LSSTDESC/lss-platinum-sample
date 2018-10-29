@@ -1,8 +1,4 @@
 
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy
 from matplotlib.pyplot import *
@@ -11,14 +7,6 @@ import scipy
 from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 
-
-# In[2]:
-
-
-import numpy
-
-
-# In[3]:
 
 
 print("This code plots Schechter Luminosity Functions for different emission lines in different papers.  ")
