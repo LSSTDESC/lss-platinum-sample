@@ -1,5 +1,4 @@
-
-
+#This code was written by Lana Edit and editted by Juliette Stecenko
 import numpy
 from matplotlib.pyplot import *
 get_ipython().run_line_magic('matplotlib', 'inline')
