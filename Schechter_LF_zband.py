@@ -11,7 +11,7 @@ print("emline = ", emline)
 
 
 import numpy
-from matplotlib.pyplot import *
+from matplotlib import pyplot as plt
 import scipy
 from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
@@ -198,7 +198,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("z = ", z, " and alpha = ", alpha, " are plotted, ")
 	show()
 	#saves image
-	pyplot.savefig('/home/lanaeid/Desktop/fig1.png',bbox_inches = 'tight')
+	plt.savefig('/home/lanaeid/Desktop/fig1.png',bbox_inches = 'tight')
 
 	print("now the number density is calculated by integrating the LF using cumtrapz:")
 	#cumptrapz integrates the opposite way than I need to integrate, so I flip it twice in the process
@@ -223,7 +223,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	title("Number Density") #emline+
 	show()
 	#saves image
-	pyplot.savefig('/home/lanaeid/Desktop/fig2.png',bbox_inches = 'tight')
+	plt.savefig('/home/lanaeid/Desktop/fig2.png',bbox_inches = 'tight')
 
 	#the following finds the comoving number density above a certain detection limit (shot noise limit),
 	#which I calculated in the previous part of the code (also shown below), where I saved the variable named center
