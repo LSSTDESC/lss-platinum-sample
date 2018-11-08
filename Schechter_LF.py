@@ -9,7 +9,6 @@ print("[OII] 3726/3729 unresolved doublet, Hbeta 4861, [OIII] 4959/5007, Halpha 
 emline = input("Plot Schechter Luminosity Function for which emission line?  (sample input: Halpha)")
 print("emline = ", emline)
 
-#this is a work in progress (by Lana)
 
 import numpy
 #should reorganize this somehow
@@ -284,6 +283,8 @@ def filter_int(filter):
 #the following function calculates the luminosity limit for a certain band with a certain detection limit
 def lumlim(z,em,filter):
 
+	#REMINDER TO SELF - z is a function of the emission line wavelength and the filter itself, so it does not have to be adjusted for the FWHM thing
+
 	print("This function will calculate the luminosity that corresponds to a 5 sigma detection, in erg/s:")
 	#print("INFO: 26.2 is AB magnitude for 5 sigma detection limit in the z band") #this was used when I only had the z band
 	#first I calculate the flux, then convert to flux density, then find the luminosity limit for the conditions printed above
@@ -363,6 +364,8 @@ def lumlim(z,em,filter):
 #to use this function, type schechter_LF(z=redshifttoplot) or with additional parameters you want to change inside the ()
 def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,param,fluxscale,em,filter,style = ""):
 
+	#REMINDER TO SELF - z is a function of the emission line wavelength and the filter itself, so it does not have to be adjusted for the FWHM thing 
+
 	print("alpha = ", alpha)
 	print("z = ", z)
 
@@ -397,6 +400,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 		phistar = answersLya[1] #this is linearly parametrized from Ciardullo+ 2012
 		print("phistar = ",phistar)
 
+	#now need an array of phi for each z or lambda step in that array within the FWHM
 	phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))
 	print("Note: Each paper uses a slightly different convention; I decided to consolidate them with the following:")
 	print("using the LF equation with the alpha+1 exponent as follows: ")
@@ -502,7 +506,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	title("Schechter Luminosity Function, "+filter)
 	print("z = ", z, " and alpha = ", alpha, " are plotted, ")
 	#saves image
-	pyplot.savefig('/home/lanaeid/Desktop/fig1'+filter+'.png',bbox_inches = 'tight')
+	#pyplot.savefig('/home/lanaeid/Desktop/fig1'+filter+'.png',bbox_inches = 'tight')
 
 	print("now the number density is calculated by integrating the LF using cumtrapz:")
 	#cumptrapz integrates the opposite way than I need to integrate, so I flip it twice in the process
@@ -526,7 +530,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	ylabel("$\log_{10}(\phi [\t{Mpc}^{-3}])$")
 	title("Number Density, "+filter)
 	#saves image
-	pyplot.savefig('/home/lanaeid/Desktop/fig2'+filter+'.png',bbox_inches = 'tight')
+	#pyplot.savefig('/home/lanaeid/Desktop/fig2'+filter+'.png',bbox_inches = 'tight')
 
 	#the following finds the comoving number density above a certain detection limit (shot noise limit),
 	#which I calculated in the previous part of the code (also shown below), where I saved the variable named center
@@ -559,11 +563,11 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#finds lambda corresponding to emission line
 	if z==zOII:
 		lambdaem = lambda_OII
-	if z==zOIII:
+	elif z==zOIII:
 		lambdaem = lambda_OIII
-	if z==zHalpha:
+	elif z==zHalpha:
 		lambdaem = lambda_Halpha
-	if z==zLymanalpha:
+	elif z==zLymanalpha:
 		lambdaem = lambda_Lymanalpha
 
 	zFWHMarray = numpy.zeros(100)
@@ -598,7 +602,8 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 		print("could not find comoving volume because not in this filter")
 
 	#NOW JUST NEED TO INTEGRATE THE ARRAY
-	comovingvol = numpy.trapz(comovingvolarray) #integrated
+	#comoving vol is a function of z, so i should integrate it wrt dz?  so i need the zFWHMarray
+	comovingvol = numpy.trapz(comovingvolarray,x=zFWHMarray) #integrated
 	print("comovingvol =",comovingvol,"Mpc^3")
 
 	#COMMENTED THE NEXT PART OUT, WAS INCORRECT ANYWAYS?
@@ -619,13 +624,20 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 
 	#finds total number of galaxies and areal number density
+	#eventually this should be done for the part of the sky that LSST observes, not the entire sky
 	#totalnumgalaxies = comovingphi*comovingvol
 	totalnumgalaxiesarray = comovingphi*comovingvolarray
+	#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
 	totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
 	arealphi = totalnumgalaxies/(4*numpy.pi)
 	print("arealphi =",arealphi,"steradian^-1")
 
 	show()
+
+	print("comovingphi is returned for the input")
+	#(order of integration does not matter bc each differential element is independent?)
+	return comovingphi
+
 
 
 #THIS NEXT PART CONTAINS IF STATEMENTS FOR EACH EMLINE
@@ -769,7 +781,7 @@ if emline == "testHalpha":
 #print("Sobral et al 2013 plots Halpha 6563")
 
 
-if emline == "test":
+if emline == "all":
 
 
 	if filter=="uband":
@@ -886,6 +898,8 @@ if emline == "test":
 
  	#CANNOT HAVE NEGATIVE REDSHIFTS - UNPHYSICAL FOR WHAT WE'RE DOING
  	
+ 	#NEED TO HAVE AN ARRAY OF Z VALUES TO INTEGRATE PHI????  
+
 	if zOII>0:
 		schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
 	
@@ -896,8 +910,8 @@ if emline == "test":
 		schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
 	
 	if zLymanalpha>0:
-		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
 		schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
+		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
  		#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
  	
  	#used LaTex above for legends
@@ -921,7 +935,7 @@ if emline == "test":
  		#schechter_LF(z=zLymanalphalow,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalphalow,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
  	
 
-	#high end of FEHM
+	#high end of FWHM
 
 	#if zOIIhigh>0:
 	#	schechter_LF(z=zOIIhigh,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOIIhigh,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
@@ -937,3 +951,253 @@ if emline == "test":
 	#	schechter_LF(z=zLymanalphahigh,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalphahigh,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
  		#schechter_LF(z=zLymanalphahigh,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalphahigh,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
  	
+
+if emline == "allFWHM":
+
+
+	if filter=="uband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 26.1
+		lambdalow = 305.30 #in nm
+		lambdahigh = 408.60 #in nm
+		lambdaarray = filter_int(filter = filter)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
+
+	if filter=="gband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 27.4
+		lambdalow = 386.30 #in nm
+		lambdahigh = 567.00 #in nm
+		lambdaarray = filter_int(filter = filter)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
+
+	if filter=="rband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 27.5
+		lambdalow = 536.90 #in nm
+		lambdahigh = 706.00 #in nm
+		lambdaarray = filter_int(filter = filter)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
+
+	if filter=="iband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 26.8
+		lambdalow = 675.90 #in nm
+		lambdahigh = 833.00 #in nm
+		lambdaarray = filter_int(filter = filter)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
+
+	if filter=="zband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 26.1
+		lambdalow = 802.90 #in nm
+		lambdahigh = 938.60 #in nm
+		lambdaarray = filter_int(filter = filter)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
+
+	if filter=="yband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 24.9
+		lambdalow = 908.30 #in nm
+		lambdahigh = 1099.60 #in nm
+		lambdaarray = filter_int(filter = filter)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
+
+	
+	lambda_OII = 372.7
+	lambda_OIII = 500.7
+	lambda_Halpha = 656.3
+	lambda_Lymanalpha = 121.6
+
+	#finds redshift of emission lines
+
+	#first define array of 100 evenly spaced wavelengths
+	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
+
+	#use these to get an array of redshifts
+	zFWHMarrayOII = numpy.zeros(100)
+	zFWHMarrayOIII = numpy.zeros(100)
+	zFWHMarrayHalpha = numpy.zeros(100)
+	zFWHMarrayLymanalpha = numpy.zeros(100)
+
+	#constructs z array from wavelength array within FWHM
+	#do this for each emline
+	for l in range(len(lambdaFWHMarray)):
+		zFWHMarrayOII[l] = (lambdaFWHMarray[l]/lambda_OII)-1
+		zFWHMarrayOIII[l] = (lambdaFWHMarray[l]/lambda_OIII)-1
+		zFWHMarrayHalpha[l] = (lambdaFWHMarray[l]/lambda_Halpha)-1
+		zFWHMarrayLymanalpha[l] = (lambdaFWHMarray[l]/lambda_Lymanalpha)-1
+
+	#ASK IF THIS MAKES SENSE TO DO
+	#don't want negative redshifts
+	zFWHMarrayOII = zFWHMarrayOII[numpy.where(zFWHMarrayOII>0)]
+	zFWHMarrayOIII = zFWHMarrayOIII[numpy.where(zFWHMarrayOIII>0)]
+	zFWHMarrayHalpha = zFWHMarrayHalpha[numpy.where(zFWHMarrayHalpha>0)]
+	zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(zFWHMarrayLymanalpha>0)]
+	#print("zFWHMarray",zFWHMarray)
+
+ 	#NEED TO HAVE AN ARRAY OF Z VALUES TO INTEGRATE PHI
+ 	#set up empty arrays to print out and eventually integrate comovingphi and arealphi
+	comovingphiarrayOII = numpy.zeros(100)
+	comovingphiarrayOIII = numpy.zeros(100)
+	comovingphiarrayHalpha = numpy.zeros(100)
+	comovingphiarrayLymanalpha = numpy.zeros(100)
+
+
+	if len(zFWHMarrayOII)>0:
+
+		for l in range(len(zFWHMarrayOII)):
+			zOII = zFWHMarrayOII[l]
+			comovingphiarrayOII[l] = schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
+		
+		comovingphiarrayOII_nonzero = comovingphiarrayOII[numpy.where(comovingphiarrayOII>0)]
+
+		print("OII:")
+
+		#print out the eventual array from the previous loop
+		print("comovingphiarrayOII:",comovingphiarrayOII_nonzero)
+
+		#comovingphi_total = numpy.trapz(comovingphiarray_nonzero,x=?)
+		#arealphi_total = USE COMOVINGPHI_TOTAL TO CALCULATE THIS
+		print("zFWHMarrayOIII:",zFWHMarrayOIII)
+		#print("comovingphi_total:",comovingphi_total)
+		#print("arealphi_total:",arealphi_total)
+
+		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
+		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
+		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
+		#finds total number of galaxies and areal number density
+		#eventually this should be done for the part of the sky that LSST observes, not the entire sky
+		#totalnumgalaxies = comovingphi*comovingvol
+		#totalnumgalaxiesarray = comovingphi*comovingvolarray
+		#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
+		#totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
+		#arealphi = totalnumgalaxies/(4*numpy.pi)
+		#print("arealphi =",arealphi,"steradian^-1")
+
+	else:
+		zOII = 0
+
+
+	if len(zFWHMarrayOIII)>0:
+
+		for l in range(len(zFWHMarrayOIII)):
+			zOIII = zFWHMarrayOIII[l]
+			comovingphiarrayOIII[l] = schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filter = filter,style = "g")
+		
+		comovingphiarrayOIII_nonzero = comovingphiarrayOIII[numpy.where(comovingphiarrayOIII>0)]
+
+		print("OIII:")
+
+		#print out the eventual array from the previous loop
+		print("comovingphiarrayOIII:",comovingphiarrayOIII_nonzero)
+		
+		#comovingphi_total = numpy.trapz(comovingphiarray_nonzero,x=?)
+		#arealphi_total = USE COMOVINGPHI_TOTAL TO CALCULATE THIS
+		print("zFWHMarrayOIII:",zFWHMarrayOIII)
+		#print("comovingphi_total:",comovingphi_total)
+		#print("arealphi_total:",arealphi_total)
+
+		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
+		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
+		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
+		#finds total number of galaxies and areal number density
+		#eventually this should be done for the part of the sky that LSST observes, not the entire sky
+		#totalnumgalaxies = comovingphi*comovingvol
+		#totalnumgalaxiesarray = comovingphi*comovingvolarray
+		#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
+		#totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
+		#arealphi = totalnumgalaxies/(4*numpy.pi)
+		#print("arealphi =",arealphi,"steradian^-1")
+
+	else:
+		zOIII = 0
+
+
+	if len(zFWHMarrayHalpha)>0:
+
+		for l in range(len(zFWHMarrayHalpha)):
+			zHalpha = zFWHMarrayHalpha[l]
+			comovingphiarrayHalpha[l] = schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
+			
+		comovingphiarrayHalpha_nonzero = comovingphiarrayHalpha[numpy.where(comovingphiarrayHalpha>0)]
+
+		print("Halpha:")
+
+		#print out the eventual array from the previous loop
+		print("comovingphiarrayHalpha:",comovingphiarrayHalpha_nonzero)
+		
+		#comovingphi_total = numpy.trapz(comovingphiarray_nonzero,x=?)
+		#arealphi_total = USE COMOVINGPHI_TOTAL TO CALCULATE THIS
+		print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
+		#print("comovingphi_total:",comovingphi_total)
+		#print("arealphi_total:",arealphi_total)
+
+		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
+		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
+		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
+		#finds total number of galaxies and areal number density
+		#eventually this should be done for the part of the sky that LSST observes, not the entire sky
+		#totalnumgalaxies = comovingphi*comovingvol
+		#totalnumgalaxiesarray = comovingphi*comovingvolarray
+		#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
+		#totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
+		#arealphi = totalnumgalaxies/(4*numpy.pi)
+		#print("arealphi =",arealphi,"steradian^-1")
+
+	else:
+		zHalpha = 0
+
+
+	if len(zFWHMarrayLymanalpha)>0:
+
+		for l in range(len(zFWHMarrayLymanalpha)):
+			zLymanalpha = zFWHMarrayLymanalpha[l]
+			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
+			#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
+			#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
+		
+		comovingphiarrayLymanalpha_nonzero = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+
+		print("Lymanalpha:")
+
+		#print out the eventual array from the previous loop
+		print("comovingphiarrayLymanalpha:",comovingphiarrayLymanalpha_nonzero)
+		
+		#comovingphi_total = numpy.trapz(comovingphiarray_nonzero,x=?)
+		#arealphi_total = USE COMOVINGPHI_TOTAL TO CALCULATE THIS
+		print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
+		#print("comovingphi_total:",comovingphi_total)
+		#print("arealphi_total:",arealphi_total)
+
+		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
+		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
+		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
+		#finds total number of galaxies and areal number density
+		#eventually this should be done for the part of the sky that LSST observes, not the entire sky
+		#totalnumgalaxies = comovingphi*comovingvol
+		#totalnumgalaxiesarray = comovingphi*comovingvolarray
+		#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
+		#totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
+		#arealphi = totalnumgalaxies/(4*numpy.pi)
+		#print("arealphi =",arealphi,"steradian^-1")
+
+	else:
+		zLymanalpha = 0
+
