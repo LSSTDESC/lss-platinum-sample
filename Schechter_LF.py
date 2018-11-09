@@ -24,7 +24,7 @@ from astropy.cosmology import Planck15 as cosmo
 #figure out what is wrong with the Lymanalpha parametrization; certain values and arrays keep coming out to zero, which means that something is not being calculated at all
 #rename test, testarray, testarraydos to more specific names so I can tell what is going wrong (or just going on in general)
 #make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
-#see lines 374-375, 415-421, 517-523, 625-631
+#see lines 374-375, 415-421, 517-523, 625-631 - okay these are incorrect bc I edited some stuff
 
 
 #the code will be able to use any filter
@@ -406,11 +406,17 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 		print("phistar = ",phistar)
 		print(type(phistar))
 
+
 	#now need an array of phi for each z or lambda step in that array within the FWHM
 	phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))
 	print("Note: Each paper uses a slightly different convention; I decided to consolidate them with the following:")
 	print("using the LF equation with the alpha+1 exponent as follows: ")
 	print("phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))")
+	print("LOOK HERE: this is phi",phi)
+	print("here is phistar",phistar)
+	print("here is Lstar",Lstar)
+	print("L",L)
+	#EVERYTHING SEEMS TO BE HERE AND WORKING EXCEPT FOR THE ACTUAL PHI!!  
 
 	#this deletes parts of the arrays that are so small python counts them as zero; otherwise, I would not be able to take the logarithm of the array
 	L = L[numpy.where(phi!=0)]
@@ -517,8 +523,10 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("now the number density is calculated by integrating the LF using cumtrapz:")
 	#cumptrapz integrates the opposite way than I need to integrate, so I flip it twice in the process
 	phiflip = phi[::-1]
+	print(phi) #this shows up as [], so I am still approaching the problem..
 	#THIS MIGHT NEED TO BE FIXED - I should integrate wrt luminosity, not log10(luminosity)
 	print(len(phiflip),len(testarray)) #as of now this shows up as 0 0 for Lymanlpha, which might be leading me closer to the source of the error
+	#integrate wrt L then take logarithm if you need to..but I guess for the number density itself I should not use logarithms?  
 	phiflipint = scipy.integrate.cumtrapz(phiflip,x=testarray)
 	num_dens = phiflipint[::-1]
 
