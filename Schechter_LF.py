@@ -18,11 +18,13 @@ from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 
 
-#this is the stuff that I need to do now:
-#have max/min values for each filter, not just at median transmission wavelength - what falls into the FWHM of the filter
-#do I need to pay attention to emission line width?  
-#include in comoving density calculation the entire FWHM
-#something about integral (see notes) and cosmic volume calculation
+#this is the stuff that I need to do now: (updated)
+#integrate the comovingphi array wrt the distance using astropy.cosmology
+#fix filter -> change to something else, just make sure it changes the right variables
+#figure out what is wrong with the Lymanalpha parametrization; certain values and arrays keep coming out to zero, which means that something is not being calculated at all
+#rename test, testarray, testarraydos to more specific names so I can tell what is going wrong (or just going on in general)
+#make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
+#see lines 374-375, 415-421, 517-523, 625-631
 
 
 #the code will be able to use any filter
@@ -373,6 +375,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	L = (10**test)
 
 	#I have two different parametrizations for Lstar and phistar; the first one is from Comparat et al 2016, and the second one is from Sobral et al 2015
+	#I added a third one when I linearly parametrized Lymanalpha from Ciardullo et al 2012, but I am still trying to get it to work
 
 	if param == "first":
 
@@ -393,12 +396,15 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	if param == "third":
 
 		answersLya = lineqLya(z=z)
+		print(type(answersLya))
 
 		Lstar = answersLya[0] #this is linearly parametrized from Ciardullo+ 2012
 		print("Lstar = ",Lstar)
+		print(type(Lstar))
 
 		phistar = answersLya[1] #this is linearly parametrized from Ciardullo+ 2012
 		print("phistar = ",phistar)
+		print(type(phistar))
 
 	#now need an array of phi for each z or lambda step in that array within the FWHM
 	phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))
@@ -409,7 +415,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#this deletes parts of the arrays that are so small python counts them as zero; otherwise, I would not be able to take the logarithm of the array
 	L = L[numpy.where(phi!=0)]
 	phi = phi[numpy.where(phi!=0)]
-	testarray = test[numpy.where(phi!=0)]
+	testarray = test[numpy.where(phi!=0)]  #isn't this just log10L?  why did I have a separate variable for this?  
 
 	log10L = numpy.log10(L)
 	log10phi = numpy.log10(phi)
@@ -511,6 +517,8 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("now the number density is calculated by integrating the LF using cumtrapz:")
 	#cumptrapz integrates the opposite way than I need to integrate, so I flip it twice in the process
 	phiflip = phi[::-1]
+	#THIS MIGHT NEED TO BE FIXED - I should integrate wrt luminosity, not log10(luminosity)
+	print(len(phiflip),len(testarray)) #as of now this shows up as 0 0 for Lymanlpha, which might be leading me closer to the source of the error
 	phiflipint = scipy.integrate.cumtrapz(phiflip,x=testarray)
 	num_dens = phiflipint[::-1]
 
@@ -910,9 +918,9 @@ if emline == "all":
 		schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
 	
 	if zLymanalpha>0:
-		schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
+		#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
 		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
- 		#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
+ 		schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
  	
  	#used LaTex above for legends
  	#python recognizes LaTeX instead of thinking they're escape characters if I write it as a "raw" string, denoting it with an r in the beginning of the line
