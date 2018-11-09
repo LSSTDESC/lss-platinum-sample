@@ -635,7 +635,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	show()
 
 	print("comovingphi is returned for the input")
-	#(order of integration does not matter bc each differential element is independent?)
+	
 	return comovingphi
 
 
@@ -1062,6 +1062,7 @@ if emline == "allFWHM":
 			zOII = zFWHMarrayOII[l]
 			comovingphiarrayOII[l] = schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
 		
+		print("comovingphiarrayOII",comovingphiarrayOII)
 		comovingphiarrayOII_nonzero = comovingphiarrayOII[numpy.where(comovingphiarrayOII>0)]
 
 		print("OII:")
@@ -1098,6 +1099,7 @@ if emline == "allFWHM":
 			zOIII = zFWHMarrayOIII[l]
 			comovingphiarrayOIII[l] = schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filter = filter,style = "g")
 		
+		print("comovingphiarrayOIII",comovingphiarrayOIII)
 		comovingphiarrayOIII_nonzero = comovingphiarrayOIII[numpy.where(comovingphiarrayOIII>0)]
 
 		print("OIII:")
@@ -1133,7 +1135,8 @@ if emline == "allFWHM":
 		for l in range(len(zFWHMarrayHalpha)):
 			zHalpha = zFWHMarrayHalpha[l]
 			comovingphiarrayHalpha[l] = schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
-			
+		
+		print("comovingphiarrayHalpha",comovingphiarrayHalpha)
 		comovingphiarrayHalpha_nonzero = comovingphiarrayHalpha[numpy.where(comovingphiarrayHalpha>0)]
 
 		print("Halpha:")
@@ -1172,6 +1175,7 @@ if emline == "allFWHM":
 			#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
 			#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
 		
+		print("comovingphiarrayLymanalpha",comovingphiarrayLymanalpha)
 		comovingphiarrayLymanalpha_nonzero = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
 
 		print("Lymanalpha:")
@@ -1201,3 +1205,12 @@ if emline == "allFWHM":
 	else:
 		zLymanalpha = 0
 
+
+	print("comovingphiarrayOII:",comovingphiarrayOII_nonzero)
+	print("zFWHMarrayOII:",zFWHMarrayOII)
+	print("comovingphiarrayOIII:",comovingphiarrayOIII_nonzero)
+	print("zFWHMarrayOIII:",zFWHMarrayOIII)
+	print("comovingphiarrayHalpha:",comovingphiarrayHalpha_nonzero)
+	print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
+	print("comovingphiarrayLymanalpha:",comovingphiarrayLymanalpha_nonzero)
+	print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
