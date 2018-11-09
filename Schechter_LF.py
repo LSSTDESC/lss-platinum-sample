@@ -20,10 +20,10 @@ from astropy.cosmology import Planck15 as cosmo
 
 #this is the stuff that I need to do now: (updated)
 #integrate the comovingphi array wrt the distance using astropy.cosmology
-#fix the thing where the Lyman alpha array keeps coming out to zero - DONE
-#fix filter -> change to something else, just make sure it changes the right variables - DONE
+#DONE - fix the thing where the Lyman alpha array keeps coming out to zero - log10 was missing somewhere
+#DONE - fix filter -> change to something else, just make sure it changes the right variables - changed to filt
+#DONE - rename test, testarray, testarraydos to more specific names so I can tell what is going wrong (or just going on in general)
 #fix the phi calculation - for some reason, now this is not working
-#rename test, testarray, testarraydos to more specific names so I can tell what is going wrong (or just going on in general)
 #make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
 #see lines 374-375, 415-421, 517-523, 625-631 - okay these are incorrect bc I edited some stuff
 
@@ -190,9 +190,9 @@ def filter_int(filt):
 	centerindex = int(centerindex)
 	print("centerindex = ",centerindex)
 	print(type(centerindex))
-	test = LSST_filter[centerindex]
-	print(type(test))
-	lambdacenter = test[0]
+	centerval = LSST_filter[centerindex]
+	print(type(centerval))
+	lambdacenter = centerval[0]
 	lambdacenter = numpy.float(lambdacenter)
 	print("median transmission wavelength of the "+filt+" = ",lambdacenter)
 
@@ -378,8 +378,8 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("alpha = ", alpha)
 	print("z = ", z)
 
-	test = numpy.arange(30,55,0.01)
-	L = (10**test)
+	log10Lstararray = numpy.arange(30,55,0.01)
+	L = (10**log10Lstararray)
 
 	#I have two different parametrizations for Lstar and phistar; the first one is from Comparat et al 2016, and the second one is from Sobral et al 2015
 	#I added a third one when I linearly parametrized Lymanalpha from Ciardullo et al 2012, but I am still trying to get it to work
@@ -425,7 +425,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#this deletes parts of the arrays that are so small python counts them as zero; otherwise, I would not be able to take the logarithm of the array
 	L = L[numpy.where(phi!=0)]
 	phi = phi[numpy.where(phi!=0)]
-	testarray = test[numpy.where(phi!=0)]  #isn't this just log10L?  why did I have a separate variable for this?  
+	log10Lstararray_nonzero = log10Lstararray[numpy.where(phi!=0)]  #isn't this just log10L?  why did I have a separate variable for this?  
 
 	log10L = numpy.log10(L)
 	log10phi = numpy.log10(phi)
@@ -529,9 +529,9 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	phiflip = phi[::-1]
 	print(phi) #this shows up as [], so I am still approaching the problem..
 	#THIS MIGHT NEED TO BE FIXED - I should integrate wrt luminosity, not log10(luminosity)
-	print(len(phiflip),len(testarray)) #as of now this shows up as 0 0 for Lymanlpha, which might be leading me closer to the source of the error
+	print(len(phiflip),len(log10Lstararray_nonzero)) #as of now this shows up as 0 0 for Lymanlpha, which might be leading me closer to the source of the error
 	#integrate wrt L then take logarithm if you need to..but I guess for the number density itself I should not use logarithms?  
-	phiflipint = scipy.integrate.cumtrapz(phiflip,x=testarray)
+	phiflipint = scipy.integrate.cumtrapz(phiflip,x=log10Lstararray_nonzero)
 	num_dens = phiflipint[::-1]
 
 	Lmin = numpy.delete(L,(len(L)-1))
@@ -636,10 +636,10 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	#shortens the array to be above the luminosity limit, then integrates to get comoving number density
 	philim = phi[numpy.where(L>center)]
-	#test = numpy.arange(30,55,0.01)
-	#L = (10**test)
-	testarraydos = test[numpy.where(L>center)]
-	comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+	#log10Lstararray = numpy.arange(30,55,0.01)
+	#L = (10**log10Lstararray)
+	log10Lstararray_lumlim = log10Lstararray[numpy.where(L>center)]
+	comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
 	#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
 	print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 
@@ -1097,7 +1097,7 @@ if emline == "allFWHM":
 		#print("arealphi_total:",arealphi_total)
 
 		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
-		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
 		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
 		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 		#finds total number of galaxies and areal number density
@@ -1134,7 +1134,7 @@ if emline == "allFWHM":
 		#print("arealphi_total:",arealphi_total)
 
 		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
-		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
 		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
 		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 		#finds total number of galaxies and areal number density
@@ -1171,7 +1171,7 @@ if emline == "allFWHM":
 		#print("arealphi_total:",arealphi_total)
 
 		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
-		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
 		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
 		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 		#finds total number of galaxies and areal number density
@@ -1210,7 +1210,7 @@ if emline == "allFWHM":
 		#print("arealphi_total:",arealphi_total)
 
 		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
-		#comovingphi = scipy.integrate.trapz(philim,x=testarraydos)
+		#comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
 		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
 		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 		#finds total number of galaxies and areal number density
