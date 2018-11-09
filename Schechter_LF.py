@@ -20,7 +20,9 @@ from astropy.cosmology import Planck15 as cosmo
 
 #this is the stuff that I need to do now: (updated)
 #integrate the comovingphi array wrt the distance using astropy.cosmology
-#fix filter -> change to something else, just make sure it changes the right variables
+#fix the thing where the Lyman alpha array keeps coming out to zero - DONE
+#fix filter -> change to something else, just make sure it changes the right variables - DONE
+#fix the phi calculation - for some reason, now this is not working
 #rename test, testarray, testarraydos to more specific names so I can tell what is going wrong (or just going on in general)
 #make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
 #see lines 374-375, 415-421, 517-523, 625-631 - okay these are incorrect bc I edited some stuff
@@ -29,8 +31,8 @@ from astropy.cosmology import Planck15 as cosmo
 #the code will be able to use any filter
 print("The ugrizy filter options with corresponding final coadded depths (5 sigma) are as follows:")
 print("u: 26.1, g: 27.4, r: 27.5, i: 26.8, z: 26.1, y: 24.9")
-filter = input("Plot Schechter Luminosity Function for which filter?  (sample input: zband)")
-print("filter = ", filter)
+filt = input("Plot Schechter Luminosity Function for which filter?  (sample input: zband)")
+print("filter = ", filt)
 
 
 #THIS PART CONTAINS FUNCTIONS THAT WILL THEN BE USED LATER ON IN THE CODE
@@ -85,9 +87,9 @@ def lineqLya(z):
 	return answers
 
 
-def filter_int(filter):
+def filter_int(filt):
 
-	if filter=="uband":
+	if filt=="uband":
 
 		#read in each data file
 		print("u_filter has wavelengths 305.30 - 408.60 nm")
@@ -98,7 +100,7 @@ def filter_int(filter):
 		LSST_filter = u_filter
 		LSSTfilter = u_filter[:,1]
 
-	if filter=="gband":
+	if filt=="gband":
 		#read in each data file
 		print("g_filter has wavelengths 386.30 - 567.00 nm")
 		#this is in two columns; the left is wavelength, the right is throughput
@@ -108,7 +110,7 @@ def filter_int(filter):
 		LSST_filter = g_filter
 		LSSTfilter = g_filter[:,1]
 
-	if filter=="rband":
+	if filt=="rband":
 
 		#read in each data file
 		print("r_filter has wavelengths 536.90 - 706.00 nm")
@@ -119,7 +121,7 @@ def filter_int(filter):
 		LSST_filter = r_filter
 		LSSTfilter = r_filter[:,1]
 
-	if filter=="iband":
+	if filt=="iband":
 
 		#read in each data file
 		print("i_filter has wavelengths 675.90 - 833.00 nm")
@@ -130,7 +132,7 @@ def filter_int(filter):
 		LSST_filter = i_filter
 		LSSTfilter = i_filter[:,1]
 
-	if filter=="zband":
+	if filt=="zband":
 
 		#read in each data file 
 		print("z_filter has wavelengths 802.90 - 938.60 nm")
@@ -141,7 +143,7 @@ def filter_int(filter):
 		LSST_filter = z_filter
 		LSSTfilter = z_filter[:,1]
 
-	if filter=="yband":
+	if filt=="yband":
 
 		#read in each data file
 		print("y_filter has wavelengths 908.30 - 1099.60 nm")
@@ -192,7 +194,7 @@ def filter_int(filter):
 	print(type(test))
 	lambdacenter = test[0]
 	lambdacenter = numpy.float(lambdacenter)
-	print("median transmission wavelength of the "+filter+" = ",lambdacenter)
+	print("median transmission wavelength of the "+filt+" = ",lambdacenter)
 
 	#the central wavelength is actually called the median transmission wavelength of each band
 
@@ -214,7 +216,7 @@ def filter_int(filter):
 	#need the two points of the filter whose values give half the maximum value
 
 	#checks first and last fourth of iband filter for half max value because of weird iband shape
-	if filter == "iband":
+	if filt == "iband":
 		halfmaxval = maxval/2
 		fourth = (len(LSSTfilter))/4
 		print(fourth*4,fourth)
@@ -228,7 +230,7 @@ def filter_int(filter):
 		diffright = abs(halfmaxval-LSSTfilterfourth4)
 
 	#check each half of the filter for half max value
-	if filter != "iband":
+	if filt != "iband":
 		halfmaxval = maxval/2
 		half = (len(LSSTfilter))/2
 		print(half*2,half)
@@ -288,7 +290,7 @@ def filter_int(filter):
 
 
 #the following function calculates the luminosity limit for a certain band with a certain detection limit
-def lumlim(z,em,filter):
+def lumlim(z,em,filt):
 
 	#REMINDER TO SELF - z is a function of the emission line wavelength and the filter itself, so it does not have to be adjusted for the FWHM thing
 
@@ -296,37 +298,37 @@ def lumlim(z,em,filter):
 	#print("INFO: 26.2 is AB magnitude for 5 sigma detection limit in the z band") #this was used when I only had the z band
 	#first I calculate the flux, then convert to flux density, then find the luminosity limit for the conditions printed above
 
-	if filter=="uband":
+	if filt=="uband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		ABmag = 26.1
 		lambdalow = 305.30 #in nm
 		lambdahigh = 408.60 #in nm
 
-	if filter=="gband":
+	if filt=="gband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		ABmag = 27.4
 		lambdalow = 386.30 #in nm
 		lambdahigh = 567.00 #in nm
 
-	if filter=="rband":
+	if filt=="rband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		ABmag = 27.5
 		lambdalow = 536.90 #in nm
 		lambdahigh = 706.00 #in nm
 
-	if filter=="iband":
+	if filt=="iband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		ABmag = 26.8
 		lambdalow = 675.90 #in nm
 		lambdahigh = 833.00 #in nm
 
-	if filter=="zband":
+	if filt=="zband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		ABmag = 26.1
 		lambdalow = 802.90 #in nm
 		lambdahigh = 938.60 #in nm
 
-	if filter=="yband":
+	if filt=="yband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		ABmag = 24.9
 		lambdalow = 908.30 #in nm
@@ -360,7 +362,7 @@ def lumlim(z,em,filter):
 	#finds the luminosity limit
 	print("Luminosity = 4*pi*(luminositydistance**2)*flux")
 	lumlimit = 4*numpy.pi*(lumdist_unitless**2)*flux
-	print("luminosity limit for 5 sigma detection of",em,"in "+filter+" band is",lumlimit,"ergs/s")
+	print("luminosity limit for 5 sigma detection of",em,"in "+filt+" band is",lumlimit,"ergs/s")
 
 	#using return makes the main output of this function the value of lumlimit so that I can use it to calculate other things when I call this function
 	return lumlimit
@@ -369,7 +371,7 @@ def lumlim(z,em,filter):
 #the following defines and plots the Schechter luminosity function for a chosen emission line along with a separate plot of the number density
 #it also calculates the number density above a luminosity limit calculated for a specific band in the previous function
 #to use this function, type schechter_LF(z=redshifttoplot) or with additional parameters you want to change inside the ()
-def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,param,fluxscale,em,filter,style = ""):
+def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,param,fluxscale,em,filt,style = ""):
 
 	#REMINDER TO SELF - z is a function of the emission line wavelength and the filter itself, so it does not have to be adjusted for the FWHM thing 
 
@@ -430,68 +432,68 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	#the following calculates values I use in and plug into the lumlim function
 
-	if filter=="uband":
+	if filt=="uband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.1
 		lambdalow = 305.30 #in nm
 		lambdahigh = 408.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="gband":
+	if filt=="gband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 27.4
 		lambdalow = 386.30 #in nm
 		lambdahigh = 567.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="rband":
+	if filt=="rband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 27.5
 		lambdalow = 536.90 #in nm
 		lambdahigh = 706.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="iband":
+	if filt=="iband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.8
 		lambdalow = 675.90 #in nm
 		lambdahigh = 833.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="zband":
+	if filt=="zband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.1
 		lambdalow = 802.90 #in nm
 		lambdahigh = 938.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="yband":
+	if filt=="yband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 24.9
 		lambdalow = 908.30 #in nm
 		lambdahigh = 1099.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
 	#uses previously defined function to get median transmission wavelenth
-	lambdaarray = filter_int(filter = filter)
+	lambdaarray = filter_int(filt = filt)
 	lambdacenter = lambdaarray[0]
 	#lambdaemitted = #will be one of the three emission lines #uses nm #these are redshifts
 	filterendlow = (lambdalow/lambdaemitted)-1
@@ -502,7 +504,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#print("for",em,"deltafilter =",deltafilter)
 
 	#finds luminosity limit in center of z band
-	center = lumlim(z = filtercenter,em = em,filter = filter)
+	center = lumlim(z = filtercenter,em = em,filt = filt)
 
 	#sets up an array that I use to plot
 	lumarray = numpy.full(15,numpy.log10(center))
@@ -517,7 +519,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#LaTeX is used with $ signs in the titles below
 	xlabel("$\log_{10}(L [ergs/s])$")
 	ylabel("$\log_{10}(\phi [\t{Mpc}^{-3}])$")
-	title("Schechter Luminosity Function, "+filter)
+	title("Schechter Luminosity Function, "+filt)
 	print("z = ", z, " and alpha = ", alpha, " are plotted, ")
 	#saves image
 	#pyplot.savefig('/home/lanaeid/Desktop/fig1'+filter+'.png',bbox_inches = 'tight')
@@ -546,7 +548,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#LaTeX is used with $ signs in the titles below
 	xlabel("$\log_{10}(L_{min} [ergs/s])$")
 	ylabel("$\log_{10}(\phi [\t{Mpc}^{-3}])$")
-	title("Number Density, "+filter)
+	title("Number Density, "+filt)
 	#saves image
 	#pyplot.savefig('/home/lanaeid/Desktop/fig2'+filter+'.png',bbox_inches = 'tight')
 
@@ -802,62 +804,62 @@ if emline == "testHalpha":
 if emline == "all":
 
 
-	if filter=="uband":
+	if filt=="uband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.1
 		lambdalow = 305.30 #in nm
 		lambdahigh = 408.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="gband":
+	if filt=="gband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 27.4
 		lambdalow = 386.30 #in nm
 		lambdahigh = 567.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="rband":
+	if filt=="rband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 27.5
 		lambdalow = 536.90 #in nm
 		lambdahigh = 706.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="iband":
+	if filt=="iband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.8
 		lambdalow = 675.90 #in nm
 		lambdahigh = 833.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="zband":
+	if filt=="zband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.1
 		lambdalow = 802.90 #in nm
 		lambdahigh = 938.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="yband":
+	if filt=="yband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 24.9
 		lambdalow = 908.30 #in nm
 		lambdahigh = 1099.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
@@ -919,18 +921,18 @@ if emline == "all":
  	#NEED TO HAVE AN ARRAY OF Z VALUES TO INTEGRATE PHI????  
 
 	if zOII>0:
-		schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
+		schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filt = filt,style = "r")
 	
 	if zOIII>0:
-		schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filter = filter,style = "g")
+		schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filt = filt,style = "g")
 	
 	if zHalpha>0:
-		schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
+		schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filt = filt,style = "b")
 	
 	if zLymanalpha>0:
 		#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
 		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
- 		schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
+ 		schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
  	
  	#used LaTex above for legends
  	#python recognizes LaTeX instead of thinking they're escape characters if I write it as a "raw" string, denoting it with an r in the beginning of the line
@@ -973,62 +975,62 @@ if emline == "all":
 if emline == "allFWHM":
 
 
-	if filter=="uband":
+	if filt=="uband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.1
 		lambdalow = 305.30 #in nm
 		lambdahigh = 408.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="gband":
+	if filt=="gband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 27.4
 		lambdalow = 386.30 #in nm
 		lambdahigh = 567.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="rband":
+	if filt=="rband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 27.5
 		lambdalow = 536.90 #in nm
 		lambdahigh = 706.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="iband":
+	if filt=="iband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.8
 		lambdalow = 675.90 #in nm
 		lambdahigh = 833.00 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="zband":
+	if filt=="zband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 26.1
 		lambdalow = 802.90 #in nm
 		lambdahigh = 938.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
 
-	if filter=="yband":
+	if filt=="yband":
 		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 		#ABmag = 24.9
 		lambdalow = 908.30 #in nm
 		lambdahigh = 1099.60 #in nm
-		lambdaarray = filter_int(filter = filter)
+		lambdaarray = filter_int(filt = filt)
 		lambdacenter = lambdaarray[0]
 		FWHMlow = lambdaarray[1]
 		FWHMhigh = lambdaarray[2]
@@ -1078,7 +1080,7 @@ if emline == "allFWHM":
 
 		for l in range(len(zFWHMarrayOII)):
 			zOII = zFWHMarrayOII[l]
-			comovingphiarrayOII[l] = schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
+			comovingphiarrayOII[l] = schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filt = filt,style = "r")
 		
 		print("comovingphiarrayOII",comovingphiarrayOII)
 		comovingphiarrayOII_nonzero = comovingphiarrayOII[numpy.where(comovingphiarrayOII>0)]
@@ -1115,7 +1117,7 @@ if emline == "allFWHM":
 
 		for l in range(len(zFWHMarrayOIII)):
 			zOIII = zFWHMarrayOIII[l]
-			comovingphiarrayOIII[l] = schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filter = filter,style = "g")
+			comovingphiarrayOIII[l] = schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filt = filt,style = "g")
 		
 		print("comovingphiarrayOIII",comovingphiarrayOIII)
 		comovingphiarrayOIII_nonzero = comovingphiarrayOIII[numpy.where(comovingphiarrayOIII>0)]
@@ -1152,7 +1154,7 @@ if emline == "allFWHM":
 
 		for l in range(len(zFWHMarrayHalpha)):
 			zHalpha = zFWHMarrayHalpha[l]
-			comovingphiarrayHalpha[l] = schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
+			comovingphiarrayHalpha[l] = schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filt = filt,style = "b")
 		
 		print("comovingphiarrayHalpha",comovingphiarrayHalpha)
 		comovingphiarrayHalpha_nonzero = comovingphiarrayHalpha[numpy.where(comovingphiarrayHalpha>0)]
@@ -1189,7 +1191,7 @@ if emline == "allFWHM":
 
 		for l in range(len(zFWHMarrayLymanalpha)):
 			zLymanalpha = zFWHMarrayLymanalpha[l]
-			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
+			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
 			#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
 			#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
 		
