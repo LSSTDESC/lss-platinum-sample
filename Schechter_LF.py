@@ -21,7 +21,6 @@ from astropy.cosmology import Planck15 as cosmo
 #this is the stuff that I need to do now: (updated)
 #integrate the comovingphi array wrt the distance using astropy.cosmology
 #fix filter -> change to something else, just make sure it changes the right variables
-#figure out what is wrong with the Lymanalpha parametrization; certain values and arrays keep coming out to zero, which means that something is not being calculated at all
 #rename test, testarray, testarraydos to more specific names so I can tell what is going wrong (or just going on in general)
 #make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
 #see lines 374-375, 415-421, 517-523, 625-631 - okay these are incorrect bc I edited some stuff
@@ -46,11 +45,17 @@ def lineqLya(z):
 	z2 = 2.063
 	deltaz = z1 - z2
 
-	Lstar1 = 42.76
-	Lstar2 = 42.33
+	log10Lstar1 = 42.76
+	log10Lstar2 = 42.33
+	#fix this and use the actual values instead
+	Lstar1 = 10**log10Lstar1
+	Lstar2 = 10**log10Lstar2
 
-	phistar1 = -3.17
-	phistar2 = -2.86
+	log10phistar1 = -3.17
+	log10phistar2 = -2.86
+	#fix this and use the actual values instead
+	phistar1 = 10**log10phistar1
+	phistar2 = 10**log10phistar2
 
 	mLstar = (Lstar1 - Lstar2)/(deltaz)
 	mphistar = (phistar1 - phistar2)/(deltaz)
@@ -412,16 +417,8 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("Note: Each paper uses a slightly different convention; I decided to consolidate them with the following:")
 	print("using the LF equation with the alpha+1 exponent as follows: ")
 	print("phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))")
-	print("LOOK HERE: this is phi",phi)
-	print("here is phistar",phistar)
-	print("here is Lstar",Lstar)
-	print("L",L)
-	#EVERYTHING SEEMS TO BE HERE AND WORKING EXCEPT FOR THE ACTUAL PHI!!  
-	print(phistar*((L/Lstar)**(alpha+1)))
-	print((numpy.e**(-L/Lstar))) #so the problem is in here
-	print(numpy.e)
-	print(-L/Lstar)
-	#THE LSTAR IS OFF
+	#what I fixed lets me calculate the luminosity limit, but it does not actually calculate the cumulative number density
+	#I will start by renaming/organizing the varaibles to eliminate the possibility of a larger problem that may be causing this
 
 	#this deletes parts of the arrays that are so small python counts them as zero; otherwise, I would not be able to take the logarithm of the array
 	L = L[numpy.where(phi!=0)]
