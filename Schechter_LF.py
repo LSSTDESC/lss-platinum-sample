@@ -417,6 +417,10 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("here is Lstar",Lstar)
 	print("L",L)
 	#EVERYTHING SEEMS TO BE HERE AND WORKING EXCEPT FOR THE ACTUAL PHI!!  
+	print(phistar*((L/Lstar)**(alpha+1)))
+	print((numpy.e**(-L/Lstar))) #so the problem is in here
+	print(numpy.e)
+	print(-L/Lstar)
 
 	#this deletes parts of the arrays that are so small python counts them as zero; otherwise, I would not be able to take the logarithm of the array
 	L = L[numpy.where(phi!=0)]
