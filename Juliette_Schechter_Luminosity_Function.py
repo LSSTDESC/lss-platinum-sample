@@ -6,7 +6,6 @@ from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 
 
-
 #This code plots Schechter Luminosity Functions for different emission lines in different papers.
 #Comparat et al 2016 plots [OII] 3726/3729, Hbeta 4861, and [OIII] 5007
 #[OIII] 5007 is always 3 times stronger than [OIII] 4959
@@ -414,7 +413,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	ylabel("$\log_{10}(\phi [\t{Mpc}^{-filt3}])$")
 	title("Number Density") #emline+
 	#saves image
-	pyplot.savefig('/home/lanaeid/Desktop/fig2.png',bbox_inches = 'tight')
+	#pyplot.savefig('/home/lanaeid/Desktop/fig2.png',bbox_inches = 'tight')
 
 	#the following finds the comoving number density above a certain detection limit (shot noise limit),
 	#which I calculated in the previous part of the code (also shown below), where I saved the variable named center
@@ -442,7 +441,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	arealphi = totalnumgalaxies/(4*numpy.pi)
 	print("arealphi =",arealphi,"steradian^-1")
 
-	show()
+	#show()
 if emline == "test":
 
 	#this was used to print out data and plots for the LSST-DESC conference poster
