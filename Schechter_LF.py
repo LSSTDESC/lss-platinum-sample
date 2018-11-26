@@ -800,69 +800,50 @@ if emline == "testHalpha":
 #print("[OIII] 5007 is always 3 times stronger than [OIII] 4959")
 #print("Sobral et al 2013 plots Halpha 6563")
 
+lambdalowdict = {'uband': 305.3, 'gband': 386.3, 'rband':536.9, 'iband': 675.9, 'zband':802.9, 'yband':908.3}
+lambdahighdict = {'uband':408.6, 'gband':567.00, 'rband':706.0, 'iband':833.0, 'zband':938.0, 'yband':1099.6}
+
 
 if emline == "all":
 
 
-	if filt=="uband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-		lambdalow = 305.30 #in nm
-		lambdahigh = 408.60 #in nm
-		lambdaarray = filter_int(filt = filt)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
+	# if filt=="uband":
+	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+	# 	#ABmag = 26.1
+	# 	lambdahigh = 408.60 #in nm
 
-	if filt=="gband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.4
-		lambdalow = 386.30 #in nm
-		lambdahigh = 567.00 #in nm
-		lambdaarray = filter_int(filt = filt)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
+	# if filt=="gband":
+	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+	# 	#ABmag = 27.4
+	# 	lambdahigh = 567.00 #in nm
 
-	if filt=="rband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.5
-		lambdalow = 536.90 #in nm
-		lambdahigh = 706.00 #in nm
-		lambdaarray = filter_int(filt = filt)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
+	# if filt=="rband":
+	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+	# 	#ABmag = 27.5
+	# 	lambdahigh = 706.00 #in nm
 
-	if filt=="iband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.8
-		lambdalow = 675.90 #in nm
-		lambdahigh = 833.00 #in nm
-		lambdaarray = filter_int(filt = filt)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
+	# if filt=="iband":
+	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+	# 	#ABmag = 26.8
+	# 	lambdahigh = 833.00 #in nm
 
-	if filt=="zband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-		lambdalow = 802.90 #in nm
-		lambdahigh = 938.60 #in nm
-		lambdaarray = filter_int(filt = filt)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
+	# if filt=="zband":
+	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+	# 	#ABmag = 26.1
+	# 	lambdahigh = 938.60 #in nm
 
-	if filt=="yband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 24.9
-		lambdalow = 908.30 #in nm
-		lambdahigh = 1099.60 #in nm
-		lambdaarray = filter_int(filt = filt)
-		lambdacenter = lambdaarray[0]
-		FWHMlow = lambdaarray[1]
-		FWHMhigh = lambdaarray[2]
+	# if filt=="yband":
+	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+	# 	#ABmag = 24.9
+	# 	lambdahigh = 1099.60 #in nm
+
+
+	lambdalow = lambdalowdict[filt]
+	lambdahigh = lambdahighdict[filt]
+	lambdaarray = filter_int(filt = filt)
+	lambdacenter = lambdaarray[0]
+	FWHMlow = lambdaarray[1]
+	FWHMhigh = lambdaarray[2]
 
 	#this was used to print out data and plots for the LSST-DESC conference poster
 
