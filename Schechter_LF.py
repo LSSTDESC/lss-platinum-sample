@@ -18,14 +18,10 @@ from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 
 
-#this is the stuff that I need to do now: (updated)
+#this is the stuff that I need to do now: (actually updated)
 #integrate the comovingphi array wrt the distance using astropy.cosmology
-#DONE - fix the thing where the Lyman alpha array keeps coming out to zero - log10 was missing somewhere
-#DONE - fix filter -> change to something else, just make sure it changes the right variables - changed to filt
-#DONE - rename test, testarray, testarraydos to more specific names so I can tell what is going wrong (or just going on in general)
-#fix the phi calculation - for some reason, now this is not working
+#reformat things to use dictionaries instead of long lists of if statements
 #make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
-#see lines 374-375, 415-421, 517-523, 625-631 - okay these are incorrect bc I edited some stuff
 
 
 #the code will be able to use any filter
@@ -49,21 +45,15 @@ def lineqLya(z):
 
 	log10Lstar1 = 42.76
 	log10Lstar2 = 42.33
-	#fix this and use the actual values instead
-	Lstar1 = 10**log10Lstar1
-	Lstar2 = 10**log10Lstar2
 
 	log10phistar1 = -3.17
 	log10phistar2 = -2.86
-	#fix this and use the actual values instead
-	phistar1 = 10**log10phistar1
-	phistar2 = 10**log10phistar2
 
-	mLstar = (Lstar1 - Lstar2)/(deltaz)
-	mphistar = (phistar1 - phistar2)/(deltaz)
+	mlog10Lstar = (log10Lstar1 - log10Lstar2)/(deltaz)
+	mlog10phistar = (log10phistar1 - log10phistar2)/(deltaz)
 
-	bLstar = Lstar1 - mLstar*z1
-	bphistar = phistar1 - mphistar*z1
+	blog10Lstar = log10Lstar1 - mlog10Lstar*z1
+	blog10phistar = log10phistar1 - mlog10phistar*z1
 
 	#checked to make sure values give same as original
 	#Lstartest1 = mLstar*z1 + bLstar
@@ -73,11 +63,14 @@ def lineqLya(z):
 	#print("Lstar1, Lstar 2 = ",Lstartest1,Lstartest2)
 	#print("phistar1, phistar2 = ",phistartest1,phistartest2)
 
-	print("Lstar for Lymanalpha: Lstar = z*",mLstar," + ",bLstar)
-	print("phistar for Lymanalpha: phistar = z*",mphistar," + ",bphistar)
+	print("log10Lstar for Lymanalpha: log10Lstar = z*",mlog10Lstar," + ",blog10Lstar)
+	print("log10phistar for Lymanalpha: log10phistar = z*",mlog10phistar," + ",blog10phistar)
 
-	LstarLya = mLstar*z + bLstar
-	phistarLya = mphistar*z + bphistar
+	log10Lstar = mlog10Lstar*z + blog10Lstar
+	log10phistar = mlog10phistar*z + blog10phistar
+
+	LstarLya = 10**log10Lstar
+	phistarLya = 10**log10phistar
 
 	print("LstarLya =",LstarLya)
 	print("phistarLya =",phistarLya)
@@ -251,11 +244,11 @@ def filter_int(filt):
 	indexR = numpy.where(diffright==closestright)
 	print("indexL = ", indexL)
 	print("indexR = ", indexR)
-	#have to change this from tuple to float - first find the actual value in index 0
+	#have to change this from tuple to int - first find the actual value in index 0
 	indexL = indexL[0]
 	indexR = indexR[0]
-	indexL = numpy.float(indexL)
-	indexR = numpy.float(indexR)
+	indexL = numpy.int(indexL)
+	indexR = numpy.int(indexR)
 	print("indexL = ",indexL)
 	print("indexR = ",indexR)
 
@@ -416,19 +409,30 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	#now need an array of phi for each z or lambda step in that array within the FWHM
 	phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))
+	#this may be incorrect - need to figure out why the values are negative in the first place
+	#LET ME TRY THIS:
+	print("THIS IS A TEST, LOOK HERE, LANA")
+	print("L:",L)
+	print("Lstar:",Lstar)
+	print("alpha:",alpha)
+	print("numpy.e:",numpy.e)
+	print("phistar:",phistar)
+	print("firsthalf:",phistar*((L/Lstar)**(alpha+1)))
+	print("secondhalf:",(numpy.e**(-L/Lstar)))
+	print("phi:",phi) #AHA, THIS IS NEGATIVE - WHY????  
 	print("Note: Each paper uses a slightly different convention; I decided to consolidate them with the following:")
 	print("using the LF equation with the alpha+1 exponent as follows: ")
 	print("phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))")
 	#what I fixed lets me calculate the luminosity limit, but it does not actually calculate the cumulative number density
-	#I will start by renaming/organizing the varaibles to eliminate the possibility of a larger problem that may be causing this
+	#the individual values are printed above....
 
 	#this deletes parts of the arrays that are so small python counts them as zero; otherwise, I would not be able to take the logarithm of the array
 	L = L[numpy.where(phi!=0)]
+	log10Lstararray_nonzero = log10Lstararray[numpy.where(phi!=0)]
 	phi = phi[numpy.where(phi!=0)]
-	log10Lstararray_nonzero = log10Lstararray[numpy.where(phi!=0)]  #isn't this just log10L?  why did I have a separate variable for this?  
 
 	log10L = numpy.log10(L)
-	log10phi = numpy.log10(phi)
+	log10phi = numpy.log10(phi) #the error traces back to here
 
 	#the following calculates values I use in and plug into the lumlim function
 
@@ -800,50 +804,69 @@ if emline == "testHalpha":
 #print("[OIII] 5007 is always 3 times stronger than [OIII] 4959")
 #print("Sobral et al 2013 plots Halpha 6563")
 
-lambdalowdict = {'uband': 305.3, 'gband': 386.3, 'rband':536.9, 'iband': 675.9, 'zband':802.9, 'yband':908.3}
-lambdahighdict = {'uband':408.6, 'gband':567.00, 'rband':706.0, 'iband':833.0, 'zband':938.0, 'yband':1099.6}
-
 
 if emline == "all":
 
 
-	# if filt=="uband":
-	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	# 	#ABmag = 26.1
-	# 	lambdahigh = 408.60 #in nm
+	if filt=="uband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 26.1
+		lambdalow = 305.30 #in nm
+		lambdahigh = 408.60 #in nm
+		lambdaarray = filter_int(filt = filt)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
 
-	# if filt=="gband":
-	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	# 	#ABmag = 27.4
-	# 	lambdahigh = 567.00 #in nm
+	if filt=="gband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 27.4
+		lambdalow = 386.30 #in nm
+		lambdahigh = 567.00 #in nm
+		lambdaarray = filter_int(filt = filt)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
 
-	# if filt=="rband":
-	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	# 	#ABmag = 27.5
-	# 	lambdahigh = 706.00 #in nm
+	if filt=="rband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 27.5
+		lambdalow = 536.90 #in nm
+		lambdahigh = 706.00 #in nm
+		lambdaarray = filter_int(filt = filt)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
 
-	# if filt=="iband":
-	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	# 	#ABmag = 26.8
-	# 	lambdahigh = 833.00 #in nm
+	if filt=="iband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 26.8
+		lambdalow = 675.90 #in nm
+		lambdahigh = 833.00 #in nm
+		lambdaarray = filter_int(filt = filt)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
 
-	# if filt=="zband":
-	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	# 	#ABmag = 26.1
-	# 	lambdahigh = 938.60 #in nm
+	if filt=="zband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 26.1
+		lambdalow = 802.90 #in nm
+		lambdahigh = 938.60 #in nm
+		lambdaarray = filter_int(filt = filt)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
 
-	# if filt=="yband":
-	# 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	# 	#ABmag = 24.9
-	# 	lambdahigh = 1099.60 #in nm
-
-
-	lambdalow = lambdalowdict[filt]
-	lambdahigh = lambdahighdict[filt]
-	lambdaarray = filter_int(filt = filt)
-	lambdacenter = lambdaarray[0]
-	FWHMlow = lambdaarray[1]
-	FWHMhigh = lambdaarray[2]
+	if filt=="yband":
+		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
+		#ABmag = 24.9
+		lambdalow = 908.30 #in nm
+		lambdahigh = 1099.60 #in nm
+		lambdaarray = filter_int(filt = filt)
+		lambdacenter = lambdaarray[0]
+		FWHMlow = lambdaarray[1]
+		FWHMhigh = lambdaarray[2]
 
 	#this was used to print out data and plots for the LSST-DESC conference poster
 
