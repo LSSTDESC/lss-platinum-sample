@@ -20,8 +20,8 @@ from astropy.cosmology import Planck15 as cosmo
 
 #this is the stuff that I need to do now: (actually updated)
 #integrate the comovingphi array wrt the distance using astropy.cosmology
-#reformat things to use dictionaries instead of long lists of if statements
-#the following needs to be figured out NOW - trying to fix this results in a weird number density plot.. - make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
+#DONE - reformat things to use dictionaries instead of long lists of if statements
+#DONE - THIS IS FINE - DEPENDS ON THE EQUATION - REMEMBER THE WIKIPEDIA PAGE OVER THE SUMMER - the following needs to be figured out NOW - trying to fix this results in a weird number density plot.. - make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
 
 
 #the code will be able to use any filter
