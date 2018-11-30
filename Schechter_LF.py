@@ -20,8 +20,6 @@ from astropy.cosmology import Planck15 as cosmo
 
 #this is the stuff that I need to do now: (actually updated)
 #integrate the comovingphi array wrt the distance using astropy.cosmology
-#DONE - reformat things to use dictionaries instead of long lists of if statements
-#DONE - THIS IS FINE - DEPENDS ON THE EQUATION - REMEMBER THE WIKIPEDIA PAGE OVER THE SUMMER - the following needs to be figured out NOW - trying to fix this results in a weird number density plot.. - make sure I am integrating the number density correctly; I may be integrating wrt a logarithm instead of the luminosity, which needs to be fixed immediately
 
 
 #the code will be able to use any filter
@@ -148,6 +146,7 @@ def filter_int(filt):
 		LSSTfilter = y_filter[:,1]
 
 	#to find the midpoint, integrate over the entire filter, then find what value would give you half the integrated value
+	#see if you need to fix this because should have x=
 	stepint_LSSTfilter = scipy.integrate.cumtrapz(LSSTfilter)
 	print('stepint_LSSTfilter')
 	print(stepint_LSSTfilter)
@@ -651,7 +650,6 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#L = (10**log10Lstararray)
 	log10Lstararray_lumlim = log10Lstararray[numpy.where(L>center)]
 	comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
-	#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
 	print("comovingphi =",comovingphi,"Mpc^-3") #units?  
 
 	#finds total number of galaxies and areal number density
@@ -659,7 +657,13 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#totalnumgalaxies = comovingphi*comovingvol
 	totalnumgalaxiesarray = comovingphi*comovingvolarray
 	#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
+	#IMPROPER USE OF TRAPZ, I NEED AN X= OTHERWISE X=1, WHICH IS NOT WHAT I SHOULD HAVE?
 	totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
+	#I tried this with and without the x=zFWHMarray, and each time, the result makes no sense
+	#the total number of galaxies here should be slightly less than the one calculated all the way at the end of the code for the FWHM
+	#using this without the x=zFWHMarray results in a number that is too large
+	#using this with the x=zFWHMarray results in a number that slightly more than the number calculated at the end
+	print("OVER HERE LANA totalnumgalaxies = ",totalnumgalaxies)
 	arealphi = totalnumgalaxies/(4*numpy.pi)
 	print("arealphi =",arealphi,"steradian^-1")
 
@@ -954,6 +958,7 @@ if emline == "all":
 	if zLymanalpha>0:
 		#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
 		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
+ 		#NOW THIS WORKS YESSSSS
  		schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
  	
  	#used LaTex above for legends
@@ -1223,46 +1228,52 @@ if emline == "allFWHM":
 
 		for l in range(len(zFWHMarrayLymanalpha)):
 			zLymanalpha = zFWHMarrayLymanalpha[l]
-			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
+			#comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
 			#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
-			#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
-		
-		print("comovingphiarrayLymanalpha",comovingphiarrayLymanalpha)
-		comovingphiarrayLymanalpha_nonzero = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+			#NOW THIS WORKS YESSSSS
+			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
+
+		#shortens to use only positive values
+		comovingphiarrayLymanalpha = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+		zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
 
 		print("Lymanalpha:")
 
-		#print out the eventual array from the previous loop
-		print("comovingphiarrayLymanalpha:",comovingphiarrayLymanalpha_nonzero)
-		
-		#comovingphi_total = numpy.trapz(comovingphiarray_nonzero,x=?)
-		#arealphi_total = USE COMOVINGPHI_TOTAL TO CALCULATE THIS
-		print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
-		#print("comovingphi_total:",comovingphi_total)
-		#print("arealphi_total:",arealphi_total)
+		#ok figure out what I am doing
+		#I need the total number of galaxies WITHIN the FWHM
+		#1 - integrate comovingphi using trapz and the comoving volume - will get total comoving number
+		#2 - get LSST areal/sky density from this - multiply by 18000 square degrees to get final answer
+		#or skip areal number density and just multiply the result from the comovingphi integration by 18000/42000 to get the LSST area
 
-		#DO SOMETHING LIKE THIS FOR AREALPHI OKAY
-		#comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
-		#comovingphiarray = scipy.integrate.cumtrapz #set this up with loop?????????????????
-		#print("comovingphi =",comovingphi,"Mpc^-3") #units?  
-		#finds total number of galaxies and areal number density
-		#eventually this should be done for the part of the sky that LSST observes, not the entire sky
-		#totalnumgalaxies = comovingphi*comovingvol
-		#totalnumgalaxiesarray = comovingphi*comovingvolarray
-		#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
-		#totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
-		#arealphi = totalnumgalaxies/(4*numpy.pi)
-		#print("arealphi =",arealphi,"steradian^-1")
+		#first convert zFWHMarrayLymanalpha to a comoving volume array
+		comovingvolarrayLymanalpha = numpy.zeros(len(zFWHMarrayLymanalpha))
+
+		#then multiply phi by the comoving volume array to get total number of galaxies expected
+		#the following finds the comoving volume array to do so
+		for r in range(len(zFWHMarrayLymanalpha)):
+			partr = cosmo.comoving_volume(zFWHMarrayLymanalpha[r]) #units are in Mpc^3
+			#change tuple to value
+			partr = partr.value
+			comovingvolarrayLymanalpha[r] = partr #this is in Mpc^3
+
+		#integrates comovingphi over whole sky
+		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
+		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
+		#LSST area
+		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000/42000		
+
+		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
 	else:
 		zLymanalpha = 0
 
 
-	print("comovingphiarrayOII:",comovingphiarrayOII_nonzero)
-	print("zFWHMarrayOII:",zFWHMarrayOII)
-	print("comovingphiarrayOIII:",comovingphiarrayOIII_nonzero)
-	print("zFWHMarrayOIII:",zFWHMarrayOIII)
-	print("comovingphiarrayHalpha:",comovingphiarrayHalpha_nonzero)
-	print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
-	print("comovingphiarrayLymanalpha:",comovingphiarrayLymanalpha_nonzero)
-	print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
+	#print("comovingphiarrayOII:",comovingphiarrayOII_nonzero)
+	#print("zFWHMarrayOII:",zFWHMarrayOII)
+	#print("comovingphiarrayOIII:",comovingphiarrayOIII_nonzero)
+	#print("zFWHMarrayOIII:",zFWHMarrayOIII)
+	#print("comovingphiarrayHalpha:",comovingphiarrayHalpha_nonzero)
+	#print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
+	#print("comovingphiarrayLymanalpha:",comovingphiarrayLymanalpha_nonzero)
+	#print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
