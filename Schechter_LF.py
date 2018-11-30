@@ -11,6 +11,7 @@ print("emline = ", emline)
 
 
 import numpy
+from numpy import loadtxt
 #should reorganize this somehow
 from matplotlib.pyplot import *
 import scipy
@@ -1234,8 +1235,8 @@ if emline == "allFWHM":
 			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
 
 		#shortens to use only positive values
-		comovingphiarrayLymanalpha = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
 		zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+		comovingphiarrayLymanalpha = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
 
 		print("Lymanalpha:")
 
@@ -1260,7 +1261,7 @@ if emline == "allFWHM":
 		#1 steradian = (180/pi)^2 degrees
 
 
-		#
+		#this is ending up as a weird number
 		#integrates comovingphi over whole sky
 		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
 		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
