@@ -1256,6 +1256,11 @@ if emline == "allFWHM":
 			partr = partr.value
 			comovingvolarrayLymanalpha[r] = partr #this is in Mpc^3
 
+		#THIS NEEDS TO BE FIXED
+		#1 steradian = (180/pi)^2 degrees
+
+
+		#
 		#integrates comovingphi over whole sky
 		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
 		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
