@@ -1283,8 +1283,11 @@ if emline == "allFWHM":
 
 
 
-		#THIS NEEDS TO BE FIXED
+		#THIS NEEDS TO BE FIXED (updated)
 		#1 steradian = (180/pi)^2 degrees
+		#the answer is off by a factor of ~10^3 => str~10^3degrees - could it just be that the units are (very) off?  
+		#what about the difference between the two methods though?  
+
 		#LSST area of the sky is 18000/42000 of the whole sky
 
 		#this is ending up as a weird number
