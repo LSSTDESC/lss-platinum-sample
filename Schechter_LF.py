@@ -673,6 +673,10 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	show()
 
+	#expected number of galaxies in LSST area of the sky
+	totalnumgalaxiesLSST = totalnumgalaxies*18000/42000
+	print(em+"totalnumgalaxiesLSST = ",totalnumgalaxiesLSST)
+
 	print("comovingphi is returned for the input")
 	
 	return comovingphi
