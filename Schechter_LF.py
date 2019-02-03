@@ -1284,7 +1284,7 @@ if emline == "allFWHM":
 
 
 		#THIS NEEDS TO BE FIXED (updated)
-		#1 steradian = (180/pi)^2 degrees
+		#1 steradian = (180/pi)^2 degrees - ok check what on earth I am doing here and why
 		#the answer is off by a factor of ~10^3 => str~10^3degrees - could it just be that the units are (very) off?  
 		#what about the difference between the two methods though?  
 
@@ -1300,7 +1300,7 @@ if emline == "allFWHM":
 		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
 		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
 		#LSST area
-		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000/42000
+		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000.0/42000.0 #rename as sky fraction bc *not* total anymore
 
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
@@ -1308,28 +1308,28 @@ if emline == "allFWHM":
 
 		#SECOND TRY
 
+		#something is off here
 		numarray = numpy.zeros(len(zFWHMarrayLymanalpha))
 		comovingvoldiffLymanalpha = numpy.diff(comovingvolarrayLymanalpha)
 		#print(len(comovingphiarrayLymanalpha)) #is 100
 		#print(len(comovingvolarrayLymanalpha)) #is 100
 		#print(len(comovingvoldiffLymanalpha)) #is 99
-		for phistep in comovingphiarrayLymanalpha:
-			numarray = phistep*comovingvoldiffLymanalpha
+		for p in range(len(comovingphiarrayLymanalpha)-1):
+			numarray[p] = comovingphiarrayLymanalpha[p]*comovingvoldiffLymanalpha[p]
 		#delete first number corresponding to index 0 to match voldiff array
-		numarray = numarray[1:len(numarray)+1]
-		total_number_FWHM_Lymanalpha = numpy.trapz(numarray)
+		total_number_FWHM_Lymanalpha = numpy.sum(numarray)
 
 		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
 
 		#LSST area
-		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000/42000
+		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000.0/42000.0
 
 
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
 
-		#what is different/wrong in either or both of these?  
+		#what is different/wrong in either or both of these?  #NOW THEY ARE THE SAME, WITH REASONABLE ERROR, YAYYY
 
 	else:
 		zLymanalpha = 0
