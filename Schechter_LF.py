@@ -660,13 +660,11 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#eventually this should be done for the part of the sky that LSST observes, not the entire sky
 	#totalnumgalaxies = comovingphi*comovingvol
 	totalnumgalaxiesarray = comovingphi*comovingvolarray
-	#NEED DIFFERENTIAL ELEMENT????  it is number density, so I assume no
-	#IMPROPER USE OF TRAPZ, I NEED AN X= OTHERWISE X=1, WHICH IS NOT WHAT I SHOULD HAVE?
-	totalnumgalaxies = numpy.trapz(totalnumgalaxiesarray)
-	#I tried this with and without the x=zFWHMarray, and each time, the result makes no sense
+	#changed numpy.trapz to numpy.sum, which makes more sense here
+	totalnumgalaxies = numpy.sum(totalnumgalaxiesarray)
+
 	#the total number of galaxies here should be slightly less than the one calculated all the way at the end of the code for the FWHM
-	#using this without the x=zFWHMarray results in a number that is too large
-	#using this with the x=zFWHMarray results in a number that slightly more than the number calculated at the end
+	#however..it is much larger..
 	print("OVER HERE LANA totalnumgalaxies = ",totalnumgalaxies)
 	arealphi = totalnumgalaxies/(4*numpy.pi)
 	print("arealphi =",arealphi,"steradian^-1")
@@ -674,7 +672,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	show()
 
 	#expected number of galaxies in LSST area of the sky
-	totalnumgalaxiesLSST = totalnumgalaxies*18000/42000
+	totalnumgalaxiesLSST = totalnumgalaxies*18000./42000.
 	print(em+"totalnumgalaxiesLSST = ",totalnumgalaxiesLSST)
 
 	print("comovingphi is returned for the input")
@@ -1294,13 +1292,17 @@ if emline == "allFWHM":
 		#I tried this two ways, and they are both coming out to odd numbers that are nowhere near the value obtained for the median transmission wavelength
 
 
+		print("comovingphiarrayLymanalpha = ",comovingphiarrayLymanalpha)
+		print("comovingvolarrayLymanalpha = ",comovingvolarrayLymanalpha)
+		print("zFWHMarrayLymanalpha = ",zFWHMarrayLymanalpha)
+
 		#FIRST TRY
 
 		#integrates comovingphi over whole sky
 		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
 		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
 		#LSST area
-		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000.0/42000.0 #rename as sky fraction bc *not* total anymore
+		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000./42000. #rename as sky fraction bc *not* total anymore
 
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
@@ -1322,14 +1324,12 @@ if emline == "allFWHM":
 		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
 
 		#LSST area
-		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000.0/42000.0
+		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000./42000.
 
 
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
-
-		#what is different/wrong in either or both of these?  #NOW THEY ARE THE SAME, WITH REASONABLE ERROR, YAYYY
 
 	else:
 		zLymanalpha = 0
