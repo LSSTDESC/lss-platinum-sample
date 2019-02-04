@@ -1290,6 +1290,7 @@ if emline == "allFWHM":
 
 		#this is ending up as a weird number
 		#I tried this two ways, and they are both coming out to odd numbers that are nowhere near the value obtained for the median transmission wavelength
+		#now they are both the same weird number
 
 
 		print("comovingphiarrayLymanalpha = ",comovingphiarrayLymanalpha)
@@ -1310,7 +1311,6 @@ if emline == "allFWHM":
 
 		#SECOND TRY
 
-		#something is off here
 		numarray = numpy.zeros(len(zFWHMarrayLymanalpha))
 		comovingvoldiffLymanalpha = numpy.diff(comovingvolarrayLymanalpha)
 		#print(len(comovingphiarrayLymanalpha)) #is 100
