@@ -538,11 +538,9 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	print("now the number density is calculated by integrating the LF using cumtrapz:")
 	#cumptrapz integrates the opposite way than I need to integrate, so I flip it twice in the process
 	phiflip = phi[::-1]
-	print(phi) #this shows up as [], so I am still approaching the problem..
-	#THIS MIGHT NEED TO BE FIXED - I should integrate wrt luminosity, not log10(luminosity)
-	print(len(phiflip),len(log10Lstararray_nonzero)) #as of now this shows up as 0 0 for Lymanlpha, which might be leading me closer to the source of the error
-	#integrate wrt L then take logarithm if you need to..but I guess for the number density itself I should not use logarithms?  
-	#this is fine? - pay attention to the version of the LF that is being used
+	print(phi)
+	print(len(phiflip),len(log10Lstararray_nonzero))
+	#always pay attention to the version of the LF that is being used
 	phiflipint = scipy.integrate.cumtrapz(phiflip,x=log10Lstararray_nonzero)
 	num_dens = phiflipint[::-1]
 
@@ -576,11 +574,16 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#to be able to use for not just median transmission wavelength
 	#want to find expected number density within FWHM - eventually want to integrate over entire filter, but for now gradually stepping up in improvements
 
+	#OKAY I THINK I DID THIS WRONG
+	#what ended up happening is I was essentially integrating over the FWHM twice, resulting in a really weird number
+	#I am going to comment out the parts of the code in the Schechter_LF function below that are unnecessary
+	#then I am going to see if it fixes the issue - if this was not even used before for the center, I should delete it
+
 	#first define array of 100 evenly spaced wavelengths
 
-	FWHMlow = lambdaarray[1]
-	FWHMhigh = lambdaarray[2]
-	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
+#	FWHMlow = lambdaarray[1]
+#	FWHMhigh = lambdaarray[2]
+#	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
 	#print("lambdaFWHMarray",lambdaFWHMarray)
 	#print("LOOK HERE",len(lambdaFWHMarray))
 
@@ -604,75 +607,87 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	elif z==zLymanalpha:
 		lambdaem = lambda_Lymanalpha
 
-	zFWHMarray = numpy.zeros(100)
+#	zFWHMarray = numpy.zeros(100)
 	#print("LOOK HERE",len(zFWHMarray))
 
 	#constructs z array from wavelength array within FWHM
-	for l in range(len(lambdaFWHMarray)):
-		zFWHMarray[l] = (lambdaFWHMarray[l]/lambdaem)-1
+#	for l in range(len(lambdaFWHMarray)):
+#		zFWHMarray[l] = (lambdaFWHMarray[l]/lambdaem)-1
 	#print(zFWHMarray)
 
 	#ASK IF THIS MAKES SENSE TO DO
 	#don't want negative redshifts
-	zFWHMarray = zFWHMarray[numpy.where(zFWHMarray>=0)]
+#	zFWHMarray = zFWHMarray[numpy.where(zFWHMarray>=0)]
 
 	#basically getting the thing I found below but for everything across the FWHM
 
 	#set up empty array for comoving volumes in evenly spaced wavelength intervals
 	#comovingvolarray= numpy.zeros(100) unless positive redshifts
-	if len(zFWHMarray)!=0:
-		comovingvolarray = numpy.zeros(len(zFWHMarray))
+#	if len(zFWHMarray)!=0:
+#		comovingvolarray = numpy.zeros(len(zFWHMarray))
 
 		#now find comoving volumes
 		#need to "integrate" or sum because not linear as function of redshift of lambda
 		#can just ignore everything with redshift 0 (bc cosmological volume will be 0)
-		for r in range(len(zFWHMarray)):
-			partr = cosmo.comoving_volume(zFWHMarray[r]) #units are in Mpc^3
+#		for r in range(len(zFWHMarray)):
+#			partr = cosmo.comoving_volume(zFWHMarray[r]) #units are in Mpc^3
 			#change tuple to value
-			partr = partr.value
-			comovingvolarray[r] = partr
+#			partr = partr.value
+#			comovingvolarray[r] = partr
 
-	if len(zFWHMarray)==0:
-		print("could not find comoving volume because not in this filter")
+#	if len(zFWHMarray)==0:
+#		print("could not find comoving volume because not in this filter")
 
 	#NOW JUST NEED TO INTEGRATE THE ARRAY
 	#comoving vol is a function of z, so i should integrate it wrt dz?  so i need the zFWHMarray
-	comovingvol = numpy.trapz(comovingvolarray,x=zFWHMarray) #integrated
-	print("comovingvol =",comovingvol,"Mpc^3")
+	#ONLY WORKS IF COMOVINGVOLARRAY IS PER DELTA Z
+	#JUST SUM COMOVINGVOLARRAY
+	#numpy.sum(numpy.diff(array))  ->  replace the next line with this (is commented out bc wrong)
+	#comovingvol = numpy.trapz(comovingvolarray,x=zFWHMarray) #integrated
+#	comovingvol = numpy.sum(numpy.diff(comovingvolarray))
+#	print("comovingvol =",comovingvol,"Mpc^3")
 
 	#COMMENTED THE NEXT PART OUT, WAS INCORRECT ANYWAYS?
+	#I initially commented this out, because I did not have the correct values, and I was repurposing the code for the FWHM
+	#now I need it again to see if I am calculating the FWHM number correctly
 	#uses astropy.cosmology.Planck15 to find comoving volume in shell between redshifts at each end of the z filter
-	#comovingvolmin = cosmo.comoving_volume(filterendlow) #units are in Mpc^3
-	#comovingvolmax = cosmo.comoving_volume(filterendhigh) #units are in Mpc^3
-	#comovingvol = comovingvolmax-comovingvolmin
-	#comovingvol = comovingvol.value
-	#print("comovingvol =",comovingvol,"Mpc^3")
+	#note: DO NOT USE FOR FWHM CALCULATION, THIS IS ONLY FOR THE INITIAL ESTIMATE AT THE MEDIAN TRANSMISSION WAVELENGTH
+	comovingvolmin = cosmo.comoving_volume(filterendlow) #units are in Mpc^3
+	comovingvolmax = cosmo.comoving_volume(filterendhigh) #units are in Mpc^3
+	comovingvol = comovingvolmax-comovingvolmin
+	comovingvol = comovingvol.value
+	print("comovingvol =",comovingvol,"Mpc^3")
+
+	#THIS IS ALL I NEED:
 
 	#shortens the array to be above the luminosity limit, then integrates to get comoving number density
 	philim = phi[numpy.where(L>center)]
 	#log10Lstararray = numpy.arange(30,55,0.01)
 	#L = (10**log10Lstararray)
-	log10Lstararray_lumlim = log10Lstararray[numpy.where(L>center)]
+	log10Lstararray_lumlim = log10Lstararray_nonzero[numpy.where(L>center)]
 	comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
-	print("comovingphi =",comovingphi,"Mpc^-3") #units?  
+	print("comovingphi =",comovingphi,"Mpc^-3")
 
 	#finds total number of galaxies and areal number density
 	#eventually this should be done for the part of the sky that LSST observes, not the entire sky
-	#totalnumgalaxies = comovingphi*comovingvol
-	totalnumgalaxiesarray = comovingphi*comovingvolarray
+	#ONCE AGAIN UNCOMMENTING LINES I COMMENTED OUT BEFORE
+	totalnumgalaxies = comovingphi*comovingvol
+
+#	totalnumgalaxiesarray = comovingphi*comovingvolarray
 	#changed numpy.trapz to numpy.sum, which makes more sense here
-	totalnumgalaxies = numpy.sum(totalnumgalaxiesarray)
+#	totalnumgalaxies = numpy.sum(totalnumgalaxiesarray)
 
 	#the total number of galaxies here should be slightly less than the one calculated all the way at the end of the code for the FWHM
 	#however..it is much larger..
-	print("OVER HERE LANA totalnumgalaxies = ",totalnumgalaxies)
-	arealphi = totalnumgalaxies/(4*numpy.pi)
-	print("arealphi =",arealphi,"steradian^-1")
+#	print("OVER HERE LANA totalnumgalaxies = ",totalnumgalaxies)
+#	arealphi = totalnumgalaxies/(4*numpy.pi)
+#	print("arealphi =",arealphi,"steradian^-1")
 
 	show()
 
 	#expected number of galaxies in LSST area of the sky
 	totalnumgalaxiesLSST = totalnumgalaxies*18000./42000.
+	print("OVER HERE LANA")
 	print(em+"totalnumgalaxiesLSST = ",totalnumgalaxiesLSST)
 
 	print("comovingphi is returned for the input")
@@ -684,19 +699,22 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 #THIS NEXT PART CONTAINS IF STATEMENTS FOR EACH EMLINE
 
 
-if emline == "[OII]":
+#functionality of code has changed - commenting these out, bc not using them anymore - also editing part for median transmission wavelength above to use FWHM
 
-	print("The following plot will contain [OII] LF's from Comparat et al 2016:")
 
-	print("[OII] values with errors given in the Comparat et al 2016 paper are:")
-	print("log10Lstar =   41.1  (+0.02 -0.03)")
-	print("betaL =         2.33 (+0.14 -0.16)")
-	print("log10phistar = -2.4  (+0.03 -0.03)")
-	print("betaphi =      -0.73 (+0.25 -0.29)")
-	print("alpha =        -1.46 (+0.06 -0.05)")
+#if emline == "[OII]":
 
-	schechter_LF(z=0.75,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "z = 0.75 Comparat+ 2016",fluxscale = 1)
-	schechter_LF(z=1.5,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "z = 1.5 Comparat+ 2016",fluxscale = 1)
+#	print("The following plot will contain [OII] LF's from Comparat et al 2016:")
+
+#	print("[OII] values with errors given in the Comparat et al 2016 paper are:")
+#	print("log10Lstar =   41.1  (+0.02 -0.03)")
+#	print("betaL =         2.33 (+0.14 -0.16)")
+#	print("log10phistar = -2.4  (+0.03 -0.03)")
+#	print("betaphi =      -0.73 (+0.25 -0.29)")
+#	print("alpha =        -1.46 (+0.06 -0.05)")
+
+#	schechter_LF(z=0.75,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "z = 0.75 Comparat+ 2016",fluxscale = 1)
+#	schechter_LF(z=1.5,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "z = 1.5 Comparat+ 2016",fluxscale = 1)
 
 	#The Khostovan paper is not useful, as it does not actually parametrize Lstar and phistar
 
@@ -708,113 +726,113 @@ if emline == "[OII]":
 	#schechter_LF(z=1.47,alpha = -1.3,Lstar0 = 10**41.86,betaL = 0,phistar0 = 10**(-2.25),betaphi = 0,param = "first",zpaper = "z = 1.47 Khostovan+ 2015",fluxscale = 1)
 
 
-if emline == "Hbeta":
+#if emline == "Hbeta":
 
-	print("The following plot will contain Hbeta LF's from Comparat et al 2016:")
+#	print("The following plot will contain Hbeta LF's from Comparat et al 2016:")
 
-	print("Hbeta values with errors given in the Comparat et al 2016 paper are:")
-	print("log10Lstar =   40.88 (+0.05 -0.07)")
-	print("betaL =         2.19 (+0.25 -0.32)")
-	print("log10phistar = -3.34 (+0.09 -0.12)")
-	print("betaphi =       2.7  (+0.44 -0.57)")
-	print("alpha =        -1.51 (+0.27 -0.2)")
+#	print("Hbeta values with errors given in the Comparat et al 2016 paper are:")
+#	print("log10Lstar =   40.88 (+0.05 -0.07)")
+#	print("betaL =         2.19 (+0.25 -0.32)")
+#	print("log10phistar = -3.34 (+0.09 -0.12)")
+#	print("betaphi =       2.7  (+0.44 -0.57)")
+#	print("alpha =        -1.51 (+0.27 -0.2)")
 
-	schechter_LF(z=0.45,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 1)
-	schechter_LF(z=0.9,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 1)
-
-
-if emline == "[OIII]":
-
-	print("The following plot will contain [OIII] LF's from Comparat et al 2016:")
-
-	print("[OIII] values with errors given in the Comparat et al 2016 paper are:")
-	print("log10Lstar =   41.42 (+0.07 -0.09)")
-	print("betaL =         3.91 (+0.32 -0.4)")
-	print("log10phistar = -3.41 (+0.08 -0.01)")
-	print("betaphi =      -0.76 (+0.39 -0.49)")
-	print("alpha =        -1.83 (+0.1 -0.08)")
-
-	schechter_LF(z=0.45,alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 1)
-	schechter_LF(z=0.9,alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 1)
+#	schechter_LF(z=0.45,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 1)
+#	schechter_LF(z=0.9,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 1)
 
 
-if emline == "Halpha":
+#if emline == "[OIII]":
 
-	print("This following plot will contain an Halpha LF from Sobral et al 2013.  ")
+#	print("The following plot will contain [OIII] LF's from Comparat et al 2016:")
 
-	print("z = 0.4 and alpha = -1.6 are plotted, ")
-	print("but the values with errors given in the Sobral et al 2013 paper are:")
-	print("z = 0.40 +_ 0.01")
-	print("alpha =       -1.75 (+0.12 -0.08)")
-	print("Lstar_exp =   41.95 (+0.47 -0.12)")
-	print("phistar_exp = -3.12 (+0.10 -0.34)")
+#	print("[OIII] values with errors given in the Comparat et al 2016 paper are:")
+#	print("log10Lstar =   41.42 (+0.07 -0.09)")
+#	print("betaL =         3.91 (+0.32 -0.4)")
+#	print("log10phistar = -3.41 (+0.08 -0.01)")
+#	print("betaphi =      -0.76 (+0.39 -0.49)")
+#	print("alpha =        -1.83 (+0.1 -0.08)")
 
-	schechter_LF(z = 0.4,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)
-	schechter_LF(z = 0.45,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)	
-
-	print("This will now plot an Halpha LF scaled from the Hbeta LF in this code.  ")
-	print("Halpha/Hbeta = 2.86")
-
-	schechter_LF(z=0.45,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 2.86,style = "--")
-	schechter_LF(z=0.9,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 2.86,style = "--")
+#	schechter_LF(z=0.45,alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 1)
+#	schechter_LF(z=0.9,alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 1)
 
 
-if emline == "Lymanalpha":
+#if emline == "Halpha":
 
-	print("This following plot will contain a Lymanalpha LF from Ciardullo et al 2012.  ")
+#	print("This following plot will contain an Halpha LF from Sobral et al 2013.  ")
+
+#	print("z = 0.4 and alpha = -1.6 are plotted, ")
+#	print("but the values with errors given in the Sobral et al 2013 paper are:")
+#	print("z = 0.40 +_ 0.01")
+#	print("alpha =       -1.75 (+0.12 -0.08)")
+#	print("Lstar_exp =   41.95 (+0.47 -0.12)")
+#	print("phistar_exp = -3.12 (+0.10 -0.34)")
+
+#	schechter_LF(z = 0.4,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)
+#	schechter_LF(z = 0.45,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)	
+
+#	print("This will now plot an Halpha LF scaled from the Hbeta LF in this code.  ")
+#	print("Halpha/Hbeta = 2.86")
+
+#	schechter_LF(z=0.45,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 2.86,style = "--")
+#	schechter_LF(z=0.9,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 2.86,style = "--")
+
+
+#if emline == "Lymanalpha":
+
+#	print("This following plot will contain a Lymanalpha LF from Ciardullo et al 2012.  ")
  	#either this needs to be combined with the "test" option, or I need to edit the rest of these emline options to be usable with all the different parameters
 
-	lambda_OII = 372.7
-	lambda_OIII = 500.7
-	lambda_Halpha = 656.3
-	lambda_Lymanalpha = 121.6
+#	lambda_OII = 372.7
+#	lambda_OIII = 500.7
+#	lambda_Halpha = 656.3
+#	lambda_Lymanalpha = 121.6
 
 	#the following calculates values I use in and plug into the lumlim function
-	lambdalow = 818.95 #in nm
-	lambdahigh = 921.15 #in nm
-	lambdacenter = (lambdalow+lambdahigh)/2 #in nm #NO, THIS IS NOR CORRECT, FIX IT
+#	lambdalow = 818.95 #in nm
+#	lambdahigh = 921.15 #in nm
+#	lambdacenter = (lambdalow+lambdahigh)/2 #in nm #NO, THIS IS NOR CORRECT, FIX IT
 	#lambdaemitted = #will be one of the three emission lines #in nm
 	#zendlow = (lambdalow/lambdaemitted)-1
 	#zendhigh = (lambdahigh/lambdaemitted)-1
 	#zcenter = (lambdacenter/lambdaemitted)-1
 
 	#finds redshift of emission line at center of z band -> use to find LF
-	zOII = (lambdacenter/lambda_OII)-1
-	zOIII = (lambdacenter/lambda_OIII)-1
-	zHalpha = (lambdacenter/lambda_Halpha)-1
-	zLymanalpha = (lambdacenter/lambda_Lymanalpha)-1
+#	zOII = (lambdacenter/lambda_OII)-1
+#	zOIII = (lambdacenter/lambda_OIII)-1
+#	zHalpha = (lambdacenter/lambda_Halpha)-1
+#	zLymanalpha = (lambdacenter/lambda_Lymanalpha)-1
 
 	#for the first redshift below
-	print("z = 3.113 and alpha = -1.65 are plotted, ")
-	print("the values with errors given in the Ciardullo et al 2012 paper are:")
-	print("Lstar_exp =   42.76 (+0.10 -0.10)")
-	print("phistar_exp = -3.17 (+0.05 -0.05)")
+#	print("z = 3.113 and alpha = -1.65 are plotted, ")
+#	print("the values with errors given in the Ciardullo et al 2012 paper are:")
+#	print("Lstar_exp =   42.76 (+0.10 -0.10)")
+#	print("phistar_exp = -3.17 (+0.05 -0.05)")
 
 	#for the second redshift below
-	print("z = 2.063 and alpha = -1.65 are plotted, ")
-	print("the values with errors given in the Ciardullo et al 2012 paper are:")
-	print("Lstar_exp =   42.33 (+0.12 -0.12)")
-	print("phistar_exp = -2.86 (+0.05 -0.05)")
+#	print("z = 2.063 and alpha = -1.65 are plotted, ")
+#	print("the values with errors given in the Ciardullo et al 2012 paper are:")
+#	print("Lstar_exp =   42.33 (+0.12 -0.12)")
+#	print("phistar_exp = -2.86 (+0.05 -0.05)")
 
 	#schechter_LF(z=3.113,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**42.76,betaL = 0,phistar0 = 10**(-3.17),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 3.113 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",style = "c")
 	#schechter_LF(z=2.063,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**42.33,betaL = 0,phistar0 = 10**(-2.86),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 2.063 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",style = "m")
 	#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
 	#THE OPTION "first" ACTUALLY WORKS, BUT ONLY IF YOU ALSO INPUT THE VALUES FOR LSTAR0 AND PHISTAR0 TO BYPASS THE ACTUAL THING I WAS TRYING TO DO
-	schechter_LF(z=6.155016447368421,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 6.155 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = "zband",style = "y")
+#	schechter_LF(z=6.155016447368421,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 6.155 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = "zband",style = "y")
 
 
-if emline == "testHalpha":
+#if emline == "testHalpha":
 
-	print("This following plot will contain an Halpha LF from Sobral et al 2013.  ")
+#	print("This following plot will contain an Halpha LF from Sobral et al 2013.  ")
 
-	print("z = 0.4 and alpha = -1.6 are plotted, ")
-	print("but the values with errors given in the Sobral et al 2013 paper are:")
-	print("z = 0.40 +_ 0.01")
-	print("alpha =       -1.75 (+0.12 -0.08)")
-	print("Lstar_exp =   41.95 (+0.47 -0.12)")
-	print("phistar_exp = -3.12 (+0.10 -0.34)")
+#	print("z = 0.4 and alpha = -1.6 are plotted, ")
+#	print("but the values with errors given in the Sobral et al 2013 paper are:")
+#	print("z = 0.40 +_ 0.01")
+#	print("alpha =       -1.75 (+0.12 -0.08)")
+#	print("Lstar_exp =   41.95 (+0.47 -0.12)")
+#	print("phistar_exp = -3.12 (+0.10 -0.34)")
 
-	schechter_LF(z = 0.4,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = 10**(-3.18),betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)
+#	schechter_LF(z = 0.4,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = 10**(-3.18),betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)
 	
 #I have no idea why I wrote the following three lines to print out, so I'm commenting them out for now unless I have a reason to do otherwise
 #print("Comparat et al 2016 plots [OII] 3726/3729, Hbeta 4861, and [OIII] 5007")
@@ -822,6 +840,8 @@ if emline == "testHalpha":
 #print("Sobral et al 2013 plots Halpha 6563")
 
 
+#might not be able to use this while editing the Schechter_LF routine for the allFWHM option, bc integrating in different order
+#don't try it
 if emline == "all":
 
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
@@ -953,23 +973,31 @@ if emline == "all":
  	#NEED TO HAVE AN ARRAY OF Z VALUES TO INTEGRATE PHI????  
 
 	if zOII>0:
-		schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filt = filt,style = "r")
+		comovingphiOII = schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filt = filt,style = "r")
 	
 	if zOIII>0:
-		schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filt = filt,style = "g")
+		comovingphiOIII = schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filt = filt,style = "g")
 	
 	if zHalpha>0:
-		schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filt = filt,style = "b")
+		comovingphiHalpha = schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filt = filt,style = "b")
 	
 	if zLymanalpha>0:
 		#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
 		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
  		#NOW THIS WORKS YESSSSS
- 		schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
+ 		comovingphiLymanalpha = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
  	
  	#used LaTex above for legends
  	#python recognizes LaTeX instead of thinking they're escape characters if I write it as a "raw" string, denoting it with an r in the beginning of the line
 
+ 	#fix with if statements
+ 	#commented out bc not the way I set it up earlier
+ 	#print("comovingphiOII = ",comovingphiOII)
+ 	#print("comovingphiOIII = ",comovingphiOIII)
+ 	#print("comovingphiHalpha = ",comovingphiHalpha)
+ 	#print("comovingphiLymanalpha = ",comovingphiLymanalpha)
+
+ 	#now get exp num using comovingvol for ??????????????
 
  	#low end of FWHM
 
