@@ -1153,7 +1153,7 @@ if emline == "allFWHM":
 		total_number_FWHM_OII = numpy.trapz(comovingphiarrayOII,x=comovingvolarrayOII)
 		print("total_number_FWHM_OII = ",total_number_FWHM_OII)
 		#LSST area
-		total_number_FWHM_LSSTOII = total_number_FWHM_OII*18000/42000		
+		total_number_FWHM_LSSTOII = total_number_FWHM_OII*18000./42000.		
 
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
@@ -1195,7 +1195,7 @@ if emline == "allFWHM":
 		total_number_FWHM_OIII = numpy.trapz(comovingphiarrayOIII,x=comovingvolarrayOIII)
 		print("total_number_FWHM_OIII = ",total_number_FWHM_OIII)
 		#LSST area
-		total_number_FWHM_LSSTOIII = total_number_FWHM_OIII*18000/42000		
+		total_number_FWHM_LSSTOIII = total_number_FWHM_OIII*18000./42000.		
 
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
@@ -1237,7 +1237,7 @@ if emline == "allFWHM":
 		total_number_FWHM_Halpha = numpy.trapz(comovingphiarrayHalpha,x=comovingvolarrayHalpha)
 		print("total_number_FWHM_Halpha = ",total_number_FWHM_Halpha)
 		#LSST area
-		total_number_FWHM_LSSTHalpha = total_number_FWHM_Halpha*18000/42000		
+		total_number_FWHM_LSSTHalpha = total_number_FWHM_Halpha*18000./42000.
 
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
@@ -1311,24 +1311,24 @@ if emline == "allFWHM":
 
 		#SECOND TRY
 
-		numarray = numpy.zeros(len(zFWHMarrayLymanalpha))
-		comovingvoldiffLymanalpha = numpy.diff(comovingvolarrayLymanalpha)
+		#numarray = numpy.zeros(len(zFWHMarrayLymanalpha))
+		#comovingvoldiffLymanalpha = numpy.diff(comovingvolarrayLymanalpha)
 		#print(len(comovingphiarrayLymanalpha)) #is 100
 		#print(len(comovingvolarrayLymanalpha)) #is 100
 		#print(len(comovingvoldiffLymanalpha)) #is 99
-		for p in range(len(comovingphiarrayLymanalpha)-1):
-			numarray[p] = comovingphiarrayLymanalpha[p]*comovingvoldiffLymanalpha[p]
+		#for p in range(len(comovingphiarrayLymanalpha)-1):
+		#	numarray[p] = comovingphiarrayLymanalpha[p]*comovingvoldiffLymanalpha[p]
 		#delete first number corresponding to index 0 to match voldiff array
-		total_number_FWHM_Lymanalpha = numpy.sum(numarray)
+		#total_number_FWHM_Lymanalpha = numpy.sum(numarray)
 
-		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
+		#print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
 
 		#LSST area
-		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000./42000.
+		#total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000./42000.
 
 
-		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
-		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+		#print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		#print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
 
 	else:
@@ -1345,8 +1345,8 @@ if emline == "allFWHM":
 	#print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
 
 
-	#print("the total expected number of galaxies in the LSST area (18000/42000) is:")
-	#print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
-	#print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
-	#print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
-	#print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+	print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+	print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
+	print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
+	print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
+	print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
