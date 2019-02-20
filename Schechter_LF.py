@@ -345,66 +345,72 @@ def lumlim(z,em,filt):
 
 		#read in each data file
 		print("u_filter has wavelengths 305.30 - 408.60 nm")
-		#this is in two columns; the left is wavelength, the right is throughput
+		#this is in two columns; the left is wavelength in nm, the right is throughput
 		u_filter = loadtxt('ufilteredit.csv')
 		print(u_filter)
 		#I shorten this to only the second column
 		LSST_filter = u_filter
-		LSSTfilter = u_filter[:,1]
+		LSSTfilter = u_filter[:,1] #transmission
+		LSSTwav = u_filter[:,0] #the wavelengths are the first column
 
 	if filt=="gband":
 		#read in each data file
 		print("g_filter has wavelengths 386.30 - 567.00 nm")
-		#this is in two columns; the left is wavelength, the right is throughput
+		#this is in two columns; the left is wavelength in nm, the right is throughput
 		g_filter = loadtxt('gfilteredit.csv')
 		print(g_filter)
 		#I shorten this to only the second column
 		LSST_filter = g_filter
-		LSSTfilter = g_filter[:,1]
+		LSSTfilter = g_filter[:,1] #transmission
+		LSSTwav = g_filter[:,0] #the wavelengths are the first column
 
 	if filt=="rband":
 
 		#read in each data file
 		print("r_filter has wavelengths 536.90 - 706.00 nm")
-		#this is in two columns; the left is wavelength, the right is throughput 
+		#this is in two columns; the left is wavelength in nm, the right is throughput 
 		r_filter = loadtxt('rfilteredit.csv')
 		print(r_filter)
 		#I shorten this to only the second column
 		LSST_filter = r_filter
-		LSSTfilter = r_filter[:,1]
+		LSSTfilter = r_filter[:,1] #transmission
+		LSSTwav = r_filter[:,0] #the wavelengths are the first column
 
 	if filt=="iband":
 
 		#read in each data file
 		print("i_filter has wavelengths 675.90 - 833.00 nm")
-		#this is in two columns; the left is wavelength, the right is throughput
+		#this is in two columns; the left is wavelength in nm, the right is throughput
 		i_filter = loadtxt('ifilteredit.csv')
 		print(i_filter)
 		#I shorten this to only the second column
 		LSST_filter = i_filter
-		LSSTfilter = i_filter[:,1]
+		LSSTfilter = i_filter[:,1] #transmission
+		LSSTwav = i_filter[:,0] #the wavelengths are the first column
 
 	if filt=="zband":
 
 		#read in each data file 
 		print("z_filter has wavelengths 802.90 - 938.60 nm")
-		#this is in two columns; the left is wavelength, the right is throughput
+		#this is in two columns; the left is wavelength in nm, the right is throughput
 		z_filter = loadtxt('zfilteredit.csv')
 		print(z_filter)
 		#I shorten this to only the second column
 		LSST_filter = z_filter
-		LSSTfilter = z_filter[:,1]
+		LSSTfilter = z_filter[:,1] #transmission
+		LSSTwav = z_filter[:,0] #the wavelengths are the first column
 
 	if filt=="yband":
 
 		#read in each data file
 		print("y_filter has wavelengths 908.30 - 1099.60 nm")
-		#this is in two columns; the left is wavelength, the right is throughput
+		#this is in two columns; the left is wavelength in nm, the right is throughput
 		y_filter = loadtxt('yfilteredit.csv')
 		print(y_filter)
 		#I shorten this to only the second column
 		LSST_filter = y_filter
-		LSSTfilter = y_filter[:,1]
+		LSSTfilter = y_filter[:,1] #transmission
+		LSSTwav = y_filter[:,0] #the wavelengths are the first column
 
 
 
@@ -423,15 +429,26 @@ def lumlim(z,em,filt):
 
 
 
-	#THE FOLLOWING NEEDS TO BE MADE MORE ACCURATE:  (everything before/after is okay)
+	#THE FOLLOWING NEEDS TO BE FIXED:  (everything before/after is okay)
 
+	#had the following before: (commented out)
 	#finds the flux using the difference between the frequencies at each end of the band
-	c = 2.9979*(10**17) #in nm/s
+	#light_c = 2.9979*(10**17) #in nm/s
 	#need to do something with the transmission function at each wavelength here
-	deltanu = c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
+	#deltanu = light_c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
+	#need to do this for each interval?  
+
+	deltanu_array = numpy.zeros(len(LSST_filter)-1)
+
+	for lambda_int in range(len(LSST_filter)-1):
+		deltanu_array[lambda_int] = light_c*((1/(LSSTwav[lambda_int]*LSSTfilter[lambda_int]))-(1/(LSSTwav[lambda_int+1]*LSSTfilter[lambda_int+1])))
+
 	print("deltanu =",deltanu,"s^-1")
-	flux = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from ergs/(s*Hz*(cm^2)) to Janskys
+	flux_array = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from ergs/(s*Hz*(cm^2)) to Janskys
+	flux = numpy.sum(flux_array)
 	print("flux =",flux,"erg/(s*(cm^2))")
+
+	#??
 
 
 
