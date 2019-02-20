@@ -427,6 +427,7 @@ def lumlim(z,em,filt):
 
 	#finds the flux using the difference between the frequencies at each end of the band
 	c = 2.9979*(10**17) #in nm/s
+	#need to do something with the transmission function at each wavelength here
 	deltanu = c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
 	print("deltanu =",deltanu,"s^-1")
 	flux = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from ergs/(s*Hz*(cm^2)) to Janskys
