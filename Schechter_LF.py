@@ -433,7 +433,7 @@ def lumlim(z,em,filt):
 
 	#had the following before: (commented out)
 	#finds the flux using the difference between the frequencies at each end of the band
-	#light_c = 2.9979*(10**17) #in nm/s
+	light_c = 2.9979*(10**17) #in nm/s
 	#need to do something with the transmission function at each wavelength here
 	#deltanu = light_c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
 	#need to do this for each interval?  
@@ -443,14 +443,16 @@ def lumlim(z,em,filt):
 	for lambda_int in range(len(LSST_filter)-1):
 		deltanu_array[lambda_int] = light_c*((1/(LSSTwav[lambda_int]*LSSTfilter[lambda_int]))-(1/(LSSTwav[lambda_int+1]*LSSTfilter[lambda_int+1])))
 
-	print("deltanu =",deltanu,"s^-1")
-	flux_array = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from ergs/(s*Hz*(cm^2)) to Janskys
+	#print("deltanu =",deltanu,"s^-1")
+	flux_array = fluxdens*deltanu_array#*(10**(-23)) #the extra factor converts from ergs/(s*Hz*(cm^2)) to Janskys
 	flux = numpy.sum(flux_array)
 	print("flux =",flux,"erg/(s*(cm^2))")
 
 	#??
 
+	#THIS DID NOT WORK, START ALL OVER HERE
 
+	
 
 	#THE FOLLOWING IS GOOD:
 
