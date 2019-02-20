@@ -429,8 +429,8 @@ def lumlim(z,em,filt):
 	c = 2.9979*(10**17) #in nm/s
 	deltanu = c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
 	print("deltanu =",deltanu,"s^-1")
-	flux = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from Janskys to ergs/(s*Hz*(cm^2)) #THEN WHAT ARE MY UNITS????
-	print("flux =",flux,"erg/(s*(cm^2))")  #IS THIS EVEN RIGHT THEN, IF I LOOK AT THE ABOVE LINE????  REVIEW THE UNITS!!  
+	flux = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from ergs/(s*Hz*(cm^2)) to Janskys
+	print("flux =",flux,"erg/(s*(cm^2))")
 
 
 
