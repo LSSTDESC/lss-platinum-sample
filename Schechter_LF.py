@@ -295,6 +295,7 @@ def lumlim(z,em,filt):
 	ABmag_dict = {"uband":26.1,"gband":27.4,"rband":27.5,"iband":26.8,"zband":26.1,"yband":24.9}
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
 	lambdahigh_dict = {"uband":408.60,"gband":567.00,"rband":706.00,"iband":833.00,"zband":938.60,"yband":1099.60} #in nm
+	#these are at the endpoints of the filters, NOT the FWHM
 
 	ABmag = ABmag_dict[filt]
 	lambdalow = lambdalow_dict[filt]
@@ -338,6 +339,77 @@ def lumlim(z,em,filt):
 	#	lambdalow = 908.30 #in nm
 	#	lambdahigh = 1099.60 #in nm
 
+	#might need the following here:
+
+	if filt=="uband":
+
+		#read in each data file
+		print("u_filter has wavelengths 305.30 - 408.60 nm")
+		#this is in two columns; the left is wavelength, the right is throughput
+		u_filter = loadtxt('ufilteredit.csv')
+		print(u_filter)
+		#I shorten this to only the second column
+		LSST_filter = u_filter
+		LSSTfilter = u_filter[:,1]
+
+	if filt=="gband":
+		#read in each data file
+		print("g_filter has wavelengths 386.30 - 567.00 nm")
+		#this is in two columns; the left is wavelength, the right is throughput
+		g_filter = loadtxt('gfilteredit.csv')
+		print(g_filter)
+		#I shorten this to only the second column
+		LSST_filter = g_filter
+		LSSTfilter = g_filter[:,1]
+
+	if filt=="rband":
+
+		#read in each data file
+		print("r_filter has wavelengths 536.90 - 706.00 nm")
+		#this is in two columns; the left is wavelength, the right is throughput 
+		r_filter = loadtxt('rfilteredit.csv')
+		print(r_filter)
+		#I shorten this to only the second column
+		LSST_filter = r_filter
+		LSSTfilter = r_filter[:,1]
+
+	if filt=="iband":
+
+		#read in each data file
+		print("i_filter has wavelengths 675.90 - 833.00 nm")
+		#this is in two columns; the left is wavelength, the right is throughput
+		i_filter = loadtxt('ifilteredit.csv')
+		print(i_filter)
+		#I shorten this to only the second column
+		LSST_filter = i_filter
+		LSSTfilter = i_filter[:,1]
+
+	if filt=="zband":
+
+		#read in each data file 
+		print("z_filter has wavelengths 802.90 - 938.60 nm")
+		#this is in two columns; the left is wavelength, the right is throughput
+		z_filter = loadtxt('zfilteredit.csv')
+		print(z_filter)
+		#I shorten this to only the second column
+		LSST_filter = z_filter
+		LSSTfilter = z_filter[:,1]
+
+	if filt=="yband":
+
+		#read in each data file
+		print("y_filter has wavelengths 908.30 - 1099.60 nm")
+		#this is in two columns; the left is wavelength, the right is throughput
+		y_filter = loadtxt('yfilteredit.csv')
+		print(y_filter)
+		#I shorten this to only the second column
+		LSST_filter = y_filter
+		LSSTfilter = y_filter[:,1]
+
+
+
+	#THIS PART IS OKAY
+
 	#the following calculates values I use in and plug into the lumlim function
 
 	#finds the flux density
@@ -349,12 +421,20 @@ def lumlim(z,em,filt):
 	fluxdens = 10**((ABmag+48.6)/(-2.5)) #outputs in erg/(s*Hz*(cm^2))
 	print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
 
+
+
+	#THE FOLLOWING NEEDS TO BE MADE MORE ACCURATE:  (everything before/after is okay)
+
 	#finds the flux using the difference between the frequencies at each end of the band
 	c = 2.9979*(10**17) #in nm/s
 	deltanu = c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
 	print("deltanu =",deltanu,"s^-1")
 	flux = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from Janskys to ergs/(s*Hz*(cm^2))
 	print("flux =",flux,"erg/(s*(cm^2))")
+
+
+
+	#THE FOLLOWING IS GOOD:
 
 	#finds the luminosity distance
 	lumdist = cosmo.luminosity_distance(z)
