@@ -433,7 +433,7 @@ def lumlim(z,em,filt):
 
 	h_cgs = 6.6261*(10^(-27)) #g*cm^2/s
 	c_cgs = 2.9979*(10**10) #in cm/s
-	lambdaem_dict = {"[OII]":372.7,"[OIII]":500.7,"Halpha":656.3,"Lymanalpha":121.6}  #in nm
+	lambdaem_dict = {"[OII]":372.7,"[OIII]":500.7,"Halpha":656.3,"Lymanalpha":121.6}  #in nm - NEED THIS IN CM
 	lambdaem = lambdaem_dict[em]
 
 	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem)
@@ -465,6 +465,10 @@ def lumlim(z,em,filt):
 
 	#this is the value of the transmission that corresponds to the index found above
 	#LSSTfilter[mindiff_lambda_index]
+
+	#f_EL is emission line flux
+	#remember flux = luminosity/(4*pi*(distance^2))
+	#so need emission line luminosity - which is..?
 
 	#LSSTfilter[mindiff_lambda_index] is the transmission at lambda_emissionline
 	n_photon_obj = (f_EL/((h_cgs*c_cgs)/lambda_emissionline))*LSSTfilter[mindiff_lambda_index]
