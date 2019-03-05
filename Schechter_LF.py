@@ -413,10 +413,29 @@ def lumlim(z,em,filt):
 		LSSTwav = y_filter[:,0] #the wavelengths are the first column
 
 
-
-	#THIS PART IS OKAY
-
 	#the following calculates values I use in and plug into the lumlim function
+
+	#need to redo how I find the flux density to take into account the shape of the transmission curve of each filter
+	#I will get a (limiting) flux for this (see notes)
+
+
+	#steps to take: FOR EACH FILTER
+
+	#(1)
+	#n_photon(1_microJansky) = int{Transmission(lambda)*[1microJansky/(hc/lambda)]*dlambda}
+	#hc/lambda is the energy per photon
+	#do this for the chosen filter (corresponding to the transmission curve)
+	#check units - make sure n ends up as number/((cm^2)*s)
+
+	#(2)
+	#lambda_emissionline = lambda_restframe*(1+z_emissionline)
+
+	#(3)
+	#flux_limiting(emissionline) = [F_nu,lim(filt)*n_photon(1_microJansky)/T_filt(lambda_emissionline)]*(hc/lambda_emissionline)
+	#F_nu,lim(filt) is the variable I had previously named fluxdens - it is the 5 sigma AB magnitude limit that I found for each LSST filter
+
+
+	#this should be before the previous part in order to use it for step 3
 
 	#finds the flux density
 	print("ABmagnitude = -2.5*log10(fluxdensity/(3631 Jansky))")
@@ -428,15 +447,20 @@ def lumlim(z,em,filt):
 	print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
 
 
+	#I NEED TO FIGURE OUT WHAT I AM DOING HERE:
 
-	#THE FOLLOWING NEEDS TO BE FIXED:  (everything before/after is okay)
 
-	#had the following before: (commented out)
+	#old test
+
 	#finds the flux using the difference between the frequencies at each end of the band
-	light_c = 2.9979*(10**17) #in nm/s
-	#need to do something with the transmission function at each wavelength here
-	#deltanu = light_c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
-	#need to do this for each interval?  
+	c = 2.9979*(10**17) #in nm/s
+	deltanu = c*((1/lambdalow)-(1/lambdahigh)) #the nm should cancel out
+	print("deltanu =",deltanu,"s^-1")
+	flux = fluxdens*deltanu#*(10**(-23)) #the extra factor converts from Janskys to ergs/(s*Hz*(cm^2))
+	print("flux =",flux,"erg/(s*(cm^2))")
+
+
+	#new test
 
 	deltanu_array = numpy.zeros(len(LSST_filter)-1)
 
@@ -448,11 +472,6 @@ def lumlim(z,em,filt):
 	flux = numpy.sum(flux_array)
 	print("flux =",flux,"erg/(s*(cm^2))")
 
-	#??
-
-	#THIS DID NOT WORK, START ALL OVER HERE
-
-	
 
 	#THE FOLLOWING IS GOOD:
 
