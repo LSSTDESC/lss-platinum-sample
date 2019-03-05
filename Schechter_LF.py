@@ -432,12 +432,12 @@ def lumlim(z,em,filt):
 
 	h_cgs = 6.6261*(10^(-27)) #g*cm^2/s
 	c_cgs = 2.9979*(10**10) #in cm/s
-	lambdaem_dict = {"OII":372.7,"OIII":500.7,"Halpha":656.3,"Lymanalpha":121.6}  #in nm
+	lambdaem_dict = {"[OII]":372.7,"[OIII]":500.7,"Halpha":656.3,"Lymanalpha":121.6}  #in nm
 	lambdaem = lambdaem_dict[em]
 
 	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem)
 	dlambda = abs(LSSTwav[1]-LSSTwav[0])
-	n_photon_1microJansky = numpy.int(n_photon_1microJansky_array,x=dlambda)
+	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,x=dlambda)
 
 
 	#(2)
