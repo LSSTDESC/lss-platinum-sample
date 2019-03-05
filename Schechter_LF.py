@@ -436,7 +436,8 @@ def lumlim(z,em,filt):
 	lambdaem = lambdaem_dict[em]
 
 	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem)
-	dlambda = abs(LSSTwav[1]-LSSTwav[0])
+	dlambda = numpy.diff(LSSTwav) #now need to shorten other array
+	n_photon_1microJansky_array = n_photon_1microJansky_array[1:]
 	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,x=dlambda)
 
 
@@ -469,7 +470,7 @@ def lumlim(z,em,filt):
 	#finds the index that most closely matches the wavelength that is redshifted
 	diff_lambda_array = abs(LSSTwav-lambda_emissionline)
 	mindiff_lambda_index = numpy.where(diff_lambda_array==min(diff_lambda_array))
-	mindiff_lambda_index = numpy.float(mindiff_lambda_array[0])
+	mindiff_lambda_index = numpy.float(mindiff_lambda_index[0])
 
 	#this is the value of the transmission that corresponds to the index found above
 	#LSSTfilter[mindiff_lambda_index]
