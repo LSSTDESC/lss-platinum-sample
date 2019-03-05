@@ -423,6 +423,7 @@ def lumlim(z,em,filt):
 
 	#steps to take: FOR EACH FILTER
 
+
 	#(1)
 	#n_photon(1_microJansky) = int{Transmission(lambda)*[1microJansky/(hc/lambda)]*dlambda}
 	#hc/lambda is the energy per photon
@@ -448,17 +449,7 @@ def lumlim(z,em,filt):
 
 
 	#(3)
-	#flux_limiting(emissionline) = [F_nu,lim(filt)*n_photon(1_microJansky)/T_filt(lambda_emissionline)]*(hc/lambda_emissionline)
-	#F_nu,lim(filt) is the variable I had previously named fluxdens - it is the 5 sigma AB magnitude limit that I found for each LSST filter?
-
-	#finds the flux density
-	print("ABmagnitude = -2.5*log10(fluxdensity/(3631 Jansky))")
-	print("consequently:")
-	#print("fluxdensity = (10**(ABmagnitude/(-2.5)))*(3631 Janksy)")
-	#fluxdens = (10**(ABmag/(-2.5)))*3631 #outputs in Jansky
-	#uses ABmag from earlier in this function
-	fluxdens = 10**((ABmag+48.6)/(-2.5)) #outputs in erg/(s*Hz*(cm^2))
-	print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
+	#need to find n_photon_obj
 
 	#need LSSTfilter[lambda_emissionline]
 	#will find this using minimum difference between lambda_emissionline and whatever wavelengths are in the array
@@ -474,6 +465,29 @@ def lumlim(z,em,filt):
 
 	#this is the value of the transmission that corresponds to the index found above
 	#LSSTfilter[mindiff_lambda_index]
+
+	#LSSTfilter[mindiff_lambda_index] is the transmission at lambda_emissionline
+	n_photon_obj = (f_EL/((h_cgs*c_cgs)/lambda_emissionline))*LSSTfilter[mindiff_lambda_index]
+
+	#NOW I JUST NEED f_EL
+
+
+	#(4)
+	F_nu = n_photon_obj/n_photon_1microJansky
+
+
+	#(5)
+	#flux_limiting(emissionline) = [F_nu,lim(filt)*n_photon(1_microJansky)/T_filt(lambda_emissionline)]*(hc/lambda_emissionline)
+	#F_nu,lim(filt) is the variable I had previously named fluxdens - it is the 5 sigma AB magnitude limit that I found for each LSST filter?
+
+	#finds the flux density
+	print("ABmagnitude = -2.5*log10(fluxdensity/(3631 Jansky))")
+	print("consequently:")
+	#print("fluxdensity = (10**(ABmagnitude/(-2.5)))*(3631 Janksy)")
+	#fluxdens = (10**(ABmag/(-2.5)))*3631 #outputs in Jansky
+	#uses ABmag from earlier in this function
+	fluxdens = 10**((ABmag+48.6)/(-2.5)) #outputs in erg/(s*Hz*(cm^2))
+	print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
 
 	#LSSTfilter is the transmission
 	flux_limit = (fluxdens*n_photon_1microJansky/LSSTfilter[mindiff_lambda_index])*(h_cgs*c_cgs/lambda_emissionline)
