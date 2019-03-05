@@ -431,10 +431,11 @@ def lumlim(z,em,filt):
 	#do this for the chosen filter (corresponding to the transmission curve)
 	#check units - make sure n ends up as number/((cm^2)*s)
 
-	h_cgs = 6.6261*(10^(-27)) #g*cm^2/s
+	h_cgs = 6.6261*(10**(-27)) #g*cm^2/s
 	c_cgs = 2.9979*(10**10) #in cm/s
 	lambdaem_dict_cgs = {"[OII]":372.7/(10**7),"[OIII]":500.7/(10**7),"Halpha":656.3/(10**7),"Lymanalpha":121.6/(10**7)} #in cm
 	lambdaem_cgs = lambdaem_dict_cgs[em]
+	LSSTwav = LSSTwav/(10**7)  #nm to cm
 
 	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem_cgs)
 	dlambda = numpy.diff(LSSTwav) #now need to shorten other array
@@ -445,7 +446,7 @@ def lumlim(z,em,filt):
 	#(2)
 	#lambda_emissionline = lambda_restframe*(1+z_emissionline)
 
-	lambda_emissionline = lambdaem_cgs*(1+z)
+	lambda_emissionline = lambdaem_cgs*(1+z)  #in cm
 
 
 	#(3)
@@ -458,9 +459,20 @@ def lumlim(z,em,filt):
 	#ultimately need a value in LSSTfilter using an index from LSSTwav
 
 	#finds the index that most closely matches the wavelength that is redshifted
+
 	diff_lambda_array = abs(LSSTwav-lambda_emissionline)
-	mindiff_lambda_index = numpy.where(diff_lambda_array==min(diff_lambda_array))
-	mindiff_lambda_index = numpy.float(mindiff_lambda_index[0])
+
+	#answer of following should be ~0
+	mindiff_lambda = min(diff_lambda_array)
+	mindiff_lambda = numpy.float(mindiff_lambda)
+
+	#finds index corresponding to value closest to wavelength
+	mindiff_lambda_index = numpy.where(diff_lambda_array==mindiff_lambda)
+
+	#find "value" in index 0, then change from tuple to float
+	mindiff_lambda_index = mindiff_lambda_index[0]
+	mindiff_lambda_index = numpy.float(mindiff_lambda_index)
+
 
 	#this is the value of the transmission that corresponds to the index found above
 	#LSSTfilter[mindiff_lambda_index]
@@ -468,20 +480,20 @@ def lumlim(z,em,filt):
 
 	#(4)
 	#flux_limiting(emissionline) = [F_nu,lim(filt)*n_photon(1_microJansky)/T_filt(lambda_emissionline)]*(hc/lambda_emissionline)
-	#F_nu,lim(filt) is the variable I had previously named fluxdens - it is the 5 sigma AB magnitude limit that I found for each LSST filter?
+	#F_nu,lim(filt) is the variable I had previously named fluxdens - it is the 5 sigma AB magnitude limit that I found for each LSST filter
 
 	#finds the flux density
 	print("ABmagnitude = -2.5*log10(fluxdensity/(3631 Jansky))")
 	print("consequently:")
 	#print("fluxdensity = (10**(ABmagnitude/(-2.5)))*(3631 Janksy)")
 	#fluxdens = (10**(ABmag/(-2.5)))*3631 #outputs in Jansky
+	#fluxdens = (10**(ABmag/(-2.5)))*3631*(10**(-6)) #outputs in microJansky
 	#uses ABmag from earlier in this function
 	fluxdens = 10**((ABmag+48.6)/(-2.5)) #outputs in erg/(s*Hz*(cm^2))
 	print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
 
 	#LSSTfilter is the transmission
 	flux_limit = (fluxdens*n_photon_1microJansky/LSSTfilter[mindiff_lambda_index])*(h_cgs*c_cgs/lambda_emissionline)
-
 
 	#THE FOLLOWING IS GOOD:
 
