@@ -433,10 +433,10 @@ def lumlim(z,em,filt):
 
 	h_cgs = 6.6261*(10^(-27)) #g*cm^2/s
 	c_cgs = 2.9979*(10**10) #in cm/s
-	lambdaem_dict = {"[OII]":372.7,"[OIII]":500.7,"Halpha":656.3,"Lymanalpha":121.6}  #in nm - NEED THIS IN CM
-	lambdaem = lambdaem_dict[em]
+	lambdaem_dict_cgs = {"[OII]":372.7/(10**7),"[OIII]":500.7/(10**7),"Halpha":656.3/(10**7),"Lymanalpha":121.6/(10**7)} #in cm
+	lambdaem_cgs = lambdaem_dict_cgs[em]
 
-	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem)
+	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem_cgs)
 	dlambda = numpy.diff(LSSTwav) #now need to shorten other array
 	n_photon_1microJansky_array = n_photon_1microJansky_array[1:]
 	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,x=dlambda)
@@ -445,11 +445,10 @@ def lumlim(z,em,filt):
 	#(2)
 	#lambda_emissionline = lambda_restframe*(1+z_emissionline)
 
-	lambda_emissionline = lambdaem*(1+z)
+	lambda_emissionline = lambdaem_cgs*(1+z)
 
 
 	#(3)
-	#need to find n_photon_obj
 
 	#need LSSTfilter[lambda_emissionline]
 	#will find this using minimum difference between lambda_emissionline and whatever wavelengths are in the array
@@ -466,21 +465,8 @@ def lumlim(z,em,filt):
 	#this is the value of the transmission that corresponds to the index found above
 	#LSSTfilter[mindiff_lambda_index]
 
-	#f_EL is emission line flux
-	#remember flux = luminosity/(4*pi*(distance^2))
-	#so need emission line luminosity - which is..?
-
-	#LSSTfilter[mindiff_lambda_index] is the transmission at lambda_emissionline
-	n_photon_obj = (f_EL/((h_cgs*c_cgs)/lambda_emissionline))*LSSTfilter[mindiff_lambda_index]
-
-	#NOW I JUST NEED f_EL
-
 
 	#(4)
-	F_nu = n_photon_obj/n_photon_1microJansky
-
-
-	#(5)
 	#flux_limiting(emissionline) = [F_nu,lim(filt)*n_photon(1_microJansky)/T_filt(lambda_emissionline)]*(hc/lambda_emissionline)
 	#F_nu,lim(filt) is the variable I had previously named fluxdens - it is the 5 sigma AB magnitude limit that I found for each LSST filter?
 
