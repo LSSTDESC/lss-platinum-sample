@@ -399,7 +399,7 @@ def lumlim(z,em,filt):
 	lambdaem_cgs = lambdaem_dict_cgs[em]
 	LSSTwav = LSSTwav/(10**7)  #nm to cm
 
-	n_photon_1microJansky_array = 10*LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem_cgs)
+	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem_cgs)
 	dlambda = numpy.diff(LSSTwav) #now need to shorten other array
 	n_photon_1microJansky_array = n_photon_1microJansky_array[1:]
 	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,x=dlambda)
@@ -751,12 +751,9 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 #THIS NEXT PART CONTAINS IF STATEMENTS FOR EACH EMLINE
 
 
-#functionality of code has changed - previously had separate statements (soon..hesitantly deleted) for each emission line as I was beginning, but now I combined them all into allFWHM
+#functionality of code has changed - previously had separate statements (now..hesitantly deleted) for each emission line as I was beginning, but now I combined them all into allFWHM
 
-
-#if emline == "[OII]":
-
-#	print("The following plot will contain [OII] LF's from Comparat et al 2016:")
+#the following seemed important, so I kept them for reference
 
 #	print("[OII] values with errors given in the Comparat et al 2016 paper are:")
 #	print("log10Lstar =   41.1  (+0.02 -0.03)")
@@ -765,38 +762,6 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 #	print("betaphi =      -0.73 (+0.25 -0.29)")
 #	print("alpha =        -1.46 (+0.06 -0.05)")
 
-#	schechter_LF(z=0.75,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "z = 0.75 Comparat+ 2016",fluxscale = 1)
-#	schechter_LF(z=1.5,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "z = 1.5 Comparat+ 2016",fluxscale = 1)
-
-	#The Khostovan paper is not useful, as it does not actually parametrize Lstar and phistar
-
-	#print("[OII] values with errors given in the Khostovan et al 2015 paper are:")
-	#print("log10Lstar =   41.86 (+0.03 -0.03)")
-	#print("log10phistar = -2.25 (+0.04 -0.04)")
-	#print("alpha =        -1.3")
-
-	#schechter_LF(z=1.47,alpha = -1.3,Lstar0 = 10**41.86,betaL = 0,phistar0 = 10**(-2.25),betaphi = 0,param = "first",zpaper = "z = 1.47 Khostovan+ 2015",fluxscale = 1)
-
-
-#if emline == "Hbeta":
-
-#	print("The following plot will contain Hbeta LF's from Comparat et al 2016:")
-
-#	print("Hbeta values with errors given in the Comparat et al 2016 paper are:")
-#	print("log10Lstar =   40.88 (+0.05 -0.07)")
-#	print("betaL =         2.19 (+0.25 -0.32)")
-#	print("log10phistar = -3.34 (+0.09 -0.12)")
-#	print("betaphi =       2.7  (+0.44 -0.57)")
-#	print("alpha =        -1.51 (+0.27 -0.2)")
-
-#	schechter_LF(z=0.45,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 1)
-#	schechter_LF(z=0.9,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 1)
-
-
-#if emline == "[OIII]":
-
-#	print("The following plot will contain [OIII] LF's from Comparat et al 2016:")
-
 #	print("[OIII] values with errors given in the Comparat et al 2016 paper are:")
 #	print("log10Lstar =   41.42 (+0.07 -0.09)")
 #	print("betaL =         3.91 (+0.32 -0.4)")
@@ -804,98 +769,32 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 #	print("betaphi =      -0.76 (+0.39 -0.49)")
 #	print("alpha =        -1.83 (+0.1 -0.08)")
 
-#	schechter_LF(z=0.45,alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 1)
-#	schechter_LF(z=0.9,alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 1)
-
-
-#if emline == "Halpha":
-
-#	print("This following plot will contain an Halpha LF from Sobral et al 2013.  ")
-
 #	print("z = 0.4 and alpha = -1.6 are plotted, ")
-#	print("but the values with errors given in the Sobral et al 2013 paper are:")
+#	print("Halpha values with errors given in the Sobral et al 2013 paper are:")
 #	print("z = 0.40 +_ 0.01")
 #	print("alpha =       -1.75 (+0.12 -0.08)")
 #	print("Lstar_exp =   41.95 (+0.47 -0.12)")
 #	print("phistar_exp = -3.12 (+0.10 -0.34)")
 
-#	schechter_LF(z = 0.4,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)
-#	schechter_LF(z = 0.45,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)	
-
-#	print("This will now plot an Halpha LF scaled from the Hbeta LF in this code.  ")
-#	print("Halpha/Hbeta = 2.86")
-
-#	schechter_LF(z=0.45,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.45 Comparat+ 2016",fluxscale = 2.86,style = "--")
-#	schechter_LF(z=0.9,alpha = -1.51,Lstar0 = 10**40.88,betaL = 2.19,phistar0 = 10**(-3.34),betaphi = 2.7,param = "first",zpaper = "z = 0.9 Comparat+ 2016",fluxscale = 2.86,style = "--")
-
-
-#if emline == "Lymanalpha":
-
-#	print("This following plot will contain a Lymanalpha LF from Ciardullo et al 2012.  ")
- 	#either this needs to be combined with the "test" option, or I need to edit the rest of these emline options to be usable with all the different parameters
-
-#	lambda_OII = 372.7
-#	lambda_OIII = 500.7
-#	lambda_Halpha = 656.3
-#	lambda_Lymanalpha = 121.6
-
-	#the following calculates values I use in and plug into the lumlim function
-#	lambdalow = 818.95 #in nm
-#	lambdahigh = 921.15 #in nm
-#	lambdacenter = (lambdalow+lambdahigh)/2 #in nm #NO, THIS IS NOR CORRECT, FIX IT
-	#lambdaemitted = #will be one of the three emission lines #in nm
-	#zendlow = (lambdalow/lambdaemitted)-1
-	#zendhigh = (lambdahigh/lambdaemitted)-1
-	#zcenter = (lambdacenter/lambdaemitted)-1
-
-	#finds redshift of emission line at center of z band -> use to find LF
-#	zOII = (lambdacenter/lambda_OII)-1
-#	zOIII = (lambdacenter/lambda_OIII)-1
-#	zHalpha = (lambdacenter/lambda_Halpha)-1
-#	zLymanalpha = (lambdacenter/lambda_Lymanalpha)-1
-
 	#for the first redshift below
 #	print("z = 3.113 and alpha = -1.65 are plotted, ")
-#	print("the values with errors given in the Ciardullo et al 2012 paper are:")
+#	print("Lymanalpha values with errors given in the Ciardullo et al 2012 paper are:")
 #	print("Lstar_exp =   42.76 (+0.10 -0.10)")
 #	print("phistar_exp = -3.17 (+0.05 -0.05)")
 
 	#for the second redshift below
 #	print("z = 2.063 and alpha = -1.65 are plotted, ")
-#	print("the values with errors given in the Ciardullo et al 2012 paper are:")
+#	print("Lymanalpha values with errors given in the Ciardullo et al 2012 paper are:")
 #	print("Lstar_exp =   42.33 (+0.12 -0.12)")
 #	print("phistar_exp = -2.86 (+0.05 -0.05)")
 
-	#schechter_LF(z=3.113,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**42.76,betaL = 0,phistar0 = 10**(-3.17),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 3.113 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",style = "c")
-	#schechter_LF(z=2.063,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**42.33,betaL = 0,phistar0 = 10**(-2.86),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 2.063 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",style = "m")
-	#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
-	#THE OPTION "first" ACTUALLY WORKS, BUT ONLY IF YOU ALSO INPUT THE VALUES FOR LSTAR0 AND PHISTAR0 TO BYPASS THE ACTUAL THING I WAS TRYING TO DO
-#	schechter_LF(z=6.155016447368421,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 6.155 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = "zband",style = "y")
-
-
-#if emline == "testHalpha":
-
-#	print("This following plot will contain an Halpha LF from Sobral et al 2013.  ")
-
-#	print("z = 0.4 and alpha = -1.6 are plotted, ")
-#	print("but the values with errors given in the Sobral et al 2013 paper are:")
-#	print("z = 0.40 +_ 0.01")
-#	print("alpha =       -1.75 (+0.12 -0.08)")
-#	print("Lstar_exp =   41.95 (+0.47 -0.12)")
-#	print("phistar_exp = -3.12 (+0.10 -0.34)")
-
-#	schechter_LF(z = 0.4,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = 10**(-3.18),betaphi = 0,param = "second",zpaper = "z = 0.4 Sobral+ 2013",fluxscale = 1)
-	
-#I have no idea why I wrote the following three lines to print out, so I'm commenting them out for now unless I have a reason to do otherwise
-#print("Comparat et al 2016 plots [OII] 3726/3729, Hbeta 4861, and [OIII] 5007")
-#print("[OIII] 5007 is always 3 times stronger than [OIII] 4959")
-#print("Sobral et al 2013 plots Halpha 6563")
-
 
 #might not be able to use this while editing the Schechter_LF routine for the allFWHM option, bc integrating in different order
-#don't try it
+#I am keeing it for reference
+#Anakin don't try it
 if emline == "all":
 
+	#if statements deleted again changed to dictionaries
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
 	lambdahigh_dict = {"uband":408.60,"gband":567.00,"rband":706.00,"iband":833.00,"zband":938.60,"yband":1099.60} #in nm
 
@@ -905,68 +804,6 @@ if emline == "all":
 	lambdacenter = lambdaarray[0]
 	FWHMlow = lambdaarray[1]
 	FWHMhigh = lambdaarray[2]
-
-	#once again, changed below to dictionaries above
-
-	#if filt=="uband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-	#	lambdalow = 305.30 #in nm
-	#	lambdahigh = 408.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="gband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.4
-	#	lambdalow = 386.30 #in nm
-	#	lambdahigh = 567.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="rband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.5
-	#	lambdalow = 536.90 #in nm
-	#	lambdahigh = 706.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="iband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.8
-	#	lambdalow = 675.90 #in nm
-	#	lambdahigh = 833.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="zband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-	#	lambdalow = 802.90 #in nm
-	#	lambdahigh = 938.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="yband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 24.9
-	#	lambdalow = 908.30 #in nm
-	#	lambdahigh = 1099.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
 
 	#this was used to print out data and plots for the LSST-DESC conference poster
 
@@ -979,46 +816,11 @@ if emline == "all":
 	lambda_Halpha = 656.3
 	lambda_Lymanalpha = 121.6
 
-	#the following calculates values I use in and plug into the lumlim function
-	#THESE WERE ONLY FOR THE Z BAND - I AM TRYING TO MAKE IT MORE GENERAL - DELETE THESE LATER
-	#lambdalow = 818.95 #in nm
-	#lambdahigh = 921.15 #in nm
-	#lambdacenter = (lambdalow+lambdahigh)/2 #in nm #NO, THIS IS NOT CORRECT, FIX THIS
-	#lambdaemitted = #will be one of the three emission lines #in nm
-	#zendlow = (lambdalow/lambdaemitted)-1
-	#zendhigh = (lambdahigh/lambdaemitted)-1
-	#zcenter = (lambdacenter/lambdaemitted)-1
-
 	#finds redshift of emission line at center of z band -> use to find LF
 	zOII = (lambdacenter/lambda_OII)-1
 	zOIII = (lambdacenter/lambda_OIII)-1
 	zHalpha = (lambdacenter/lambda_Halpha)-1
 	zLymanalpha = (lambdacenter/lambda_Lymanalpha)-1
-
-	#left side of FWHM
-	#zOIIlow = (FWHMlow/lambda_OII)-1
-	#zOIIIlow = (FWHMlow/lambda_OIII)-1
-	#zHalphalow = (FWHMlow/lambda_Halpha)-1
-	#zLymanalphalow = (FWHMlow/lambda_Lymanalpha)-1
-
-	#right side of FWHM
-	#zOIIhigh = (FWHMhigh/lambda_OII)-1
-	#zOIIIhigh = (FWHMhigh/lambda_OIII)-1
-	#zHalphahigh = (FWHMhigh/lambda_Halpha)-1
-	#zLymanalphahigh = (FWHMhigh/lambda_Lymanalpha)-1
-
-	#schechter_LF(z=zOII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "z = "+str(zOII)+" Comparat+ 2016",fluxscale = 1,style = "r")
-	#schechter_LF(z=zOIII,alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "z = "+str(zOIII)+" Comparat+ 2016",fluxscale = 1,style = "g")
-	#schechter_LF(z = zHalpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = "z = "+str(zHalpha)+" Sobral+ 2013",fluxscale = 1,style = "b")
-
-	#THESE WERE THE ORIGINAL ONES: 
-	#schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = 1.33 Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = "zband",style = "r")
-	#schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = 0.74 Comparat+ 2016",fluxscale = 1,em = "[OIII]",filter = "zband",style = "g")
-	#schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = 0.33 Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = "zband",style = "b")
-	#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
-	#schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = 6.155 Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = "zband",style = "y")
- 	#used LaTex above for legend
- 	#python recognizes LaTeX instead of thinking they're escape characters if I write it as a "raw" string, denoting it with an r in the beginning of the line
 
  	#CANNOT HAVE NEGATIVE REDSHIFTS - UNPHYSICAL FOR WHAT WE'RE DOING
  	
@@ -1042,51 +844,10 @@ if emline == "all":
  	#used LaTex above for legends
  	#python recognizes LaTeX instead of thinking they're escape characters if I write it as a "raw" string, denoting it with an r in the beginning of the line
 
- 	#fix with if statements
- 	#commented out bc not the way I set it up earlier
- 	#print("comovingphiOII = ",comovingphiOII)
- 	#print("comovingphiOIII = ",comovingphiOIII)
- 	#print("comovingphiHalpha = ",comovingphiHalpha)
- 	#print("comovingphiLymanalpha = ",comovingphiLymanalpha)
-
- 	#now get exp num using comovingvol for ??????????????
-
- 	#low end of FWHM
-
-	#if zOIIlow>0:
-	#	schechter_LF(z=zOIIlow,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOIIlow,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
-	
-	#if zOIIIlow>0:
-	#	schechter_LF(z=zOIIIlow,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIIIlow,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filter = filter,style = "g")
-	
-	#if zHalphalow>0:
-	#	schechter_LF(z=zHalphalow,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalphalow,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
-	
-	#if zLymanalphalow>0:
-		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
-	#	schechter_LF(z=zLymanalphalow,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalphalow,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
- 		#schechter_LF(z=zLymanalphalow,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalphalow,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
- 	
-
-	#high end of FWHM
-
-	#if zOIIhigh>0:
-	#	schechter_LF(z=zOIIhigh,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOIIhigh,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filter = filter,style = "r")
-	
-	#if zOIIIhigh>0:
-	#	schechter_LF(z=zOIIIhigh,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIIIhigh,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filter = filter,style = "g")
-	
-	#if zHalphahigh>0:
-	#	schechter_LF(z=zHalphahigh,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalphahigh,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filter = filter,style = "b")
-	
-	#if zLymanalphahigh>0:
-		#the following is also from the separate linearequation code that I tried to put in this one, but it throws back errors every time I use the "third" option, so I have to fix that later
-	#	schechter_LF(z=zLymanalphahigh,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 10**44.0057781641604,betaL = 0,phistar0 = 10**(-4.068119141604011),betaphi = 0,param = "first",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalphahigh,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
- 		#schechter_LF(z=zLymanalphahigh,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalphahigh,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filter = filter,style = "y")
- 	
 
 if emline == "allFWHM":
 
+	#changed if statements to dictionaries and deleted them
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
 	lambdahigh_dict = {"uband":408.60,"gband":567.00,"rband":706.00,"iband":833.00,"zband":938.60,"yband":1099.60} #in nm
 
@@ -1096,68 +857,6 @@ if emline == "allFWHM":
 	lambdacenter = lambdaarray[0]
 	FWHMlow = lambdaarray[1]
 	FWHMhigh = lambdaarray[2]
-
-	#once again, changed below to dictionaries above
-
-	#if filt=="uband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-	#	lambdalow = 305.30 #in nm
-	#	lambdahigh = 408.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="gband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.4
-	#	lambdalow = 386.30 #in nm
-	#	lambdahigh = 567.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="rband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.5
-	#	lambdalow = 536.90 #in nm
-	#	lambdahigh = 706.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="iband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.8
-	#	lambdalow = 675.90 #in nm
-	#	lambdahigh = 833.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="zband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-	#	lambdalow = 802.90 #in nm
-	#	lambdahigh = 938.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="yband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 24.9
-	#	lambdalow = 908.30 #in nm
-	#	lambdahigh = 1099.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
 	
 	lambda_OII = 372.7 #in nm
 	lambda_OIII = 500.7 #in nm
