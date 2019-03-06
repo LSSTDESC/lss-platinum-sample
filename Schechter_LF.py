@@ -495,6 +495,11 @@ def lumlim(z,em,filt):
 	#LSSTfilter is the transmission
 	flux_limit = (fluxdens*n_photon_1microJansky/LSSTfilter[mindiff_lambda_index])*(h_cgs*c_cgs/lambda_emissionline)
 
+	print("FLUX LIMIT IS: for z=",z)
+	print(" and em=",em)
+	print(" is:",flux_limit)
+
+
 	#THE FOLLOWING IS GOOD:
 
 	#finds the luminosity distance
@@ -508,6 +513,10 @@ def lumlim(z,em,filt):
 	print("Luminosity = 4*pi*(luminositydistance**2)*flux")
 	lumlimit = 4*numpy.pi*(lumdist_unitless**2)*flux_limit
 	print("luminosity limit for 5 sigma detection of",em,"in "+filt+" band is",lumlimit,"ergs/s")
+
+	print("LUMINOSITY LIMIT IS: for z=",z)
+	print(" and em=",em)
+	print(" is:",lumlimit)
 
 	#using return makes the main output of this function the value of lumlimit so that I can use it to calculate other things when I call this function
 	return lumlimit
@@ -722,9 +731,9 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	#first define array of 100 evenly spaced wavelengths
 
-#	FWHMlow = lambdaarray[1]
-#	FWHMhigh = lambdaarray[2]
-#	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
+	FWHMlow = lambdaarray[1]
+	FWHMhigh = lambdaarray[2]
+	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
 	#print("lambdaFWHMarray",lambdaFWHMarray)
 	#print("LOOK HERE",len(lambdaFWHMarray))
 
@@ -748,36 +757,36 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	elif z==zLymanalpha:
 		lambdaem = lambda_Lymanalpha
 
-#	zFWHMarray = numpy.zeros(100)
+	zFWHMarray = numpy.zeros(100)
 	#print("LOOK HERE",len(zFWHMarray))
 
 	#constructs z array from wavelength array within FWHM
-#	for l in range(len(lambdaFWHMarray)):
-#		zFWHMarray[l] = (lambdaFWHMarray[l]/lambdaem)-1
+	for l in range(len(lambdaFWHMarray)):
+		zFWHMarray[l] = (lambdaFWHMarray[l]/lambdaem)-1
 	#print(zFWHMarray)
 
 	#ASK IF THIS MAKES SENSE TO DO
 	#don't want negative redshifts
-#	zFWHMarray = zFWHMarray[numpy.where(zFWHMarray>=0)]
+	zFWHMarray = zFWHMarray[numpy.where(zFWHMarray>=0)]
 
 	#basically getting the thing I found below but for everything across the FWHM
 
 	#set up empty array for comoving volumes in evenly spaced wavelength intervals
 	#comovingvolarray= numpy.zeros(100) unless positive redshifts
-#	if len(zFWHMarray)!=0:
-#		comovingvolarray = numpy.zeros(len(zFWHMarray))
+	if len(zFWHMarray)!=0:
+		comovingvolarray = numpy.zeros(len(zFWHMarray))
 
 		#now find comoving volumes
 		#need to "integrate" or sum because not linear as function of redshift of lambda
 		#can just ignore everything with redshift 0 (bc cosmological volume will be 0)
-#		for r in range(len(zFWHMarray)):
-#			partr = cosmo.comoving_volume(zFWHMarray[r]) #units are in Mpc^3
+		for r in range(len(zFWHMarray)):
+			partr = cosmo.comoving_volume(zFWHMarray[r]) #units are in Mpc^3
 			#change tuple to value
-#			partr = partr.value
-#			comovingvolarray[r] = partr
+			partr = partr.value
+			comovingvolarray[r] = partr
 
-#	if len(zFWHMarray)==0:
-#		print("could not find comoving volume because not in this filter")
+	if len(zFWHMarray)==0:
+		print("could not find comoving volume because not in this filter")
 
 	#NOW JUST NEED TO INTEGRATE THE ARRAY
 	#comoving vol is a function of z, so i should integrate it wrt dz?  so i need the zFWHMarray
@@ -785,19 +794,21 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#JUST SUM COMOVINGVOLARRAY
 	#numpy.sum(numpy.diff(array))  ->  replace the next line with this (is commented out bc wrong)
 	#comovingvol = numpy.trapz(comovingvolarray,x=zFWHMarray) #integrated
-#	comovingvol = numpy.sum(numpy.diff(comovingvolarray))
-#	print("comovingvol =",comovingvol,"Mpc^3")
+	comovingvol = numpy.sum(numpy.diff(comovingvolarray))
+	print("comovingvol =",comovingvol,"Mpc^3")
+
+	print("COMOVINGVOL IS:",comovingvol)
 
 	#COMMENTED THE NEXT PART OUT, WAS INCORRECT ANYWAYS?
 	#I initially commented this out, because I did not have the correct values, and I was repurposing the code for the FWHM
 	#now I need it again to see if I am calculating the FWHM number correctly
 	#uses astropy.cosmology.Planck15 to find comoving volume in shell between redshifts at each end of the z filter
 	#note: DO NOT USE FOR FWHM CALCULATION, THIS IS ONLY FOR THE INITIAL ESTIMATE AT THE MEDIAN TRANSMISSION WAVELENGTH
-	comovingvolmin = cosmo.comoving_volume(filterendlow) #units are in Mpc^3
-	comovingvolmax = cosmo.comoving_volume(filterendhigh) #units are in Mpc^3
-	comovingvol = comovingvolmax-comovingvolmin
-	comovingvol = comovingvol.value
-	print("comovingvol =",comovingvol,"Mpc^3")
+#	comovingvolmin = cosmo.comoving_volume(filterendlow) #units are in Mpc^3
+#	comovingvolmax = cosmo.comoving_volume(filterendhigh) #units are in Mpc^3
+#	comovingvol = comovingvolmax-comovingvolmin
+#	comovingvol = comovingvol.value
+#	print("comovingvol =",comovingvol,"Mpc^3")
 
 	#THIS IS ALL I NEED:
 
@@ -809,20 +820,22 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
 	print("comovingphi =",comovingphi,"Mpc^-3")
 
+	print("COMOVINGPHI IS:",comovingphi)
+
 	#finds total number of galaxies and areal number density
 	#eventually this should be done for the part of the sky that LSST observes, not the entire sky
 	#ONCE AGAIN UNCOMMENTING LINES I COMMENTED OUT BEFORE
 	totalnumgalaxies = comovingphi*comovingvol
 
-#	totalnumgalaxiesarray = comovingphi*comovingvolarray
+	totalnumgalaxiesarray = comovingphi*comovingvolarray
 	#changed numpy.trapz to numpy.sum, which makes more sense here
-#	totalnumgalaxies = numpy.sum(totalnumgalaxiesarray)
+	totalnumgalaxies = numpy.sum(totalnumgalaxiesarray)
 
 	#the total number of galaxies here should be slightly less than the one calculated all the way at the end of the code for the FWHM
 	#however..it is much larger..
-#	print("OVER HERE LANA totalnumgalaxies = ",totalnumgalaxies)
-#	arealphi = totalnumgalaxies/(4*numpy.pi)
-#	print("arealphi =",arealphi,"steradian^-1")
+	print("OVER HERE LANA totalnumgalaxies = ",totalnumgalaxies)
+	arealphi = totalnumgalaxies/(4*numpy.pi)
+	print("arealphi =",arealphi,"steradian^-1")
 
 	show()
 
