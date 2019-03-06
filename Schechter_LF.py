@@ -189,8 +189,7 @@ def filter_int(filt):
 	lambdacenter = numpy.float(lambdacenter)
 	print("median transmission wavelength of the "+filt+" = ",lambdacenter)
 
-	#the central wavelength is actually called the median transmission wavelength of each band
-
+	#the "central" wavelength is called the median transmission wavelength of each band
 
 	#want to find the FWHM of each filter
 
@@ -291,6 +290,7 @@ def lumlim(z,em,filt):
 	#print("INFO: 26.2 is AB magnitude for 5 sigma detection limit in the z band") #this was used when I only had the z band
 	#first I calculate the flux, then convert to flux density, then find the luminosity limit for the conditions printed above
 
+	#changed if statements (now deleted) to dictionaries below
 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 	ABmag_dict = {"uband":26.1,"gband":27.4,"rband":27.5,"iband":26.8,"zband":26.1,"yband":24.9}
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
@@ -300,44 +300,6 @@ def lumlim(z,em,filt):
 	ABmag = ABmag_dict[filt]
 	lambdalow = lambdalow_dict[filt]
 	lambdahigh = lambdahigh_dict[filt]
-
-	#this is how the code previously was before I changed it to using dictionaries
-
-	#if filt=="uband":
-	#	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	#	ABmag = 26.1
-	#	lambdalow = 305.30 #in nm
-	#	lambdahigh = 408.60 #in nm
-
-	#if filt=="gband":
-	#	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	#	ABmag = 27.4
-	#	lambdalow = 386.30 #in nm
-	#	lambdahigh = 567.00 #in nm
-
-	#if filt=="rband":
-	#	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	#	ABmag = 27.5
-	#	lambdalow = 536.90 #in nm
-	#	lambdahigh = 706.00 #in nm
-
-	#if filt=="iband":
-	#	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	#	ABmag = 26.8
-	#	lambdalow = 675.90 #in nm
-	#	lambdahigh = 833.00 #in nm
-
-	#if filt=="zband":
-	#	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	#	ABmag = 26.1
-	#	lambdalow = 802.90 #in nm
-	#	lambdahigh = 938.60 #in nm
-
-	#if filt=="yband":
-	#	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	#	ABmag = 24.9
-	#	lambdalow = 908.30 #in nm
-	#	lambdahigh = 1099.60 #in nm
 
 	#might need the following here:
 
@@ -437,7 +399,7 @@ def lumlim(z,em,filt):
 	lambdaem_cgs = lambdaem_dict_cgs[em]
 	LSSTwav = LSSTwav/(10**7)  #nm to cm
 
-	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem_cgs)
+	n_photon_1microJansky_array = 10*LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem_cgs)
 	dlambda = numpy.diff(LSSTwav) #now need to shorten other array
 	n_photon_1microJansky_array = n_photon_1microJansky_array[1:]
 	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,x=dlambda)
@@ -577,10 +539,11 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	phi = phi[numpy.where(phi!=0)]
 
 	log10L = numpy.log10(L)
-	log10phi = numpy.log10(phi) #the error traces back to here
+	log10phi = numpy.log10(phi)
 
 	#the following calculates values I use in and plug into the lumlim function
 
+	#once again, dictionaries are better-formated than the previous (deleted) if statements
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
 	lambdahigh_dict = {"uband":408.60,"gband":567.00,"rband":706.00,"iband":833.00,"zband":938.60,"yband":1099.60} #in nm
 
@@ -591,68 +554,6 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	FWHMlow = lambdaarray[1]
 	FWHMhigh = lambdaarray[2]
 
-	#once again, changed below to dictionaries above
-
-	#if filt=="uband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-	#	lambdalow = 305.30 #in nm
-	#	lambdahigh = 408.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="gband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.4
-	#	lambdalow = 386.30 #in nm
-	#	lambdahigh = 567.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="rband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 27.5
-	#	lambdalow = 536.90 #in nm
-	#	lambdahigh = 706.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="iband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.8
-	#	lambdalow = 675.90 #in nm
-	#	lambdahigh = 833.00 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="zband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 26.1
-	#	lambdalow = 802.90 #in nm
-	#	lambdahigh = 938.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
-	#if filt=="yband":
-		#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-		#ABmag = 24.9
-	#	lambdalow = 908.30 #in nm
-	#	lambdahigh = 1099.60 #in nm
-	#	lambdaarray = filter_int(filt = filt)
-	#	lambdacenter = lambdaarray[0]
-	#	FWHMlow = lambdaarray[1]
-	#	FWHMhigh = lambdaarray[2]
-
 	#uses previously defined function to get median transmission wavelenth
 	lambdaarray = filter_int(filt = filt)
 	lambdacenter = lambdaarray[0]
@@ -660,9 +561,6 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	filterendlow = (lambdalow/lambdaemitted)-1
 	filterendhigh = (lambdahigh/lambdaemitted)-1
 	filtercenter = (lambdacenter/lambdaemitted)-1
-	#I don't think I used the following at all
-	#deltafilter = filterendhigh-filterendlow
-	#print("for",em,"deltafilter =",deltafilter)
 
 	#finds luminosity limit in center of z band
 	center = lumlim(z = filtercenter,em = em,filt = filt)
@@ -853,7 +751,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 #THIS NEXT PART CONTAINS IF STATEMENTS FOR EACH EMLINE
 
 
-#functionality of code has changed - commenting these out, bc not using them anymore - also editing part for median transmission wavelength above to use FWHM
+#functionality of code has changed - previously had separate statements (soon..hesitantly deleted) for each emission line as I was beginning, but now I combined them all into allFWHM
 
 
 #if emline == "[OII]":
