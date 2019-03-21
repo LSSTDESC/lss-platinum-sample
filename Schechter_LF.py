@@ -399,10 +399,12 @@ def lumlim(z,em,filt):
 	lambdaem_cgs = lambdaem_dict_cgs[em]
 	LSSTwav = LSSTwav/(10**7)  #nm to cm
 
-	n_photon_1microJansky_array = LSSTfilter*(10^(-29))/(h_cgs*c_cgs/lambdaem_cgs)
-	dlambda = numpy.diff(LSSTwav) #now need to shorten other array
-	n_photon_1microJansky_array = n_photon_1microJansky_array[1:]
-	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,x=dlambda)
+	print("LSSTfilter: (this may be the issue?",LSSTfilter)
+	n_photon_1microJansky_array = LSSTfilter*(10**(-29))/(h_cgs*lambdaem_cgs) #c_cgs/
+	print("n_photon_1microJansky_array",n_photon_1microJansky_array)
+	dlambda = abs(LSSTwav[1]-LSSTwav[0])
+	print("dlambda",dlambda)
+	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,dx=dlambda)
 	print("n_photon_1microJansky = ",n_photon_1microJansky)
 
 
@@ -458,12 +460,19 @@ def lumlim(z,em,filt):
 	print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
 
 	#LSSTfilter is the transmission
-	flux_limit = (fluxdens*n_photon_1microJansky/LSSTfilter[mindiff_lambda_index])*(h_cgs*c_cgs/lambda_emissionline)
+	print("f_n_obj / [1_microJansky] = n_photon_object / n_photon_1_microJansky")
+	flux_limit = (fluxdens*n_photon_1microJansky/(LSSTfilter[mindiff_lambda_index]*(10**(-29))))*(h_cgs*c_cgs/lambda_emissionline)
 
 	print("FLUX LIMIT IS: for z=",z)
 	print(" and em=",em)
 	print(" is:",flux_limit)
 
+
+	print("ADAM'S TEST:")
+	print("hc/lambda should be ~1.6e-11 ergs:",h_cgs*c_cgs/lambdaem_cgs)
+	print("T_EL should be of order 0.2:",LSSTfilter[mindiff_lambda_index])
+	print("since 1 microJansky is 10^-29, limiting flux density seems good at 1.3*10^-30:",fluxdens)
+	print("n_photon_1microJansky is too small?:",n_photon_1microJansky)
 
 	#THE FOLLOWING IS GOOD:
 
@@ -573,7 +582,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	yarray = numpy.arange(-10,5,1)
 
 	figure(1)
-	plot(log10L,log10phi,style,label = zpaper)
+	plot(log10L,log10phi,style,alpha=0.75,label = zpaper)
 	plot(lumarray,yarray,style+"--")
 	xlim(40,45)
 	ylim(-7,0)
@@ -601,7 +610,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#log10shifted_Lmin = numpy.log10(shifted_Lmin)
 
 	figure(2)
-	plot(log10Lmin,num_dens,style,label = zpaper)
+	plot(log10Lmin,num_dens,style,alpha=0.75,label = zpaper)
 	plot(lumarray,yarray,style+"--")
 	legend(loc = "upper right")
 	xlim(40,44)
@@ -977,18 +986,12 @@ if emline == "allFWHM":
 		zLymanalpha = 0
 
 
-	#print("comovingphiarrayOII:",comovingphiarrayOII)
-	#print("zFWHMarrayOII:",zFWHMarrayOII)
-	#print("comovingphiarrayOIII:",comovingphiarrayOIII)
-	#print("zFWHMarrayOIII:",zFWHMarrayOIII)
-	#print("comovingphiarrayHalpha:",comovingphiarrayHalpha)
-	#print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
-	#print("comovingphiarrayLymanalpha:",comovingphiarrayLymanalpha)
-	#print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
-
-
 	print("the total expected number of galaxies in the LSST area (18000/42000) is:")
-	print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
-	print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
-	print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
-	print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+	if len(zFWHMarrayOII)>0:
+		print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
+	if len(zFWHMarrayOIII)>0:
+		print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
+	if len(zFWHMarrayHalpha)>0:
+		print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
+	if len(zFWHMarrayLymanalpha)>0:
+		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
