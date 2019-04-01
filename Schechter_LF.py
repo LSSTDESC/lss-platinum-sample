@@ -582,9 +582,9 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	yarray = numpy.arange(-10,5,1)
 
 	figure(1)
-	plot(log10L,log10phi,style,alpha=0.75,label = zpaper)
+	plot(log10L,log10phi,style,alpha=0.10)#,label = zpaper)
 	plot(lumarray,yarray,style+"--")
-	xlim(40,45)
+	xlim(39,46)
 	ylim(-7,0)
 	legend(loc = "upper right")
 	#LaTeX is used with $ signs in the titles below
@@ -610,11 +610,11 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#log10shifted_Lmin = numpy.log10(shifted_Lmin)
 
 	figure(2)
-	plot(log10Lmin,num_dens,style,alpha=0.75,label = zpaper)
+	plot(log10Lmin,num_dens,style,alpha=0.10)#,label = zpaper)
 	plot(lumarray,yarray,style+"--")
 	legend(loc = "upper right")
-	xlim(40,44)
-	ylim(0,0.03)
+	xlim(39,46)
+	ylim(0,0.015)
 	#LaTeX is used with $ signs in the titles below
 	xlabel("$\log_{10}(L_{min} [ergs/s])$")
 	ylabel("$\log_{10}(\phi [\t{Mpc}^{-3}])$")
@@ -817,6 +817,24 @@ if emline == "allFWHM":
 		zFWHMarrayOII = zFWHMarrayOII[numpy.where(comovingphiarrayOII>0)]
 		comovingphiarrayOII = comovingphiarrayOII[numpy.where(comovingphiarrayOII>0)]
 
+
+		#adds legend
+
+		firstz = zFWHMarrayOII[0]
+		lastz = zFWHMarrayOII[-1]
+		zpaper = "[OII] z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Comparat+ 2016"
+
+		figure(1)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
+
 		print("OII:")
 
 		
@@ -858,6 +876,24 @@ if emline == "allFWHM":
 		#shortens to use only positive values
 		zFWHMarrayOIII = zFWHMarrayOIII[numpy.where(comovingphiarrayOIII>0)]
 		comovingphiarrayOIII = comovingphiarrayOIII[numpy.where(comovingphiarrayOIII>0)]
+
+
+		#adds legend
+
+		firstz = zFWHMarrayOIII[0]
+		lastz = zFWHMarrayOIII[-1]
+		zpaper = "[OIII] z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Comparat+ 2016"
+
+		figure(1)
+		plot(0,0,"g",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"g",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
 
 		print("OIII:")
 
@@ -901,6 +937,24 @@ if emline == "allFWHM":
 		zFWHMarrayHalpha = zFWHMarrayHalpha[numpy.where(comovingphiarrayHalpha>0)]
 		comovingphiarrayHalpha = comovingphiarrayHalpha[numpy.where(comovingphiarrayHalpha>0)]
 
+
+		#adds legend
+
+		firstz = zFWHMarrayHalpha[0]
+		lastz = zFWHMarrayHalpha[-1]
+		zpaper = r"H$\alpha$ z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Sobral+ 2013"
+
+		figure(1)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
+
 		print("Halpha:")
 
 		
@@ -937,11 +991,31 @@ if emline == "allFWHM":
 
 		for l in range(len(zFWHMarrayLymanalpha)):
 			zLymanalpha = zFWHMarrayLymanalpha[l]
+			#OKAY THIS NUMBER IS small?
 			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
+			
 
 		#shortens to use only positive values
 		zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
 		comovingphiarrayLymanalpha = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+
+
+		#adds legend
+
+		firstz = zFWHMarrayLymanalpha[0]
+		lastz = zFWHMarrayLymanalpha[-1]
+		zpaper = r"Ly$\alpha$ z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Ciardullo+ 2012"
+
+		figure(1)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
 
 		print("Lymanalpha:")
 
@@ -978,6 +1052,7 @@ if emline == "allFWHM":
 		#LSST area
 		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000./42000. #rename as sky fraction bc *not* total anymore
 
+
 		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
@@ -995,3 +1070,7 @@ if emline == "allFWHM":
 		print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
 	if len(zFWHMarrayLymanalpha)>0:
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+
+
+	print("HERE:",FWHMlow)
+	print("HERE:",FWHMhigh)
