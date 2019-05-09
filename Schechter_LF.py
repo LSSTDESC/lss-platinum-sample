@@ -510,7 +510,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	L = (10**log10Lstararray)
 
 	#I have two different parametrizations for Lstar and phistar; the first one is from Comparat et al 2016, and the second one is from Sobral et al 2015
-	#I added a third one when I linearly parametrized Lymanalpha from Ciardullo et al 2012, but I am still trying to get it to work
+	#I added a third one when I linearly parametrized Lymanalpha from Ciardullo et al 2012
 
 	if param == "first":
 
@@ -566,24 +566,48 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	FWHMlow = lambdaarray[1]
 	FWHMhigh = lambdaarray[2]
 
+	print("wavelengths in nm")
+	print("THIS IS A TEST, lambdacenter",lambdacenter)
+	print("THIS IS A TEST, lambdalow",lambdalow)
+	print("THIS IS A TEST, lambdahigh",lambdahigh)
+	print("THIS IS A TEST, FWHMlow",FWHMlow)
+	print("THIS IS A TEST, FWHMhigh",FWHMhigh)
+
 	#uses previously defined function to get median transmission wavelenth
 	lambdaarray = filter_int(filt = filt)
 	lambdacenter = lambdaarray[0]
 	#lambdaemitted = #will be one of the three emission lines #uses nm #these are redshifts
-	filterendlow = (lambdalow/lambdaemitted)-1
-	filterendhigh = (lambdahigh/lambdaemitted)-1
+	#filterendlow = (lambdalow/lambdaemitted)-1  #0
+	#filterendhigh = (lambdahigh/lambdaemitted)-1  #0
 	filtercenter = (lambdacenter/lambdaemitted)-1
+	FWHMendlow = (FWHMlow/lambdaemitted)-1
+	FWHMendhigh = (FWHMhigh/lambdaemitted)-1
 
 	#finds luminosity limit in center of z band
 	center = lumlim(z = filtercenter,em = em,filt = filt)
 
+	#finds luminosity limits at endpoints of FWHM
+	FWHMlowpoint = lumlim(z = FWHMendlow,em = em,filt = filt)
+	FWHMhighpoint = lumlim(z = FWHMendhigh,em = em,filt = filt)
+
+	print("luminosity limits")
+	print("OVER HEEEEEEEERE: center",center)
+	print("OVER HEEEEEEEERE: FWHMlowpoint",FWHMlowpoint)
+	print("OVER HEEEEEEEERE: FWHMhighpoint",FWHMhighpoint)
+
 	#sets up an array that I use to plot
-	lumarray = numpy.full(15,numpy.log10(center))
-	yarray = numpy.arange(-10,5,1)
+	lumarray = numpy.full(15,numpy.log10(center)) #this is an array so that I can plot a line - can use for all lumlim dashed lines
+	yarray = numpy.arange(-10,5,1) #used to plot a line - can use for all lumlim dashed lines
+
+	#should replicate this for the FWHM endpoints
+	lumarraylow = numpy.full(15,numpy.log10(FWHMlowpoint))
+	lumarrayhigh = numpy.full(15,numpy.log10(FWHMhighpoint))
 
 	figure(1)
 	plot(log10L,log10phi,style,alpha=0.10)#,label = zpaper)
 	plot(lumarray,yarray,style+"--")
+	plot(lumarraylow,yarray,style+"--")
+	plot(lumarrayhigh,yarray,style+"--")
 	xlim(39,46)
 	ylim(-7,0)
 	legend(loc = "upper right")
@@ -612,6 +636,8 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	figure(2)
 	plot(log10Lmin,num_dens,style,alpha=0.10)#,label = zpaper)
 	plot(lumarray,yarray,style+"--")
+	plot(lumarraylow,yarray,style+"--")
+	plot(lumarrayhigh,yarray,style+"--")
 	legend(loc = "upper right")
 	xlim(39,46)
 	ylim(0,0.015)
@@ -1072,5 +1098,332 @@ if emline == "allFWHM":
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
 
-	print("HERE:",FWHMlow)
-	print("HERE:",FWHMhigh)
+if emline == "allends":
+
+	print("NOTE: PERHAPS TERRIBLY, I HAVE REDEFINED THE FIRST VALUES LABELED FWHM TO ACTUALLY THE FILTER ENDPOINTS..WHICH I NEED TO FIX LATER.  I JUST WANT TO CHECK STUFF")
+
+	#changed if statements to dictionaries and deleted them
+	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
+	lambdahigh_dict = {"uband":408.60,"gband":567.00,"rband":706.00,"iband":833.00,"zband":938.60,"yband":1099.60} #in nm
+
+	lambdalow = lambdalow_dict[filt]
+	lambdahigh = lambdahigh_dict[filt]
+	lambdaarray = filter_int(filt = filt)
+	lambdacenter = lambdaarray[0]
+	FWHMlow = lambdaarray[1]  #not here
+	FWHMhigh = lambdaarray[2]  #not here
+	FWHMlow = 1051.775
+	FWHMhigh = 1099.6
+	
+	lambda_OII = 372.7 #in nm
+	lambda_OIII = 500.7 #in nm
+	lambda_Halpha = 656.3 #in nm
+	lambda_Lymanalpha = 121.6 #in nm
+
+	#finds redshift of emission lines
+
+	#first define array of 100 evenly spaced wavelengths
+	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
+
+	#use these to get an array of redshifts
+	zFWHMarrayOII = numpy.zeros(100)
+	zFWHMarrayOIII = numpy.zeros(100)
+	zFWHMarrayHalpha = numpy.zeros(100)
+	zFWHMarrayLymanalpha = numpy.zeros(100)
+
+	#constructs z array from wavelength array within FWHM
+	#do this for each emline
+	for l in range(len(lambdaFWHMarray)):
+		zFWHMarrayOII[l] = (lambdaFWHMarray[l]/lambda_OII)-1
+		zFWHMarrayOIII[l] = (lambdaFWHMarray[l]/lambda_OIII)-1
+		zFWHMarrayHalpha[l] = (lambdaFWHMarray[l]/lambda_Halpha)-1
+		zFWHMarrayLymanalpha[l] = (lambdaFWHMarray[l]/lambda_Lymanalpha)-1
+
+	#don't want negative redshifts
+	zFWHMarrayOII = zFWHMarrayOII[numpy.where(zFWHMarrayOII>0)]
+	zFWHMarrayOIII = zFWHMarrayOIII[numpy.where(zFWHMarrayOIII>0)]
+	zFWHMarrayHalpha = zFWHMarrayHalpha[numpy.where(zFWHMarrayHalpha>0)]
+	zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(zFWHMarrayLymanalpha>0)]
+	#print("zFWHMarray",zFWHMarray)
+
+ 	#NEED TO HAVE AN ARRAY OF Z VALUES TO INTEGRATE PHI
+ 	#set up empty arrays to print out and eventually integrate comovingphi and arealphi
+	comovingphiarrayOII = numpy.zeros(100)
+	comovingphiarrayOIII = numpy.zeros(100)
+	comovingphiarrayHalpha = numpy.zeros(100)
+	comovingphiarrayLymanalpha = numpy.zeros(100)
+
+
+	#NEED TO CHANGE ALL THE FOR LOOPS TO JUST ARRAY CALCULTIONS - FASTER
+
+	if len(zFWHMarrayOII)>0:
+
+		for l in range(len(zFWHMarrayOII)):
+			zOII = zFWHMarrayOII[l]
+			comovingphiarrayOII[l] = schechter_LF(z=zOII,lambdaemitted = lambda_OII,alpha = -1.46,Lstar0 = 10**41.1,betaL = 2.33,phistar0 = 10**(-2.4),betaphi = -0.73,param = "first",zpaper = "[OII] z = "+str(round(zOII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OII]",filt = filt,style = "r")
+		
+		#shortens to use only positive values
+		zFWHMarrayOII = zFWHMarrayOII[numpy.where(comovingphiarrayOII>0)]
+		comovingphiarrayOII = comovingphiarrayOII[numpy.where(comovingphiarrayOII>0)]
+
+
+		#adds legend
+
+		firstz = zFWHMarrayOII[0]
+		lastz = zFWHMarrayOII[-1]
+		zpaper = "[OII] z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Comparat+ 2016"
+
+		figure(1)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
+
+		print("OII:")
+
+		
+		#first convert zFWHMarrayHalpha to a comoving volume array
+		comovingvolarrayOII = numpy.zeros(len(zFWHMarrayOII))
+
+		#then multiply phi by the comoving volume array to get total number of galaxies expected
+		#the following finds the comoving volume array to do so
+		for r in range(len(zFWHMarrayOII)):
+			temparray = cosmo.comoving_volume(zFWHMarrayOII[r]) #units are in Mpc^3
+			#change tuple to value
+			temparray = temparray.value
+			comovingvolarrayOII[r] = temparray #this is in Mpc^3
+
+		#THIS NEEDS TO BE FIXED
+		#1 steradian = (180/pi)^2 degrees
+
+
+		#this is ending up as a weird number
+		#integrates comovingphi over whole sky
+		total_number_FWHM_OII = numpy.trapz(comovingphiarrayOII,x=comovingvolarrayOII)
+		print("total_number_FWHM_OII = ",total_number_FWHM_OII)
+		#LSST area
+		total_number_FWHM_LSSTOII = total_number_FWHM_OII*18000./42000.		
+
+		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
+
+	else:
+		zOII = 0
+
+
+	if len(zFWHMarrayOIII)>0:
+
+		for l in range(len(zFWHMarrayOIII)):
+			zOIII = zFWHMarrayOIII[l]
+			comovingphiarrayOIII[l] = schechter_LF(z=zOIII,lambdaemitted = lambda_OIII, alpha = -1.83,Lstar0 = 10**41.42,betaL = 3.91,phistar0 = 10**(-3.41),betaphi = -0.76,param = "first",zpaper = "[OIII] z = "+str(round(zOIII,2))+" Comparat+ 2016",fluxscale = 1,em = "[OIII]",filt = filt,style = "g")
+		
+		#shortens to use only positive values
+		zFWHMarrayOIII = zFWHMarrayOIII[numpy.where(comovingphiarrayOIII>0)]
+		comovingphiarrayOIII = comovingphiarrayOIII[numpy.where(comovingphiarrayOIII>0)]
+
+
+		#adds legend
+
+		firstz = zFWHMarrayOIII[0]
+		lastz = zFWHMarrayOIII[-1]
+		zpaper = "[OIII] z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Comparat+ 2016"
+
+		figure(1)
+		plot(0,0,"g",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"g",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
+
+		print("OIII:")
+
+		
+		#first convert zFWHMarrayOIII to a comoving volume array
+		comovingvolarrayOIII = numpy.zeros(len(zFWHMarrayOIII))
+
+		#then multiply phi by the comoving volume array to get total number of galaxies expected
+		#the following finds the comoving volume array to do so
+		for r in range(len(zFWHMarrayOIII)):
+			temparray = cosmo.comoving_volume(zFWHMarrayOIII[r]) #units are in Mpc^3
+			#change tuple to value
+			temparray = temparray.value
+			comovingvolarrayOIII[r] = temparray #this is in Mpc^3
+
+		#THIS NEEDS TO BE FIXED
+		#1 steradian = (180/pi)^2 degrees
+
+
+		#this is ending up as a weird number
+		#integrates comovingphi over whole sky
+		total_number_FWHM_OIII = numpy.trapz(comovingphiarrayOIII,x=comovingvolarrayOIII)
+		print("total_number_FWHM_OIII = ",total_number_FWHM_OIII)
+		#LSST area
+		total_number_FWHM_LSSTOIII = total_number_FWHM_OIII*18000./42000.		
+
+		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
+
+	else:
+		zOIII = 0
+
+
+	if len(zFWHMarrayHalpha)>0:
+
+		for l in range(len(zFWHMarrayHalpha)):
+			zHalpha = zFWHMarrayHalpha[l]
+			comovingphiarrayHalpha[l] = schechter_LF(z=zHalpha,lambdaemitted = lambda_Halpha,alpha = -1.6,Lstar0 = 41.87,betaL = 0,phistar0 = -3.18,betaphi = 0,param = "second",zpaper = r"H$\alpha$ z = "+str(round(zHalpha,2))+" Sobral+ 2013",fluxscale = 1, em = "Halpha",filt = filt,style = "b")
+		
+		#shortens to use only positive values
+		zFWHMarrayHalpha = zFWHMarrayHalpha[numpy.where(comovingphiarrayHalpha>0)]
+		comovingphiarrayHalpha = comovingphiarrayHalpha[numpy.where(comovingphiarrayHalpha>0)]
+
+
+		#adds legend
+
+		firstz = zFWHMarrayHalpha[0]
+		lastz = zFWHMarrayHalpha[-1]
+		zpaper = r"H$\alpha$ z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Sobral+ 2013"
+
+		figure(1)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
+
+		print("Halpha:")
+
+		
+		#first convert zFWHMarrayHalpha to a comoving volume array
+		comovingvolarrayHalpha = numpy.zeros(len(zFWHMarrayHalpha))
+
+		#then multiply phi by the comoving volume array to get total number of galaxies expected
+		#the following finds the comoving volume array to do so
+		for r in range(len(zFWHMarrayHalpha)):
+			temparray = cosmo.comoving_volume(zFWHMarrayHalpha[r]) #units are in Mpc^3
+			#change tuple to value
+			temparray = temparray.value
+			comovingvolarrayHalpha[r] = temparray #this is in Mpc^3
+
+		#THIS NEEDS TO BE FIXED
+		#1 steradian = (180/pi)^2 degrees
+
+
+		#this is ending up as a weird number
+		#integrates comovingphi over whole sky
+		total_number_FWHM_Halpha = numpy.trapz(comovingphiarrayHalpha,x=comovingvolarrayHalpha)
+		print("total_number_FWHM_Halpha = ",total_number_FWHM_Halpha)
+		#LSST area
+		total_number_FWHM_LSSTHalpha = total_number_FWHM_Halpha*18000./42000.
+
+		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
+
+	else:
+		zHalpha = 0
+
+
+	if len(zFWHMarrayLymanalpha)>0:
+
+		for l in range(len(zFWHMarrayLymanalpha)):
+			zLymanalpha = zFWHMarrayLymanalpha[l]
+			#OKAY THIS NUMBER IS small?
+			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
+			
+
+		#shortens to use only positive values
+		zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+		comovingphiarrayLymanalpha = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+
+
+		#adds legend
+
+		firstz = zFWHMarrayLymanalpha[0]
+		lastz = zFWHMarrayLymanalpha[-1]
+		zpaper = r"Ly$\alpha$ z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Ciardullo+ 2012"
+
+		figure(1)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		figure(2)
+		plot(0,0,"y",label=zpaper)
+		legend(loc="upper right")
+
+		show()
+
+
+		print("Lymanalpha:")
+
+		#I need the total number of galaxies WITHIN the FWHM
+		#1 - integrate comovingphi using trapz and the comoving volume - will get total comoving number
+		#2 - get LSST areal/sky density from this - multiply by 18000 square degrees to get final answer
+		#or skip areal number density and just multiply the result from the comovingphi integration by 18000/42000 to get the LSST area
+
+		#first convert zFWHMarrayLymanalpha to a comoving volume array
+		comovingvolarrayLymanalpha = numpy.zeros(len(zFWHMarrayLymanalpha))
+
+		#then multiply phi by the comoving volume array to get total number of galaxies expected
+		#the following finds the comoving volume array to do so
+		for r in range(len(zFWHMarrayLymanalpha)):
+			temparray = cosmo.comoving_volume(zFWHMarrayLymanalpha[r]) #units are in Mpc^3
+			#change tuple to value
+			temparray = temparray.value
+			comovingvolarrayLymanalpha[r] = temparray #this is in Mpc^3
+
+
+		#LSST area of the sky is 18000/42000 of the whole sky
+
+		#this is ending up as a weird number
+
+
+		print("comovingphiarrayLymanalpha = ",comovingphiarrayLymanalpha)
+		print("comovingvolarrayLymanalpha = ",comovingvolarrayLymanalpha)
+		print("zFWHMarrayLymanalpha = ",zFWHMarrayLymanalpha)
+
+
+		#integrates comovingphi over whole sky
+		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
+		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
+		#LSST area
+		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000./42000. #rename as sky fraction bc *not* total anymore
+
+
+		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+
+
+	else:
+		zLymanalpha = 0
+
+
+	print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+	if len(zFWHMarrayOII)>0:
+		print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
+	if len(zFWHMarrayOIII)>0:
+		print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
+	if len(zFWHMarrayHalpha)>0:
+		print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
+	if len(zFWHMarrayLymanalpha)>0:
+		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+
+
+print("These are the endpoints, labeled incorrectly:")
+print("FWHMlow = ",FWHMlow)
+print("FWHMhigh = ",FWHMhigh)
+
+
+show()
