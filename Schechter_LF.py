@@ -314,8 +314,7 @@ def lumlim(z,em,filt):
 		#read in each data file
 		#print("u_filter has wavelengths 305.30 - 408.60 nm")
 		#this is in two columns; the left is wavelength in nm, the right is throughput
-		u_filter = loadtxt('ufilteredit.csv')
-		#print(u_filter)
+		u_filter = loadtxt('ufilteredit.csv')		#print(u_filter)
 		#I shorten this to only the second column
 		LSST_filter = u_filter
 		LSSTfilter = u_filter[:,1] #transmission
@@ -725,6 +724,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#print(phi)
 	#print(len(phiflip),len(log10Lstararray_nonzero))
 	#always pay attention to the version of the LF that is being used
+	#NOTE TO FIX? : phiflip is backwards, but the L array is not
 	phiflipint = scipy.integrate.cumtrapz(phiflip,x=log10Lstararray_nonzero)
 	num_dens = phiflipint[::-1]
 
@@ -1329,42 +1329,42 @@ if emline == "allends":  #WHAT IS THE POINT OF THIS?  is it the same as allFWHM?
 
 	#testing individual parts of the LFs
 
-	#zFWHMarrayOII = numpy.zeros(4) 
-	#zFWHMarrayOIII = numpy.zeros(4)
-	#zFWHMarrayHalpha = numpy.zeros(4)
-	#zFWHMarrayLymanalpha = numpy.zeros(4)
+	# zFWHMarrayOII = numpy.zeros(2) 
+	# zFWHMarrayOIII = numpy.zeros(2)
+	# zFWHMarrayHalpha = numpy.zeros(2)
+	# zFWHMarrayLymanalpha = numpy.zeros(2)
 
 
-	#zFWHMarrayOII[0] = (318.2125/lambda_OII)-1
-	#zFWHMarrayOII[1] = (344.0375/lambda_OII)-1
-	#zFWHMarrayOII[2] = (369.8625/lambda_OII)-1
-	#zFWHMarrayOII[3] = (395.6875/lambda_OII)-1
+	# zFWHMarrayOII[0] = 0.5#(318.2125/lambda_OII)-1
+	# zFWHMarrayOII[1] = 1#(344.0375/lambda_OII)-1
+	# # #zFWHMarrayOII[2] = (369.8625/lambda_OII)-1
+	# # #zFWHMarrayOII[3] = (395.6875/lambda_OII)-1
 
-	#zFWHMarrayOIII[0] = (318.2125/lambda_OIII)-1
-	#zFWHMarrayOIII[1] = (344.0375/lambda_OIII)-1
-	#zFWHMarrayOIII[2] = (369.8625/lambda_OIII)-1
-	#zFWHMarrayOIII[3] = (395.6875/lambda_OIII)-1
+	# zFWHMarrayOIII[0] = 0.1#(318.2125/lambda_OIII)-1
+	# zFWHMarrayOIII[1] = 1#(344.0375/lambda_OIII)-1
+	# # #zFWHMarrayOIII[2] = (369.8625/lambda_OIII)-1
+	# # #zFWHMarrayOIII[3] = (395.6875/lambda_OIII)-1
 
-	#zFWHMarrayHalpha[0] = (318.2125/lambda_Halpha)-1
-	#zFWHMarrayHalpha[1] = (344.0375/lambda_Halpha)-1
-	#zFWHMarrayHalpha[2] = (369.8625/lambda_Halpha)-1
-	#zFWHMarrayHalpha[3] = (395.6875/lambda_Halpha)-1
+	# zFWHMarrayHalpha[0] = 0.1#(318.2125/lambda_Halpha)-1
+	# zFWHMarrayHalpha[1] = 1#(344.0375/lambda_Halpha)-1
+	# # #zFWHMarrayHalpha[2] = (369.8625/lambda_Halpha)-1
+	# # #zFWHMarrayHalpha[3] = (395.6875/lambda_Halpha)-1
 
-	#zFWHMarrayLymanalpha[0] = (318.2125/lambda_Lymanalpha)-1
-	#zFWHMarrayLymanalpha[1] = (344.0375/lambda_Lymanalpha)-1
-	#zFWHMarrayLymanalpha[2] = (369.8625/lambda_Lymanalpha)-1
-	#zFWHMarrayLymanalpha[3] = (395.6875/lambda_Lymanalpha)-1
+	# zFWHMarrayLymanalpha[0] = 0.1#(318.2125/lambda_Lymanalpha)-1
+	# zFWHMarrayLymanalpha[1] = 1#(344.0375/lambda_Lymanalpha)-1
+	# # #zFWHMarrayLymanalpha[2] = (369.8625/lambda_Lymanalpha)-1
+	# # #zFWHMarrayLymanalpha[3] = (395.6875/lambda_Lymanalpha)-1
 
-	#print("zFWHMarrayOII:",zFWHMarrayOII)
-	#print("zFWHMarrayOIII:",zFWHMarrayOIII)
-	#print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
-	#print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
+	# # #print("zFWHMarrayOII:",zFWHMarrayOII)
+	# # #print("zFWHMarrayOIII:",zFWHMarrayOIII)
+	# # #print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
+	# # #print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
 
-	#don't want negative redshifts
-	#zFWHMarrayOII = zFWHMarrayOII[numpy.where(zFWHMarrayOII>0)]
-	#zFWHMarrayOIII = zFWHMarrayOIII[numpy.where(zFWHMarrayOIII>0)]
-	#zFWHMarrayHalpha = zFWHMarrayHalpha[numpy.where(zFWHMarrayHalpha>0)]
-	#zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(zFWHMarrayLymanalpha>0)]
+	# #don't want negative redshifts
+	# zFWHMarrayOII = zFWHMarrayOII[numpy.where(zFWHMarrayOII>0)]
+	# zFWHMarrayOIII = zFWHMarrayOIII[numpy.where(zFWHMarrayOIII>0)]
+	# zFWHMarrayHalpha = zFWHMarrayHalpha[numpy.where(zFWHMarrayHalpha>0)]
+	# zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(zFWHMarrayLymanalpha>0)]
 
 	#print("zFWHMarrayOII:",zFWHMarrayOII)
 	#print("zFWHMarrayOIII:",zFWHMarrayOIII)
@@ -1397,10 +1397,10 @@ if emline == "allends":  #WHAT IS THE POINT OF THIS?  is it the same as allFWHM?
 	#zFWHMarrayLymanalpha[4] = 7.27
 
 
-	#comovingphiarrayOII = numpy.zeros(4)
-	#comovingphiarrayOIII = numpy.zeros(4)
-	#comovingphiarrayHalpha = numpy.zeros(4)
-	#comovingphiarrayLymanalpha = numpy.zeros(4)
+	# comovingphiarrayOII = numpy.zeros(2)
+	# comovingphiarrayOIII = numpy.zeros(2)
+	# comovingphiarrayHalpha = numpy.zeros(2)
+	# comovingphiarrayLymanalpha = numpy.zeros(2)
 
 
 	#NEED TO CHANGE ALL THE FOR LOOPS TO JUST ARRAY CALCULTIONS - FASTER
