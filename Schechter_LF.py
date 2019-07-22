@@ -35,6 +35,8 @@ print("filter = ", filt)
 
 def lineqLya(z):
 
+	#print("lineqLya has been called")
+
 	#this is used for the Lymanalpha line
 	#finds linear equation from two points in Ciardullo et al. 2012 paper and interpolates/extraoplates to find Lstar and phistar for different z values
 
@@ -62,8 +64,8 @@ def lineqLya(z):
 	#print("Lstar1, Lstar 2 = ",Lstartest1,Lstartest2)
 	#print("phistar1, phistar2 = ",phistartest1,phistartest2)
 
-	print("log10Lstar for Lymanalpha: log10Lstar = z*",mlog10Lstar," + ",blog10Lstar)
-	print("log10phistar for Lymanalpha: log10phistar = z*",mlog10phistar," + ",blog10phistar)
+	#print("log10Lstar for Lymanalpha: log10Lstar = z*",mlog10Lstar," + ",blog10Lstar)
+	#print("log10phistar for Lymanalpha: log10phistar = z*",mlog10phistar," + ",blog10phistar)
 
 	log10Lstar = mlog10Lstar*z + blog10Lstar
 	log10phistar = mlog10phistar*z + blog10phistar
@@ -71,8 +73,8 @@ def lineqLya(z):
 	LstarLya = 10**log10Lstar
 	phistarLya = 10**log10phistar
 
-	print("LstarLya =",LstarLya)
-	print("phistarLya =",phistarLya)
+	#print("LstarLya =",LstarLya)
+	#print("phistarLya =",phistarLya)
 
 	answers = [LstarLya,phistarLya]
 
@@ -81,23 +83,25 @@ def lineqLya(z):
 
 def filter_int(filt):
 
+	#print("filter_int has been called")
+
 	if filt=="uband":
 
 		#read in each data file
-		print("u_filter has wavelengths 305.30 - 408.60 nm")
+		#print("u_filter has wavelengths 305.30 - 408.60 nm")
 		#this is in two columns; the left is wavelength, the right is throughput
 		u_filter = loadtxt('ufilteredit.csv')
-		print(u_filter)
+		#print(u_filter)
 		#I shorten this to only the second column
 		LSST_filter = u_filter
 		LSSTfilter = u_filter[:,1]
 
 	if filt=="gband":
 		#read in each data file
-		print("g_filter has wavelengths 386.30 - 567.00 nm")
+		#print("g_filter has wavelengths 386.30 - 567.00 nm")
 		#this is in two columns; the left is wavelength, the right is throughput
 		g_filter = loadtxt('gfilteredit.csv')
-		print(g_filter)
+		#print(g_filter)
 		#I shorten this to only the second column
 		LSST_filter = g_filter
 		LSSTfilter = g_filter[:,1]
@@ -105,10 +109,10 @@ def filter_int(filt):
 	if filt=="rband":
 
 		#read in each data file
-		print("r_filter has wavelengths 536.90 - 706.00 nm")
+		#print("r_filter has wavelengths 536.90 - 706.00 nm")
 		#this is in two columns; the left is wavelength, the right is throughput 
 		r_filter = loadtxt('rfilteredit.csv')
-		print(r_filter)
+		#print(r_filter)
 		#I shorten this to only the second column
 		LSST_filter = r_filter
 		LSSTfilter = r_filter[:,1]
@@ -116,10 +120,10 @@ def filter_int(filt):
 	if filt=="iband":
 
 		#read in each data file
-		print("i_filter has wavelengths 675.90 - 833.00 nm")
+		#print("i_filter has wavelengths 675.90 - 833.00 nm")
 		#this is in two columns; the left is wavelength, the right is throughput
 		i_filter = loadtxt('ifilteredit.csv')
-		print(i_filter)
+		#print(i_filter)
 		#I shorten this to only the second column
 		LSST_filter = i_filter
 		LSSTfilter = i_filter[:,1]
@@ -127,10 +131,10 @@ def filter_int(filt):
 	if filt=="zband":
 
 		#read in each data file 
-		print("z_filter has wavelengths 802.90 - 938.60 nm")
+		#print("z_filter has wavelengths 802.90 - 938.60 nm")
 		#this is in two columns; the left is wavelength, the right is throughput
 		z_filter = loadtxt('zfilteredit.csv')
-		print(z_filter)
+		#print(z_filter)
 		#I shorten this to only the second column
 		LSST_filter = z_filter
 		LSSTfilter = z_filter[:,1]
@@ -138,10 +142,10 @@ def filter_int(filt):
 	if filt=="yband":
 
 		#read in each data file
-		print("y_filter has wavelengths 908.30 - 1099.60 nm")
+		#print("y_filter has wavelengths 908.30 - 1099.60 nm")
 		#this is in two columns; the left is wavelength, the right is throughput
 		y_filter = loadtxt('yfilteredit.csv')
-		print(y_filter)
+		#print(y_filter)
 		#I shorten this to only the second column
 		LSST_filter = y_filter
 		LSSTfilter = y_filter[:,1]
@@ -149,8 +153,8 @@ def filter_int(filt):
 	#to find the midpoint, integrate over the entire filter, then find what value would give you half the integrated value
 	#see if you need to fix this because should have x=
 	stepint_LSSTfilter = scipy.integrate.cumtrapz(LSSTfilter)
-	print('stepint_LSSTfilter')
-	print(stepint_LSSTfilter)
+	#print('stepint_LSSTfilter')
+	#print(stepint_LSSTfilter)
 	len(stepint_LSSTfilter)
 	#len gives total length, which is index number + 1
 	lastnumber = stepint_LSSTfilter[len(stepint_LSSTfilter)-1]
@@ -158,16 +162,16 @@ def filter_int(filt):
 
 	#finds closest value by finding minimum difference
 	difference = abs(midpoint-stepint_LSSTfilter)
-	print("difference = ",difference)
+	#print("difference = ",difference)
 	mindiff = min(difference)
-	print("mindiff = ",mindiff)
+	#print("mindiff = ",mindiff)
 	midindex = numpy.where(difference==mindiff)
-	print("midindex = ", midindex)
-	print("type is ",type(midindex))
+	#print("midindex = ", midindex)
+	#print("type is ",type(midindex))
 	#have to change this from tuple to float - first find the actual value in index 0
 	midindex = midindex[0]
 	midindex = numpy.float(midindex)
-	print("midindex = ", midindex)
+	#print("midindex = ", midindex)
 
 	#now I have to figure out if it is really the midpoint of the integrated flux(??)
 	#Zfilterleft = zfilter[:658]
@@ -181,13 +185,13 @@ def filter_int(filt):
 	#since 658 = midindex+1
 	centerindex = midindex+1
 	centerindex = int(centerindex)
-	print("centerindex = ",centerindex)
-	print(type(centerindex))
+	#print("centerindex = ",centerindex)
+	#print(type(centerindex))
 	centerval = LSST_filter[centerindex]
-	print(type(centerval))
+	#print(type(centerval))
 	lambdacenter = centerval[0]
 	lambdacenter = numpy.float(lambdacenter)
-	print("median transmission wavelength of the "+filt+" = ",lambdacenter)
+	#print("median transmission wavelength of the "+filt+" = ",lambdacenter)
 
 	#the "central" wavelength is called the median transmission wavelength of each band
 
@@ -196,14 +200,14 @@ def filter_int(filt):
 	#finds the index of the maximum value and the corresponding wavelength
 	maxval = max(LSSTfilter)
 	maxindex = numpy.where(LSSTfilter==maxval)
-	print(type(maxindex))
+	#print(type(maxindex))
 	#want to change maxindex from tuple to float - just take value
 	maxindex = maxindex[0]
 	maxindex = numpy.float(maxindex)
 	maxindex = numpy.int(maxindex) #attempt at fixing an error
 	LSSTlambda = LSST_filter[:,0]
 	maxlambda = LSSTlambda[maxindex]
-	print("maxlambda = ",maxlambda)
+	#print("maxlambda = ",maxlambda)
 
 	#need the two points of the filter whose values give half the maximum value
 
@@ -211,7 +215,7 @@ def filter_int(filt):
 	if filt == "iband":
 		halfmaxval = maxval/2
 		fourth = (len(LSSTfilter))/4
-		print(fourth*4,fourth)
+		#print(fourth*4,fourth)
 		fourthapprox = round(fourth)
 		LSSTfilterfourth1 = LSSTfilter[:fourthapprox]
 		LSSTfilterfourth4 = LSSTfilter[fourthapprox*2:]
@@ -225,7 +229,7 @@ def filter_int(filt):
 	if filt != "iband":
 		halfmaxval = maxval/2
 		half = (len(LSSTfilter))/2
-		print(half*2,half)
+		#print(half*2,half)
 		halfapprox = round(half)
 		LSSTfilterhalf1 = LSSTfilter[:halfapprox]
 		LSSTfilterhalf2 = LSSTfilter[halfapprox:]
@@ -237,31 +241,31 @@ def filter_int(filt):
 
 	closestleft = min(diffleft)
 	closestright = min(diffright)
-	print("closestleft = ",closestleft)
-	print("closestright = ",closestright)
+	#print("closestleft = ",closestleft)
+	#print("closestright = ",closestright)
 	indexL = numpy.where(diffleft==closestleft)
 	indexR = numpy.where(diffright==closestright)
-	print("indexL = ", indexL)
-	print("indexR = ", indexR)
+	#print("indexL = ", indexL)
+	#print("indexR = ", indexR)
 	#have to change this from tuple to int - first find the actual value in index 0
 	indexL = indexL[0]
 	indexR = indexR[0]
 	indexL = numpy.int(indexL)
 	indexR = numpy.int(indexR)
-	print("indexL = ",indexL)
-	print("indexR = ",indexR)
+	#print("indexL = ",indexL)
+	#print("indexR = ",indexR)
 
 	#find value in left and right sections of the filter
 	valueleft = left[indexL]
 	valueright = right[indexR]
-	print(valueleft,valueright)
+	#print(valueleft,valueright)
 
 	#match value to LSSTfilter
 	LSSThalfmaxleft = numpy.where(LSSTfilter==valueleft)
 	LSSThalfmaxright = numpy.where(LSSTfilter==valueright)
-	print(LSSThalfmaxleft,LSSThalfmaxright)
-	print(type(LSSThalfmaxleft))
-	print(type(LSSThalfmaxright))
+	#print(LSSThalfmaxleft,LSSThalfmaxright)
+	#print(type(LSSThalfmaxleft))
+	#print(type(LSSThalfmaxright))
 	#want to change from tuple to float - just take value
 	indexleftFWHM = LSSThalfmaxleft[0]
 	indexrightFWHM = LSSThalfmaxright[0]
@@ -272,10 +276,10 @@ def filter_int(filt):
 	#LSSTlambda = LSST_filter[:,0]
 	lambdaFWHMleft = LSSTlambda[indexleftFWHM]
 	lambdaFWHMright = LSSTlambda[indexrightFWHM]
-	print(lambdaFWHMleft,lambdaFWHMright)
+	#print(lambdaFWHMleft,lambdaFWHMright)
 
 	#should have output as an array (see LF code)
-	print("returns array: lambdacenter,lambdaFWHMleft,lambdaFWHMright")
+	#print("returns array: lambdacenter,lambdaFWHMleft,lambdaFWHMright")
 	lambdaarray = [lambdacenter,lambdaFWHMleft,lambdaFWHMright]
 
 	return lambdaarray
@@ -284,9 +288,11 @@ def filter_int(filt):
 #the following function calculates the luminosity limit for a certain band with a certain detection limit
 def lumlim(z,em,filt):
 
+	#print("lumlim has been called")
+
 	#REMINDER TO SELF - z is a function of the emission line wavelength and the filter itself, so it does not have to be adjusted for the FWHM thing
 
-	print("This function will calculate the luminosity that corresponds to a 5 sigma detection, in erg/s:")
+	#print("This function will calculate the luminosity that corresponds to a 5 sigma detection, in erg/s:")
 	#print("INFO: 26.2 is AB magnitude for 5 sigma detection limit in the z band") #this was used when I only had the z band
 	#first I calculate the flux, then convert to flux density, then find the luminosity limit for the conditions printed above
 
@@ -306,10 +312,10 @@ def lumlim(z,em,filt):
 	if filt=="uband":
 
 		#read in each data file
-		print("u_filter has wavelengths 305.30 - 408.60 nm")
+		#print("u_filter has wavelengths 305.30 - 408.60 nm")
 		#this is in two columns; the left is wavelength in nm, the right is throughput
 		u_filter = loadtxt('ufilteredit.csv')
-		print(u_filter)
+		#print(u_filter)
 		#I shorten this to only the second column
 		LSST_filter = u_filter
 		LSSTfilter = u_filter[:,1] #transmission
@@ -317,10 +323,10 @@ def lumlim(z,em,filt):
 
 	if filt=="gband":
 		#read in each data file
-		print("g_filter has wavelengths 386.30 - 567.00 nm")
+		#print("g_filter has wavelengths 386.30 - 567.00 nm")
 		#this is in two columns; the left is wavelength in nm, the right is throughput
 		g_filter = loadtxt('gfilteredit.csv')
-		print(g_filter)
+		#print(g_filter)
 		#I shorten this to only the second column
 		LSST_filter = g_filter
 		LSSTfilter = g_filter[:,1] #transmission
@@ -329,10 +335,10 @@ def lumlim(z,em,filt):
 	if filt=="rband":
 
 		#read in each data file
-		print("r_filter has wavelengths 536.90 - 706.00 nm")
+		#print("r_filter has wavelengths 536.90 - 706.00 nm")
 		#this is in two columns; the left is wavelength in nm, the right is throughput 
 		r_filter = loadtxt('rfilteredit.csv')
-		print(r_filter)
+		#print(r_filter)
 		#I shorten this to only the second column
 		LSST_filter = r_filter
 		LSSTfilter = r_filter[:,1] #transmission
@@ -341,10 +347,10 @@ def lumlim(z,em,filt):
 	if filt=="iband":
 
 		#read in each data file
-		print("i_filter has wavelengths 675.90 - 833.00 nm")
+		#print("i_filter has wavelengths 675.90 - 833.00 nm")
 		#this is in two columns; the left is wavelength in nm, the right is throughput
 		i_filter = loadtxt('ifilteredit.csv')
-		print(i_filter)
+		#print(i_filter)
 		#I shorten this to only the second column
 		LSST_filter = i_filter
 		LSSTfilter = i_filter[:,1] #transmission
@@ -353,10 +359,10 @@ def lumlim(z,em,filt):
 	if filt=="zband":
 
 		#read in each data file 
-		print("z_filter has wavelengths 802.90 - 938.60 nm")
+		#print("z_filter has wavelengths 802.90 - 938.60 nm")
 		#this is in two columns; the left is wavelength in nm, the right is throughput
 		z_filter = loadtxt('zfilteredit.csv')
-		print(z_filter)
+		#print(z_filter)
 		#I shorten this to only the second column
 		LSST_filter = z_filter
 		LSSTfilter = z_filter[:,1] #transmission
@@ -365,10 +371,10 @@ def lumlim(z,em,filt):
 	if filt=="yband":
 
 		#read in each data file
-		print("y_filter has wavelengths 908.30 - 1099.60 nm")
+		#print("y_filter has wavelengths 908.30 - 1099.60 nm")
 		#this is in two columns; the left is wavelength in nm, the right is throughput
 		y_filter = loadtxt('yfilteredit.csv')
-		print(y_filter)
+		#print(y_filter)
 		#I shorten this to only the second column
 		LSST_filter = y_filter
 		LSSTfilter = y_filter[:,1] #transmission
@@ -396,22 +402,29 @@ def lumlim(z,em,filt):
 	h_cgs = 6.6261*(10**(-27)) #g*cm^2/s
 	c_cgs = 2.9979*(10**10) #in cm/s
 	lambdaem_dict_cgs = {"[OII]":372.7/(10**7),"[OIII]":500.7/(10**7),"Halpha":656.3/(10**7),"Lymanalpha":121.6/(10**7)} #in cm
+	#print("TEST HERE: lambdaem_dict_cgs =",lambdaem_dict_cgs)
 	lambdaem_cgs = lambdaem_dict_cgs[em]
+	#print("TEST HERE: lambdaem_cgs =",lambdaem_cgs)
+	#print("TEST HERE: LSSTwav =",LSSTwav)
 	LSSTwav = LSSTwav/(10**7)  #nm to cm
+	#print("TEST HERE: LSSTwav =",LSSTwav)
 
-	print("LSSTfilter: (this may be the issue?",LSSTfilter)
+	#print("TEST HERE: LSSTfilter: (this may be the issue?",LSSTfilter)
 	n_photon_1microJansky_array = LSSTfilter*(10**(-29))/(h_cgs*lambdaem_cgs) #c_cgs/
-	print("n_photon_1microJansky_array",n_photon_1microJansky_array)
+	#print("TEST HERE: n_photon_1microJansky_array",n_photon_1microJansky_array)
 	dlambda = abs(LSSTwav[1]-LSSTwav[0])
-	print("dlambda",dlambda)
+	#print("TEST HERE: dlambda",dlambda)
 	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,dx=dlambda)
-	print("n_photon_1microJansky = ",n_photon_1microJansky)
+	#print("TEST HERE: n_photon_1microJansky = ",n_photon_1microJansky)
 
 
 	#(2)
 	#lambda_emissionline = lambda_restframe*(1+z_emissionline)
 
 	lambda_emissionline = lambdaem_cgs*(1+z)  #in cm
+	#print("TEST HERE: z =",z)
+	#print("TEST HERE: lambdaem_cgs =",lambdaem_cgs)
+	#print("TEST HERE: lambda_emissionline =",lambda_emissionline)
 
 
 	#(3)
@@ -425,24 +438,34 @@ def lumlim(z,em,filt):
 
 	#finds the index that most closely matches the wavelength that is redshifted
 
-	diff_lambda_array = abs(LSSTwav-lambda_emissionline)
+	diff_lambda_array = abs(LSSTwav-lambda_emissionline) #SHOULD BE IN SAME UNITS - they are both in centimeters in this section of the code
+	#do without absolute value
+	#print("TEST HERE: LSSTwav =",LSSTwav)
+	#print("TEST HERE: diff_lambda_array =",diff_lambda_array)
 
 	#answer of following should be ~0
 	mindiff_lambda = min(diff_lambda_array)
+	#print("TEST HERE: mindiff_lambda =", mindiff_lambda)
 	mindiff_lambda = numpy.float(mindiff_lambda)
+	#print("TEST HERE: mindiff_lambda =",mindiff_lambda)
 
 	#finds index corresponding to value closest to wavelength
 	mindiff_lambda_index = numpy.where(diff_lambda_array==mindiff_lambda)
 
 	#find "value" in index 0, then change from tuple to float
+	#print("TEST HERE: mindiff_lambda_index =",mindiff_lambda_index)
 	mindiff_lambda_index = mindiff_lambda_index[0]
-	print("TEST HERE:",mindiff_lambda_index)
+	#print("TEST HERE: mindiff_lambda_index =",mindiff_lambda_index)
 	mindiff_lambda_index = numpy.float(mindiff_lambda_index)
-	print("TEST HERE:",mindiff_lambda_index)
+	#print("TEST HERE: mindiff_lambda_index =",mindiff_lambda_index)
 
 
 	#this is the value of the transmission that corresponds to the index found above
 	#LSSTfilter[mindiff_lambda_index]
+	#print("TEST HERE: LSSTfilter[mindiff_lambda_index] =",LSSTfilter[mindiff_lambda_index])
+
+
+	#HERE STOP TEST
 
 
 	#(4)
@@ -450,29 +473,29 @@ def lumlim(z,em,filt):
 	#F_nu,lim(filt) is the variable I had previously named fluxdens - it is the 5 sigma AB magnitude limit that I found for each LSST filter
 
 	#finds the flux density
-	print("ABmagnitude = -2.5*log10(fluxdensity/(3631 Jansky))")
-	print("consequently:")
+	#print("ABmagnitude = -2.5*log10(fluxdensity/(3631 Jansky))")
+	#print("consequently:")
 	#print("fluxdensity = (10**(ABmagnitude/(-2.5)))*(3631 Janksy)")
 	#fluxdens = (10**(ABmag/(-2.5)))*3631 #outputs in Jansky
 	#fluxdens = (10**(ABmag/(-2.5)))*3631*(10**(-6)) #outputs in microJansky
 	#uses ABmag from earlier in this function
 	fluxdens = 10**((ABmag+48.6)/(-2.5)) #outputs in erg/(s*Hz*(cm^2))
-	print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
+	#print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
 
 	#LSSTfilter is the transmission
-	print("f_n_obj / [1_microJansky] = n_photon_object / n_photon_1_microJansky")
-	flux_limit = (fluxdens*n_photon_1microJansky/(LSSTfilter[mindiff_lambda_index]*(10**(-29))))*(h_cgs*c_cgs/lambda_emissionline)
+	#print("f_n_obj / [1_microJansky] = n_photon_object / n_photon_1_microJansky")
+	flux_limit = (fluxdens*n_photon_1microJansky/(LSSTfilter[int(mindiff_lambda_index)]*(10**(-29))))*(h_cgs*c_cgs/lambda_emissionline)
 
-	print("FLUX LIMIT IS: for z=",z)
-	print(" and em=",em)
-	print(" is:",flux_limit)
+	#print("FLUX LIMIT IS: for z=",z)
+	#print(" and em=",em)
+	#print(" is:",flux_limit)
 
 
-	print("ADAM'S TEST:")
-	print("hc/lambda should be ~1.6e-11 ergs:",h_cgs*c_cgs/lambdaem_cgs)
-	print("T_EL should be of order 0.2:",LSSTfilter[mindiff_lambda_index])
-	print("since 1 microJansky is 10^-29, limiting flux density seems good at 1.3*10^-30:",fluxdens)
-	print("n_photon_1microJansky is too small?:",n_photon_1microJansky)
+	#print("ADAM'S TEST:")
+	#print("hc/lambda should be ~1.6e-11 ergs:",h_cgs*c_cgs/lambdaem_cgs)
+	#print("T_EL should be of order 0.2:",LSSTfilter[mindiff_lambda_index])
+	#print("since 1 microJansky is 10^-29, limiting flux density seems good at 1.3*10^-30:",fluxdens)
+	#print("n_photon_1microJansky is too small?:",n_photon_1microJansky)
 
 	#THE FOLLOWING IS GOOD:
 
@@ -481,16 +504,16 @@ def lumlim(z,em,filt):
 	#this outputs a special object that keeps track of units, so first I convert it to cm (cgs units), and then I convert it to a regular number
 	lumdist_cgs = lumdist.to('cm')
 	lumdist_unitless = lumdist_cgs.value
-	print("the luminosity distance for redshift z =",z,"is lumdist =",lumdist_unitless,"cm")
+	#print("the luminosity distance for redshift z =",z,"is lumdist =",lumdist_unitless,"cm")
 
 	#finds the luminosity limit
-	print("Luminosity = 4*pi*(luminositydistance**2)*flux")
+	#print("Luminosity = 4*pi*(luminositydistance**2)*flux")
 	lumlimit = 4*numpy.pi*(lumdist_unitless**2)*flux_limit
-	print("luminosity limit for 5 sigma detection of",em,"in "+filt+" band is",lumlimit,"ergs/s")
+	#print("luminosity limit for 5 sigma detection of",em,"in "+filt+" band is",lumlimit,"ergs/s")
 
-	print("LUMINOSITY LIMIT IS: for z=",z)
-	print(" and em=",em)
-	print(" is:",lumlimit)
+	#print("LUMINOSITY LIMIT IS: for z=",z)
+	#print(" and em=",em)
+	#print(" is:",lumlimit)
 
 	#using return makes the main output of this function the value of lumlimit so that I can use it to calculate other things when I call this function
 	return lumlimit
@@ -501,10 +524,13 @@ def lumlim(z,em,filt):
 #to use this function, type schechter_LF(z=redshifttoplot) or with additional parameters you want to change inside the ()
 def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,param,fluxscale,em,filt,style = ""):
 
+	#print("schechter_LF has been called")
+
 	#REMINDER TO SELF - z is a function of the emission line wavelength and the filter itself, so it does not have to be adjusted for the FWHM thing 
 
-	print("alpha = ", alpha)
-	print("z = ", z)
+	#print("alpha = ", alpha)
+	#print("z = ", z)
+	#print("emission line = ",em)
 
 	log10Lstararray = numpy.arange(30,55,0.01)
 	L = (10**log10Lstararray)
@@ -515,40 +541,65 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	if param == "first":
 
 		Lstar = fluxscale*Lstar0*((1+z)**betaL)
-		print("Lstar = ", Lstar)
+		#print("Lstar = ", Lstar)
 
 		phistar = phistar0*((1+z)**betaphi)
-		print("phistar = ", phistar)
+		#print("phistar = ", phistar)
+
 
 	if param == "second":
 
 		Lstar = 10**(0.45*z + Lstar0)
-		print("Lstar = ", Lstar)
+		#print("Lstar = ", Lstar)
 
 		phistar = 10**(-0.38*(z**2) + z + phistar0)
-		print("phistar = ", phistar)
+		#print("phistar = ", phistar)
+
 
 	if param == "third":
 
 		answersLya = lineqLya(z=z)
-		print(type(answersLya))
+		#print(type(answersLya))
 
 		Lstar = answersLya[0] #this is linearly parametrized from Ciardullo+ 2012
-		print("Lstar = ",Lstar)
-		print(type(Lstar))
+		#print("Lstar = ",Lstar)
+		#print(type(Lstar))
 
 		phistar = answersLya[1] #this is linearly parametrized from Ciardullo+ 2012
-		print("phistar = ",phistar)
-		print(type(phistar))
+		#print("phistar = ",phistar)
+		#print(type(phistar))
+
+
+
+	#testing - weird results with smaller bands, need to see if follows LF and transmission function
+	#decrease Lstar and phistar with redshift - the different wavelength sections of the y-band filter correspond to redshifts for each emission line (THINK!!)
+
+#	if param == "first" or "second" or "third":
+
+#		Lstar = 10**((-0.75)*z + 49.5)
+#		print("Lstar = ",Lstar)
+
+#		phistar = 10**((-0.75)*z + 3.5)
+#		print("phistar = ",phistar)
 
 
 	#now need an array of phi for the given z
 	phi = phistar*((L/Lstar)**(alpha+1))*(numpy.e**(-L/Lstar))
+	#print("HERE IS THE ULTIMATE TEST KINDA:")
+	#print("phistar",phistar)
+	#print("L",L)
+	#print("Lstar",Lstar)
+	#print("alpha",alpha)
+	#print("phi",phi)
 
 	#this deletes parts of the arrays that are so small python counts them as zero; otherwise, I would not be able to take the logarithm of the array
 	L = L[numpy.where(phi!=0)]
 	log10Lstararray_nonzero = log10Lstararray[numpy.where(phi!=0)]
 	phi = phi[numpy.where(phi!=0)]
+	#code suddenly does not know when to stop?  add break:
+	#if len(phi)==0:
+	#	break
+	#this should work?  
 
 	log10L = numpy.log10(L)
 	log10phi = numpy.log10(phi)
@@ -566,12 +617,12 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	FWHMlow = lambdaarray[1]
 	FWHMhigh = lambdaarray[2]
 
-	print("wavelengths in nm")
-	print("THIS IS A TEST, lambdacenter",lambdacenter)
-	print("THIS IS A TEST, lambdalow",lambdalow)
-	print("THIS IS A TEST, lambdahigh",lambdahigh)
-	print("THIS IS A TEST, FWHMlow",FWHMlow)
-	print("THIS IS A TEST, FWHMhigh",FWHMhigh)
+	#print("wavelengths in nm")
+	#print("THIS IS A TEST, lambdacenter",lambdacenter)
+	#print("THIS IS A TEST, lambdalow",lambdalow)
+	#print("THIS IS A TEST, lambdahigh",lambdahigh)
+	#print("THIS IS A TEST, FWHMlow",FWHMlow)
+	#print("THIS IS A TEST, FWHMhigh",FWHMhigh)
 
 	#uses previously defined function to get median transmission wavelenth
 	lambdaarray = filter_int(filt = filt)
@@ -583,17 +634,54 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	FWHMendlow = (FWHMlow/lambdaemitted)-1
 	FWHMendhigh = (FWHMhigh/lambdaemitted)-1
 
-	#finds luminosity limit in center of z band
+
+	#beginning of edits
+
+	#luminosity limit OF THE REDSHIFTED EMISSION LINE
+	lumlim_emline = lumlim(z = z,em = em,filt = filt)
+
+	#print("luminosity limit for the redshifted emission line:",lumlim_emline)
+
+
+	#beginning of edits and temporary commenting out of plot stuff
+
+	#finds luminosity limit in center of each band
 	center = lumlim(z = filtercenter,em = em,filt = filt)
+
+	#FWHMlow_lumlim = lumlim(z = ((908.5/lambdaemitted)-1),em = em,filt = filt)
+	#print("THE LUMINOSITY LIMIT FOR "+em+"(at lambda = 908.5 nm) = ",FWHMlow_lumlim)
+
+
+	#this was the test for the uband
+
+	#305.3, 331.125, 356.95, 382.775, 408.6
+	#318.2125
+	#344.0375
+	#369.8625
+	#395.6875
+
+
+	#quarter1 = lumlim(z = ((318.2125/lambdaemitted)-1),em = em,filt = filt)
+	#print("THE LUMINOSITY LIMIT FOR "+em+"(at lambda = 318.2125 nm) = ",quarter1)
+
+	#quarter2 = lumlim(z = ((344.0375/lambdaemitted)-1),em = em,filt = filt)
+	#print("THE LUMINOSITY LIMIT FOR "+em+"(at lambda = 344.0375 nm) = ",quarter2)
+
+	#quarter3 = lumlim(z = ((369.8625/lambdaemitted)-1),em = em,filt = filt)
+	#print("THE LUMINOSITY LIMIT FOR "+em+"(at lambda = 369.8625 nm) = ",quarter3)
+
+	#quarter4 = lumlim(z = ((395.6875/lambdaemitted)-1),em = em,filt = filt)
+	#print("THE LUMINOSITY LIMIT FOR "+em+"(at lambda = 395.6875 nm) = ",quarter4)
+
 
 	#finds luminosity limits at endpoints of FWHM
 	FWHMlowpoint = lumlim(z = FWHMendlow,em = em,filt = filt)
 	FWHMhighpoint = lumlim(z = FWHMendhigh,em = em,filt = filt)
 
-	print("luminosity limits")
-	print("OVER HEEEEEEEERE: center",center)
-	print("OVER HEEEEEEEERE: FWHMlowpoint",FWHMlowpoint)
-	print("OVER HEEEEEEEERE: FWHMhighpoint",FWHMhighpoint)
+	#print("luminosity limits")
+	#print("OVER HEEEEEEEERE: center",center)
+	#print("OVER HEEEEEEEERE: FWHMlowpoint",FWHMlowpoint)
+	#print("OVER HEEEEEEEERE: FWHMhighpoint",FWHMhighpoint)
 
 	#sets up an array that I use to plot
 	lumarray = numpy.full(15,numpy.log10(center)) #this is an array so that I can plot a line - can use for all lumlim dashed lines
@@ -603,11 +691,21 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	lumarraylow = numpy.full(15,numpy.log10(FWHMlowpoint))
 	lumarrayhigh = numpy.full(15,numpy.log10(FWHMhighpoint))
 
+	#lumarray_1 = numpy.full(15,numpy.log10(quarter1))
+	#lumarray_2 = numpy.full(15,numpy.log10(quarter2))
+	#lumarray_3 = numpy.full(15,numpy.log10(quarter3))
+	#lumarray_4 = numpy.full(15,numpy.log10(quarter4))
+
+	#alpha parameter sets the transparency/opacity (from 0 to 1)
 	figure(1)
 	plot(log10L,log10phi,style,alpha=0.10)#,label = zpaper)
 	plot(lumarray,yarray,style+"--")
 	plot(lumarraylow,yarray,style+"--")
 	plot(lumarrayhigh,yarray,style+"--")
+	#plot(lumarray_1,yarray,style+"--")
+	#plot(lumarray_2,yarray,style+"--")
+	#plot(lumarray_3,yarray,style+"--")
+	#plot(lumarray_4,yarray,style+"--")
 	xlim(39,46)
 	ylim(-7,0)
 	legend(loc = "upper right")
@@ -615,15 +713,17 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	xlabel("$\log_{10}(L [ergs/s])$")
 	ylabel("$\log_{10}(\phi [\t{Mpc}^{-3}])$")
 	title("Schechter Luminosity Function, "+filt)
-	print("z = ", z, " and alpha = ", alpha, " are plotted, ")
+	#print("z = ", z, " and alpha = ", alpha, " are plotted, ")
 	#saves image
 	#pyplot.savefig('/home/lanaeid/Desktop/fig1'+filter+'.png',bbox_inches = 'tight')
 
-	print("now the number density is calculated by integrating the LF using cumtrapz:")
+	show()
+
+	#print("now the number density is calculated by integrating the LF using cumtrapz:")
 	#cumptrapz integrates the opposite way than I need to integrate, so I flip it twice in the process
 	phiflip = phi[::-1]
-	print(phi)
-	print(len(phiflip),len(log10Lstararray_nonzero))
+	#print(phi)
+	#print(len(phiflip),len(log10Lstararray_nonzero))
 	#always pay attention to the version of the LF that is being used
 	phiflipint = scipy.integrate.cumtrapz(phiflip,x=log10Lstararray_nonzero)
 	num_dens = phiflipint[::-1]
@@ -633,11 +733,16 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	log10Lmin = numpy.log10(Lmin)
 	#log10shifted_Lmin = numpy.log10(shifted_Lmin)
 
+	#alpha parameter sets the transparency/opacity (from 0 to 1)
 	figure(2)
 	plot(log10Lmin,num_dens,style,alpha=0.10)#,label = zpaper)
 	plot(lumarray,yarray,style+"--")
 	plot(lumarraylow,yarray,style+"--")
 	plot(lumarrayhigh,yarray,style+"--")
+	#plot(lumarray_1,yarray,style+"--")
+	#plot(lumarray_2,yarray,style+"--")
+	#plot(lumarray_3,yarray,style+"--")
+	#plot(lumarray_4,yarray,style+"--")
 	legend(loc = "upper right")
 	xlim(39,46)
 	ylim(0,0.015)
@@ -648,6 +753,11 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#saves image
 	#pyplot.savefig('/home/lanaeid/Desktop/fig2'+filter+'.png',bbox_inches = 'tight')
 
+	show()
+
+	#end of plot code that I temporarily commented out
+
+
 	#the following finds the comoving number density above a certain detection limit (shot noise limit),
 	#which I calculated in the previous part of the code (also shown below), where I saved the variable named center
 
@@ -655,19 +765,17 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#then gets number density above the luminosity limit using the center value
 
 
-	#THIS IS ALL I NEED:
+	#THIS IS ALL I NEED: I edited so center is what it should be lumlim_emline
 
 	#first, I have to shorten the phi array to contain only values above the luminosity limit
 	#shortens the array to be above the luminosity limit, then integrates to get comoving number density
-	philim = phi[numpy.where(L>center)]
-	#this somehow does nothing, as center is outside of the range anyways
+	philim = phi[numpy.where(L>lumlim_emline)]
 	#log10Lstararray = numpy.arange(30,55,0.01)
 	#L = (10**log10Lstararray)
-	log10Lstararray_lumlim = log10Lstararray_nonzero[numpy.where(L>center)]
+	log10Lstararray_lumlim = log10Lstararray_nonzero[numpy.where(L>lumlim_emline)]
 	comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
-	print("comovingphi =",comovingphi,"Mpc^-3")
+	#print("comovingphi =",comovingphi,"Mpc^-3")
 
-	print("COMOVINGPHI IS:",comovingphi)
 
 #	#don't need for now here, kept just for reference
 #	arealphi = totalnumgalaxies/(4*numpy.pi)
@@ -676,7 +784,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	show()
 
-	print("comovingphi is returned for the input")
+	#print("comovingphi is returned for the input")
 	
 	return comovingphi
 
@@ -851,11 +959,11 @@ if emline == "allFWHM":
 		zpaper = "[OII] z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Comparat+ 2016"
 
 		figure(1)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"r",label=zpaper)
 		legend(loc="upper right")
 
 		figure(2)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"r",label=zpaper)
 		legend(loc="upper right")
 
 		show()
@@ -971,11 +1079,11 @@ if emline == "allFWHM":
 		zpaper = r"H$\alpha$ z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Sobral+ 2013"
 
 		figure(1)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"b",label=zpaper)
 		legend(loc="upper right")
 
 		figure(2)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"b",label=zpaper)
 		legend(loc="upper right")
 
 		show()
@@ -1098,9 +1206,12 @@ if emline == "allFWHM":
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
 
-if emline == "allends":
+if emline == "allends":  #WHAT IS THE POINT OF THIS?  is it the same as allFWHM?????????????????????
 
+	#PAY ATTENTION TO THE FOLLOWING COMMENT / PRINT STATEMENT
 	print("NOTE: PERHAPS TERRIBLY, I HAVE REDEFINED THE FIRST VALUES LABELED FWHM TO ACTUALLY THE FILTER ENDPOINTS..WHICH I NEED TO FIX LATER.  I JUST WANT TO CHECK STUFF")
+
+	#now check the fake lf and see if good and yayyyyyyyyyy
 
 	#changed if statements to dictionaries and deleted them
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
@@ -1112,9 +1223,71 @@ if emline == "allends":
 	lambdacenter = lambdaarray[0]
 	FWHMlow = lambdaarray[1]  #not here
 	FWHMhigh = lambdaarray[2]  #not here
-	FWHMlow = 1051.775
-	FWHMhigh = 1099.6
+	#FWHMlow = 382.775
+	#FWHMhigh = 408.6
 	
+
+	#the uband
+	#305.3, 331.125, 356.95, 382.775, 408.6
+
+	#the yband
+	#908.3, 956.125, 1003.95, 1051.775, 1099.6
+
+	#plots the filter transmission curve
+
+	figure(3)
+
+	#read in each data file
+	print("u_filter has wavelengths 305.30 - 408.60 nm")
+	print("g_filter has wavelengths 386.30 - 567.00 nm")
+	print("r_filter has wavelengths 536.90 - 706.00 nm")
+	print("i_filter has wavelengths 675.90 - 833.00 nm")
+	print("z_filter has wavelengths 802.90 - 938.60 nm")
+	print("y_filter has wavelengths 908.30 - 1099.60 nm")
+
+	#need two things - wavelength array and throughput array
+	#this is in two columns; the left is wavelength in nm, the right is throughput
+
+	u_filter = loadtxt('ufilteredit.csv')
+	u_throughput = u_filter[:,1] #transmission
+	u_wav = u_filter[:,0] #the wavelengths are the first column
+	
+	g_filter = loadtxt('gfilteredit.csv')
+	g_throughput = g_filter[:,1] #transmission
+	g_wav = g_filter[:,0] #the wavelengths are the first column
+	
+	r_filter = loadtxt('rfilteredit.csv')
+	r_throughput = r_filter[:,1] #transmission
+	r_wav = r_filter[:,0] #the wavelengths are the first column
+	
+	i_filter = loadtxt('ifilteredit.csv')
+	i_throughput = i_filter[:,1] #transmission
+	i_wav = i_filter[:,0] #the wavelengths are the first column
+	
+	z_filter = loadtxt('zfilteredit.csv')
+	z_throughput = z_filter[:,1] #transmission
+	z_wav = z_filter[:,0] #the wavelengths are the first column
+	
+	y_filter = loadtxt('yfilteredit.csv')
+	y_throughput = y_filter[:,1] #transmission
+	y_wav = y_filter[:,0] #the wavelengths are the first column
+
+	plot(u_wav,u_throughput,"m")
+	plot(g_wav,g_throughput,"b")
+	plot(r_wav,r_throughput,"c")
+	plot(i_wav,i_throughput,"g")
+	plot(z_wav,z_throughput,"y")
+	plot(y_wav,y_throughput,"r")
+
+	xlim(300,1100)
+	ylim(0,1.0)
+	ylabel("Throughput")
+	xlabel("Wavelengths (nm)")
+	title("LSST Transmission Functions, ugrizy bands")
+
+	show()
+
+
 	lambda_OII = 372.7 #in nm
 	lambda_OIII = 500.7 #in nm
 	lambda_Halpha = 656.3 #in nm
@@ -1126,7 +1299,7 @@ if emline == "allends":
 	lambdaFWHMarray = numpy.linspace(FWHMlow,FWHMhigh,num=100)
 
 	#use these to get an array of redshifts
-	zFWHMarrayOII = numpy.zeros(100)
+	zFWHMarrayOII = numpy.zeros(100) 
 	zFWHMarrayOIII = numpy.zeros(100)
 	zFWHMarrayHalpha = numpy.zeros(100)
 	zFWHMarrayLymanalpha = numpy.zeros(100)
@@ -1154,7 +1327,85 @@ if emline == "allends":
 	comovingphiarrayLymanalpha = numpy.zeros(100)
 
 
+	#testing individual parts of the LFs
+
+	#zFWHMarrayOII = numpy.zeros(4) 
+	#zFWHMarrayOIII = numpy.zeros(4)
+	#zFWHMarrayHalpha = numpy.zeros(4)
+	#zFWHMarrayLymanalpha = numpy.zeros(4)
+
+
+	#zFWHMarrayOII[0] = (318.2125/lambda_OII)-1
+	#zFWHMarrayOII[1] = (344.0375/lambda_OII)-1
+	#zFWHMarrayOII[2] = (369.8625/lambda_OII)-1
+	#zFWHMarrayOII[3] = (395.6875/lambda_OII)-1
+
+	#zFWHMarrayOIII[0] = (318.2125/lambda_OIII)-1
+	#zFWHMarrayOIII[1] = (344.0375/lambda_OIII)-1
+	#zFWHMarrayOIII[2] = (369.8625/lambda_OIII)-1
+	#zFWHMarrayOIII[3] = (395.6875/lambda_OIII)-1
+
+	#zFWHMarrayHalpha[0] = (318.2125/lambda_Halpha)-1
+	#zFWHMarrayHalpha[1] = (344.0375/lambda_Halpha)-1
+	#zFWHMarrayHalpha[2] = (369.8625/lambda_Halpha)-1
+	#zFWHMarrayHalpha[3] = (395.6875/lambda_Halpha)-1
+
+	#zFWHMarrayLymanalpha[0] = (318.2125/lambda_Lymanalpha)-1
+	#zFWHMarrayLymanalpha[1] = (344.0375/lambda_Lymanalpha)-1
+	#zFWHMarrayLymanalpha[2] = (369.8625/lambda_Lymanalpha)-1
+	#zFWHMarrayLymanalpha[3] = (395.6875/lambda_Lymanalpha)-1
+
+	#print("zFWHMarrayOII:",zFWHMarrayOII)
+	#print("zFWHMarrayOIII:",zFWHMarrayOIII)
+	#print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
+	#print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
+
+	#don't want negative redshifts
+	#zFWHMarrayOII = zFWHMarrayOII[numpy.where(zFWHMarrayOII>0)]
+	#zFWHMarrayOIII = zFWHMarrayOIII[numpy.where(zFWHMarrayOIII>0)]
+	#zFWHMarrayHalpha = zFWHMarrayHalpha[numpy.where(zFWHMarrayHalpha>0)]
+	#zFWHMarrayLymanalpha = zFWHMarrayLymanalpha[numpy.where(zFWHMarrayLymanalpha>0)]
+
+	#print("zFWHMarrayOII:",zFWHMarrayOII)
+	#print("zFWHMarrayOIII:",zFWHMarrayOIII)
+	#print("zFWHMarrayHalpha:",zFWHMarrayHalpha)
+	#print("zFWHMarrayLymanalpha:",zFWHMarrayLymanalpha)
+
+
+	#zFWHMarrayOII[0] = 1.47
+	#zFWHMarrayOII[1] = 1.525
+	#zFWHMarrayOII[2] = 1.585
+	#zFWHMarrayOII[3] = 1.6425
+	#zFWHMarrayOII[4] = 1.7
+
+	#zFWHMarrayOIII[0] = 0.84
+	#zFWHMarrayOIII[1] = 0.8825
+	#zFWHMarrayOIII[2] = 0.925
+	#zFWHMarrayOIII[3] = 0.9675
+	#zFWHMarrayOIII[4] = 1.01
+
+	#zFWHMarrayHalpha[0] = 0.4
+	#zFWHMarrayHalpha[1] = 0.4325
+	#zFWHMarrayHalpha[2] = 0.465
+	#zFWHMarrayHalpha[3] = 0.4975
+	#zFWHMarrayHalpha[4] = 0.53
+
+	#zFWHMarrayLymanalpha[0] = 6.57
+	#zFWHMarrayLymanalpha[1] = 6.745
+	#zFWHMarrayLymanalpha[2] = 6.92
+	#zFWHMarrayLymanalpha[3] = 7.095
+	#zFWHMarrayLymanalpha[4] = 7.27
+
+
+	#comovingphiarrayOII = numpy.zeros(4)
+	#comovingphiarrayOIII = numpy.zeros(4)
+	#comovingphiarrayHalpha = numpy.zeros(4)
+	#comovingphiarrayLymanalpha = numpy.zeros(4)
+
+
 	#NEED TO CHANGE ALL THE FOR LOOPS TO JUST ARRAY CALCULTIONS - FASTER
+
+	print("start [OII]")
 
 	if len(zFWHMarrayOII)>0:
 
@@ -1174,17 +1425,17 @@ if emline == "allends":
 		zpaper = "[OII] z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Comparat+ 2016"
 
 		figure(1)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"r",label=zpaper)
 		legend(loc="upper right")
 
 		figure(2)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"r",label=zpaper)
 		legend(loc="upper right")
 
 		show()
 
 
-		print("OII:")
+		#print("OII:")
 
 		
 		#first convert zFWHMarrayHalpha to a comoving volume array
@@ -1205,16 +1456,21 @@ if emline == "allends":
 		#this is ending up as a weird number
 		#integrates comovingphi over whole sky
 		total_number_FWHM_OII = numpy.trapz(comovingphiarrayOII,x=comovingvolarrayOII)
-		print("total_number_FWHM_OII = ",total_number_FWHM_OII)
+		#print("total_number_FWHM_OII = ",total_number_FWHM_OII)
 		#LSST area
 		total_number_FWHM_LSSTOII = total_number_FWHM_OII*18000./42000.		
 
-		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
-		print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
+		#print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		#print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
+
 
 	else:
 		zOII = 0
 
+
+	print("end [OII]")
+
+	print("start [OIII]")
 
 	if len(zFWHMarrayOIII)>0:
 
@@ -1244,7 +1500,7 @@ if emline == "allends":
 		show()
 
 
-		print("OIII:")
+		#print("OIII:")
 
 		
 		#first convert zFWHMarrayOIII to a comoving volume array
@@ -1265,15 +1521,20 @@ if emline == "allends":
 		#this is ending up as a weird number
 		#integrates comovingphi over whole sky
 		total_number_FWHM_OIII = numpy.trapz(comovingphiarrayOIII,x=comovingvolarrayOIII)
-		print("total_number_FWHM_OIII = ",total_number_FWHM_OIII)
+		#print("total_number_FWHM_OIII = ",total_number_FWHM_OIII)
 		#LSST area
 		total_number_FWHM_LSSTOIII = total_number_FWHM_OIII*18000./42000.		
 
-		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
-		print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
+		#print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		#print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
 
 	else:
 		zOIII = 0
+
+
+	print("end [OIII]")
+
+	print("start Halpha")
 
 
 	if len(zFWHMarrayHalpha)>0:
@@ -1294,17 +1555,17 @@ if emline == "allends":
 		zpaper = r"H$\alpha$ z = "+str(round(firstz,2))+"-"+str(round(lastz,2))+" Sobral+ 2013"
 
 		figure(1)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"b",label=zpaper)
 		legend(loc="upper right")
 
 		figure(2)
-		plot(0,0,"y",label=zpaper)
+		plot(0,0,"b",label=zpaper)
 		legend(loc="upper right")
 
 		show()
 
 
-		print("Halpha:")
+		#print("Halpha:")
 
 		
 		#first convert zFWHMarrayHalpha to a comoving volume array
@@ -1325,15 +1586,20 @@ if emline == "allends":
 		#this is ending up as a weird number
 		#integrates comovingphi over whole sky
 		total_number_FWHM_Halpha = numpy.trapz(comovingphiarrayHalpha,x=comovingvolarrayHalpha)
-		print("total_number_FWHM_Halpha = ",total_number_FWHM_Halpha)
+		#print("total_number_FWHM_Halpha = ",total_number_FWHM_Halpha)
 		#LSST area
 		total_number_FWHM_LSSTHalpha = total_number_FWHM_Halpha*18000./42000.
 
-		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
-		print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
+		#print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		#print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
 
 	else:
 		zHalpha = 0
+
+
+	print("end Halpha")
+
+	print("start Lymanalpha")
 
 
 	if len(zFWHMarrayLymanalpha)>0:
@@ -1366,7 +1632,7 @@ if emline == "allends":
 		show()
 
 
-		print("Lymanalpha:")
+		#print("Lymanalpha:")
 
 		#I need the total number of galaxies WITHIN the FWHM
 		#1 - integrate comovingphi using trapz and the comoving volume - will get total comoving number
@@ -1390,40 +1656,55 @@ if emline == "allends":
 		#this is ending up as a weird number
 
 
-		print("comovingphiarrayLymanalpha = ",comovingphiarrayLymanalpha)
-		print("comovingvolarrayLymanalpha = ",comovingvolarrayLymanalpha)
-		print("zFWHMarrayLymanalpha = ",zFWHMarrayLymanalpha)
+		#print("comovingphiarrayLymanalpha = ",comovingphiarrayLymanalpha)
+		#print("comovingvolarrayLymanalpha = ",comovingvolarrayLymanalpha)
+		#print("zFWHMarrayLymanalpha = ",zFWHMarrayLymanalpha)
 
 
 		#integrates comovingphi over whole sky
 		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
-		print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
+		#print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
 		#LSST area
 		total_number_FWHM_LSSTLymanalpha = total_number_FWHM_Lymanalpha*18000./42000. #rename as sky fraction bc *not* total anymore
 
 
-		print("the total expected number of galaxies in the LSST area (18000/42000) is:")
-		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+		#print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+		#print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
 
 
 	else:
 		zLymanalpha = 0
 
 
+	print("end Lymanalpha")
+
+
 	print("the total expected number of galaxies in the LSST area (18000/42000) is:")
+
 	if len(zFWHMarrayOII)>0:
 		print("total_number_FWHM_LSSTOII = ",total_number_FWHM_LSSTOII)
+		arealphiOII = total_number_FWHM_OII/(4*numpy.pi)
+		print("arealphiOII =",arealphiOII,"steradian^-1")
+
 	if len(zFWHMarrayOIII)>0:
 		print("total_number_FWHM_LSSTOIII = ",total_number_FWHM_LSSTOIII)
+		arealphiOIII = total_number_FWHM_OIII/(4*numpy.pi)
+		print("arealphiOIII =",arealphiOIII,"steradian^-1")
+
 	if len(zFWHMarrayHalpha)>0:
 		print("total_number_FWHM_LSSTHalpha = ",total_number_FWHM_LSSTHalpha)
+		arealphiHalpha = total_number_FWHM_Halpha/(4*numpy.pi)
+		print("arealphiHalpha =",arealphiHalpha,"steradian^-1")
+
 	if len(zFWHMarrayLymanalpha)>0:
 		print("total_number_FWHM_LSSTLymanalpha = ",total_number_FWHM_LSSTLymanalpha)
+		arealphiLymanalpha = total_number_FWHM_Lymanalpha/(4*numpy.pi)
+		print("arealphiLymanalpha =",arealphiLymanalpha,"steradian^-1")
 
 
-print("These are the endpoints, labeled incorrectly:")
-print("FWHMlow = ",FWHMlow)
-print("FWHMhigh = ",FWHMhigh)
+#print("These are the endpoints, labeled incorrectly:")
+#print("FWHMlow = ",FWHMlow)
+#print("FWHMhigh = ",FWHMhigh)
 
 
 show()
