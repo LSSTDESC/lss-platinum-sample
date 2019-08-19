@@ -25,7 +25,7 @@ from astropy.cosmology import Planck15 as cosmo
 
 #the code will be able to use any filter
 print("The ugrizy filter options with corresponding final coadded depths (5 sigma) are as follows:")
-print("u: 26.1, g: 27.4, r: 27.5, i: 26.8, z: 26.1, y: 24.9")
+print("u: 26.3, g: 27.5, r: 27.7, i: 27.0, z: 26.2, y: 24.9")
 filt = input("Plot Schechter Luminosity Function for which filter?  (sample input: zband)")
 print("filter = ", filt)
 
@@ -298,7 +298,7 @@ def lumlim(z,em,filt):
 
 	#changed if statements (now deleted) to dictionaries below
 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
-	ABmag_dict = {"uband":26.1,"gband":27.4,"rband":27.5,"iband":26.8,"zband":26.1,"yband":24.9}
+	ABmag_dict = {"uband":26.3,"gband":27.5,"rband":27.7,"iband":27.0,"zband":26.2,"yband":24.9}
 	lambdalow_dict = {"uband":305.30,"gband":386.30,"rband":536.90,"iband":675.90,"zband":802.90,"yband":908.30} #in nm
 	lambdahigh_dict = {"uband":408.60,"gband":567.00,"rband":706.00,"iband":833.00,"zband":938.60,"yband":1099.60} #in nm
 	#these are at the endpoints of the filters, NOT the FWHM
@@ -409,11 +409,13 @@ def lumlim(z,em,filt):
 	#print("TEST HERE: LSSTwav =",LSSTwav)
 
 	#print("TEST HERE: LSSTfilter: (this may be the issue?",LSSTfilter)
-	n_photon_1microJansky_array = LSSTfilter*(10**(-29))/(h_cgs*lambdaem_cgs) #c_cgs/
+	n_photon_1microJansky_array = LSSTfilter*(10**(-29))/(h_cgs*LSSTwav) #c_cgs/ #fixed the lambda from an incorrect value to the LSSTwav from the transmission function array
 	#print("TEST HERE: n_photon_1microJansky_array",n_photon_1microJansky_array)
-	dlambda = abs(LSSTwav[1]-LSSTwav[0])
+	#dlambda = abs(LSSTwav[1]-LSSTwav[0])
 	#print("TEST HERE: dlambda",dlambda)
-	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,dx=dlambda)
+	#n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,dx=dlambda)
+	n_photon_1microJansky = numpy.trapz(n_photon_1microJansky_array,x=LSSTwav) #more general
+	#print("n_photon_1microJansky",n_photon_1microJansky)
 	#print("TEST HERE: n_photon_1microJansky = ",n_photon_1microJansky)
 
 
@@ -479,11 +481,13 @@ def lumlim(z,em,filt):
 	#fluxdens = (10**(ABmag/(-2.5)))*3631*(10**(-6)) #outputs in microJansky
 	#uses ABmag from earlier in this function
 	fluxdens = 10**((ABmag+48.6)/(-2.5)) #outputs in erg/(s*Hz*(cm^2))
+	#print("fluxdens",fluxdens)
 	#print("flux density =",fluxdens,"erg/(s*Hz*(cm^2))")
 
 	#LSSTfilter is the transmission
 	#print("f_n_obj / [1_microJansky] = n_photon_object / n_photon_1_microJansky")
 	flux_limit = (fluxdens*n_photon_1microJansky/(LSSTfilter[int(mindiff_lambda_index)]*(10**(-29))))*(h_cgs*c_cgs/lambda_emissionline)
+	#print("flux_limit",flux_limit)
 
 	#print("FLUX LIMIT IS: for z=",z)
 	#print(" and em=",em)
@@ -636,8 +640,11 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 	#beginning of edits
 
+	#print("REDSHIFT",z)
+
 	#luminosity limit OF THE REDSHIFTED EMISSION LINE
 	lumlim_emline = lumlim(z = z,em = em,filt = filt)
+
 
 	#print("luminosity limit for the redshifted emission line:",lumlim_emline)
 
@@ -774,6 +781,8 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#L = (10**log10Lstararray)
 	log10Lstararray_lumlim = log10Lstararray_nonzero[numpy.where(L>lumlim_emline)]
 	comovingphi = scipy.integrate.trapz(philim,x=log10Lstararray_lumlim)
+
+	#print("comovingphi = ",comovingphi)
 	#print("comovingphi =",comovingphi,"Mpc^-3")
 
 
@@ -1223,15 +1232,10 @@ if emline == "allends":  #WHAT IS THE POINT OF THIS?  is it the same as allFWHM?
 	lambdacenter = lambdaarray[0]
 	FWHMlow = lambdaarray[1]  #not here
 	FWHMhigh = lambdaarray[2]  #not here
-	#FWHMlow = 382.775
-	#FWHMhigh = 408.6
+	FWHMlow = 803.0
+	FWHMhigh = 938.5
 	
 
-	#the uband
-	#305.3, 331.125, 356.95, 382.775, 408.6
-
-	#the yband
-	#908.3, 956.125, 1003.95, 1051.775, 1099.6
 
 	#plots the filter transmission curve
 
@@ -1570,6 +1574,8 @@ if emline == "allends":  #WHAT IS THE POINT OF THIS?  is it the same as allFWHM?
 		
 		#first convert zFWHMarrayHalpha to a comoving volume array
 		comovingvolarrayHalpha = numpy.zeros(len(zFWHMarrayHalpha))
+
+		#can input array into comoving vol calculation - note for future
 
 		#then multiply phi by the comoving volume array to get total number of galaxies expected
 		#the following finds the comoving volume array to do so
