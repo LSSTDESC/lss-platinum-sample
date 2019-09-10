@@ -43,6 +43,8 @@ gaussian_dist_gband1 = (1/(stand_dev_gband1*numpy.sqrt(2*numpy.pi)))*(numpy.e**(
 #the two values to plot
 DECam_filter_gband1 = gaussian_dist_gband1 #transmission
 DECam_wav_gband1 = wav_array_gband1 #wavelengths
+FWHMlow_wav_gband1 = wav_array_gband1[0]+((wav_array_gband1[-1]-wav_array_gband1[0])/2)-(FWHM_val_gband1/2) #nm
+FWHMhigh_wav_gband1 = wav_array_gband1[-1]-((wav_array_gband1[-1]-wav_array_gband1[0])/2)+(FWHM_val_gband1/2) #nm
 
 #gband2
 #need the following to calculate the gaussian-like filter transmission
@@ -57,6 +59,8 @@ gaussian_dist_gband2 = (1/(stand_dev_gband2*numpy.sqrt(2*numpy.pi)))*(numpy.e**(
 #the two values to plot
 DECam_filter_gband2 = gaussian_dist_gband2 #transmission
 DECam_wav_gband2 = wav_array_gband2 #wavelengths
+FWHMlow_wav_gband2 = wav_array_gband2[0]+((wav_array_gband2[-1]-wav_array_gband2[0])/2)-(FWHM_val_gband2/2) #nm
+FWHMhigh_wav_gband2 = wav_array_gband2[-1]-((wav_array_gband2[-1]-wav_array_gband2[0])/2)+(FWHM_val_gband2/2) #nm
 
 #gband3
 #need the following to calculate the gaussian-like filter transmission
@@ -71,6 +75,8 @@ gaussian_dist_gband3 = (1/(stand_dev_gband3*numpy.sqrt(2*numpy.pi)))*(numpy.e**(
 #the two values to plot
 DECam_filter_gband3 = gaussian_dist_gband3 #transmission
 DECam_wav_gband3 = wav_array_gband3 #wavelengths
+FWHMlow_wav_gband3 = wav_array_gband3[0]+((wav_array_gband3[-1]-wav_array_gband3[0])/2)-(FWHM_val_gband3/2) #nm
+FWHMhigh_wav_gband3 = wav_array_gband3[-1]-((wav_array_gband3[-1]-wav_array_gband3[0])/2)+(FWHM_val_gband3/2) #nm
 
 #gband4
 #need the following to calculate the gaussian-like filter transmission
@@ -85,6 +91,8 @@ gaussian_dist_gband4 = (1/(stand_dev_gband4*numpy.sqrt(2*numpy.pi)))*(numpy.e**(
 #the two values to plot
 DECam_filter_gband4 = gaussian_dist_gband4 #transmission
 DECam_wav_gband4 = wav_array_gband4 #wavelengths
+FWHMlow_wav_gband4 = wav_array_gband4[0]+((wav_array_gband4[-1]-wav_array_gband4[0])/2)-(FWHM_val_gband4/2) #nm
+FWHMhigh_wav_gband4 = wav_array_gband4[-1]-((wav_array_gband4[-1]-wav_array_gband4[0])/2)+(FWHM_val_gband4/2) #nm
 
 
 #three possible rband filters:
@@ -102,6 +110,8 @@ gaussian_dist_rband1 = (1/(stand_dev_rband1*numpy.sqrt(2*numpy.pi)))*(numpy.e**(
 #the two values to plot
 DECam_filter_rband1 = gaussian_dist_rband1 #transmission
 DECam_wav_rband1 = wav_array_rband1 #wavelengths
+FWHMlow_wav_rband1 = wav_array_rband1[0]+((wav_array_rband1[-1]-wav_array_rband1[0])/2)-(FWHM_val_rband1/2) #nm
+FWHMhigh_wav_rband1 = wav_array_rband1[-1]-((wav_array_rband1[-1]-wav_array_rband1[0])/2)+(FWHM_val_rband1/2) #nm
 
 #rband2
 #need the following to calculate the gaussian-like filter transmission
@@ -116,6 +126,8 @@ gaussian_dist_rband2 = (1/(stand_dev_rband2*numpy.sqrt(2*numpy.pi)))*(numpy.e**(
 #the two values to plot
 DECam_filter_rband2 = gaussian_dist_rband2 #transmission
 DECam_wav_rband2 = wav_array_rband2 #wavelengths
+FWHMlow_wav_rband2 = wav_array_rband2[0]+((wav_array_rband2[-1]-wav_array_rband2[0])/2)-(FWHM_val_rband2/2) #nm
+FWHMhigh_wav_rband2 = wav_array_rband2[-1]-((wav_array_rband2[-1]-wav_array_rband2[0])/2)+(FWHM_val_rband2/2) #nm
 
 #rband3
 #need the following to calculate the gaussian-like filter transmission
@@ -130,6 +142,8 @@ gaussian_dist_rband3 = (1/(stand_dev_rband3*numpy.sqrt(2*numpy.pi)))*(numpy.e**(
 #the two values to plot
 DECam_filter_rband3 = gaussian_dist_rband3 #transmission
 DECam_wav_rband3 = wav_array_rband3 #wavelengths
+FWHMlow_wav_rband3 = wav_array_rband3[0]+((wav_array_rband3[-1]-wav_array_rband3[0])/2)-(FWHM_val_rband3/2) #nm
+FWHMhigh_wav_rband3 = wav_array_rband3[-1]-((wav_array_rband3[-1]-wav_array_rband3[0])/2)+(FWHM_val_rband3/2) #nm
 
 
 #one possible zband:
@@ -147,6 +161,8 @@ gaussian_dist_zband = (1/(stand_dev_zband*numpy.sqrt(2*numpy.pi)))*(numpy.e**((-
 #the two values to plot
 DECam_filter_zband = gaussian_dist_zband #transmission
 DECam_wav_zband = wav_array_zband #wavelengths
+FWHMlow_wav_zband = wav_array_zband[0]+((wav_array_zband[-1]-wav_array_zband[0])/2)-(FWHM_val_zband/2) #nm
+FWHMhigh_wav_zband = wav_array_zband[-1]-((wav_array_zband[-1]-wav_array_zband[0])/2)+(FWHM_val_zband/2) #nm
 
 
 #now to plot the transmission functions of the narrowband filters
@@ -243,6 +259,8 @@ def lineqLya(z):
 
 	log10Lstar = mlog10Lstar*z + blog10Lstar
 	log10phistar = mlog10phistar*z + blog10phistar
+	print("log10Lstar",log10Lstar)
+	print("log10phistar",log10phistar)
 
 	LstarLya = 10**log10Lstar
 	phistarLya = 10**log10phistar
@@ -264,48 +282,81 @@ def filter_int(filt):
 		DECam_filter = gaussian_dist_gband1 #transmission or throughput
 		DECamfilter = wav_array_gband1 #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_gband1
+		lambdaFWHMright = FWHMhigh_wav_gband1
 
 	if filt=="gband2":
 		#use filter transmission functions calculated at beginning of code
 		DECam_filter = gaussian_dist_gband2 #transmission or throughput
 		DECamfilter = wav_array_gband2 #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_gband2
+		lambdaFWHMright = FWHMhigh_wav_gband2
 
 	if filt=="gband3":
 		#use filter transmission functions calculated at beginning of code
 		DECam_filter = gaussian_dist_gband3 #transmission or throughput
 		DECamfilter = wav_array_gband3 #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_gband3
+		lambdaFWHMright = FWHMhigh_wav_gband3
 
 	if filt=="gband4":
 		#use filter transmission functions calculated at beginning of code
 		DECam_filter = gaussian_dist_gband4 #transmission or throughput
 		DECamfilter = wav_array_gband4 #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_gband4
+		lambdaFWHMright = FWHMhigh_wav_gband4
 
 	if filt=="rband1":
 		#use filter transmission functions calculated at beginning of code
 		DECam_filter = gaussian_dist_rband1 #transmission or throughput
 		DECamfilter = wav_array_rband1 #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_rband1
+		lambdaFWHMright = FWHMhigh_wav_rband1
 
 	if filt=="rband2":
 		#use filter transmission functions calculated at beginning of code
 		DECam_filter = gaussian_dist_rband2 #transmission or throughput
 		DECamfilter = wav_array_rband2 #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_rband2
+		lambdaFWHMright = FWHMhigh_wav_rband2
 
 	if filt=="rband3":
 		#use filter transmission functions calculated at beginning of code
 		DECam_filter = gaussian_dist_rband3 #transmission or throughput
 		DECamfilter = wav_array_rband3 #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_rband3
+		lambdaFWHMright = FWHMhigh_wav_rband3
 
 	if filt=="zband":
 		#use filter transmission functions calculated at beginning of code
 		DECam_filter = gaussian_dist_zband #transmission or throughput
 		DECamfilter = wav_array_zband #wavelengths
 		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_zband
+		lambdaFWHMright = FWHMhigh_wav_zband
+
 
 
 	#to find the midpoint, integrate over the entire filter, then find what value would give you half the integrated value
@@ -355,73 +406,6 @@ def filter_int(filt):
 
 	#the "central" wavelength is called the median transmission wavelength of each band
 
-	#want to find the FWHM of each filter
-
-	#finds the index of the maximum value and the corresponding wavelength
-	maxval = max(DECamfilter)
-	maxindex = numpy.where(DECamfilter==maxval)
-	#print(type(maxindex))
-	#want to change maxindex from tuple to float - just take value
-	maxindex = maxindex[0]
-	maxindex = numpy.float(maxindex)
-	maxindex = numpy.int(maxindex) #attempt at fixing an error
-	#DECamlambda = DECam_filter[:,0]
-	maxlambda = DECamlambda[maxindex]
-	#print("maxlambda = ",maxlambda)
-
-	#need the two points of the filter whose values give half the maximum value
-
-	#check each half of the filter for half max value
-	halfmaxval = maxval/2
-	half = (len(DECamfilter))/2
-	#print(half*2,half)
-	halfapprox = round(half)
-	DECamfilterhalf1 = DECamfilter[:halfapprox]
-	DECamfilterhalf2 = DECamfilter[halfapprox:]
-	left = DECamfilterhalf1
-	right = DECamfilterhalf2
-	#finds closest value by finding minimum difference - need left and right parts
-	diffleft = abs(halfmaxval-DECamfilterhalf1)
-	diffright = abs(halfmaxval-DECamfilterhalf2)
-
-	closestleft = min(diffleft)
-	closestright = min(diffright)
-	#print("closestleft = ",closestleft)
-	#print("closestright = ",closestright)
-	indexL = numpy.where(diffleft==closestleft)
-	indexR = numpy.where(diffright==closestright)
-	#print("indexL = ", indexL)
-	#print("indexR = ", indexR)
-	#have to change this from tuple to int - first find the actual value in index 0
-	indexL = indexL[0]
-	indexR = indexR[0]
-	indexL = numpy.int(indexL)
-	indexR = numpy.int(indexR)
-	#print("indexL = ",indexL)
-	#print("indexR = ",indexR)
-
-	#find value in left and right sections of the filter
-	valueleft = left[indexL]
-	valueright = right[indexR]
-	#print(valueleft,valueright)
-
-	#match value to DECamfilter
-	DECamhalfmaxleft = numpy.where(DECamfilter==valueleft)
-	DECamhalfmaxright = numpy.where(DECamfilter==valueright)
-	#print(DECamhalfmaxleft,DECamhalfmaxright)
-	#print(type(DECamhalfmaxleft))
-	#print(type(DECamhalfmaxright))
-	#want to change from tuple to float - just take value
-	indexleftFWHM = DECamhalfmaxleft[0]
-	indexrightFWHM = DECamhalfmaxright[0]
-	indexleftFWHM = numpy.int(indexleftFWHM)
-	indexrightFWHM = numpy.int(indexrightFWHM)
-
-	#match to lambda
-	#DECamlambda = DECam_filter[:,0]
-	lambdaFWHMleft = DECamlambda[indexleftFWHM]
-	lambdaFWHMright = DECamlambda[indexrightFWHM]
-	#print(lambdaFWHMleft,lambdaFWHMright)
 
 	#should have output as an array (see LF code)
 	#print("returns array: lambdacenter,lambdaFWHMleft,lambdaFWHMright")
@@ -925,8 +909,6 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 
 if emline == "allends":
 
-	#PAY ATTENTION TO THE FOLLOWING COMMENT / PRINT STATEMENT
-	print("NOTE: PERHAPS TERRIBLY, I HAVE REDEFINED THE FIRST VALUES LABELED FWHM TO ACTUALLY THE FILTER ENDPOINTS..WHICH I NEED TO FIX LATER.  I JUST WANT TO CHECK STUFF")
 
 
 	#changed if statements to dictionaries and deleted them
@@ -938,15 +920,16 @@ if emline == "allends":
 	lambdahigh = lambdahigh_dict[filt]
 	lambdaarray = filter_int(filt = filt)
 	lambdacenter = lambdaarray[0]
-	FWHMlow = lambdaarray[1]  #not here
-	FWHMhigh = lambdaarray[2]  #not here
-	FWHMlow = lambdalow
-	FWHMhigh = lambdahigh
+	FWHMlow = lambdaarray[1]
+	FWHMhigh = lambdaarray[2]
 	
 
 	lambda_Lymanalpha = 121.6 #in nm
 
-	#finds redshift of emission lines
+	#finds redshift of FWHM
+	zFWHMlow = (FWHMlow/lambda_Lymanalpha)-1
+	zFWHMhigh = (FWHMhigh/lambda_Lymanalpha)-1
+
 
 	#first define array of 100 evenly spaced wavelengths
 	if filt=="gband1":
@@ -983,8 +966,6 @@ if emline == "allends":
 	comovingphiarrayLymanalpha = numpy.zeros(100)
 
 
-
-
 	print("start Lymanalpha")
 
 
@@ -999,6 +980,22 @@ if emline == "allends":
 		#shortens to use only positive values
 		z_Lymanalpha_array = z_Lymanalpha_array[numpy.where(comovingphiarrayLymanalpha>0)]
 		comovingphiarrayLymanalpha = comovingphiarrayLymanalpha[numpy.where(comovingphiarrayLymanalpha>0)]
+		# print("z_Lymanalpha_array",z_Lymanalpha_array)
+		# print("comovingphiarrayLymanalpha",comovingphiarrayLymanalpha)
+
+		zFWHMarray_Lymanalpha_NOT = z_Lymanalpha_array[numpy.where(z_Lymanalpha_array>=zFWHMlow)]
+		comovingphiarrayLymanalpha_FWHM_NOT = comovingphiarrayLymanalpha[numpy.where(z_Lymanalpha_array>=zFWHMlow)]
+		# print("numpy.where(z_Lymanalpha_array>=zFWHMlow):",numpy.where(z_Lymanalpha_array>=zFWHMlow))
+
+		zFWHMarray_Lymanalpha = zFWHMarray_Lymanalpha_NOT[numpy.where(zFWHMarray_Lymanalpha_NOT<=zFWHMhigh)]
+		comovingphiarrayLymanalpha_FWHM = comovingphiarrayLymanalpha_FWHM_NOT[numpy.where(zFWHMarray_Lymanalpha_NOT<=zFWHMhigh)]
+		# print("numpy.where(zFWHMarray_Lymanalpha_NOT<=zFWHMhigh):",numpy.where(zFWHMarray_Lymanalpha_NOT<=zFWHMhigh))
+
+		# print("zFWHMarray_Lymanalpha = ",zFWHMarray_Lymanalpha)
+		# print("comovingphiarrayLymanalpha_FWHM_NOT = ",comovingphiarrayLymanalpha_FWHM_NOT)
+		# print("comovingphiarrayLymanalpha_FWHM = ",comovingphiarrayLymanalpha_FWHM)
+		# print("zFWHMlow",zFWHMlow)
+		# print("zFWHMhigh",zFWHMhigh)
 
 
 		#adds legend
@@ -1022,8 +1019,8 @@ if emline == "allends":
 
 		#I need the total number of galaxies WITHIN the FWHM
 		#1 - integrate comovingphi using trapz and the comoving volume - will get total comoving number
-		#2 - get DECam areal/sky density from this - multiply by 18000 square degrees to get final answer
-		#or skip areal number density and just multiply the result from the comovingphi integration by 18000/42000 to get the DECam area
+		#2 - get DECam areal/sky density from this - multiply by 3 square degrees to get final answer
+		#or skip areal number density and just multiply the result from the comovingphi integration by 3/42000 to get the DECam area
 
 		#first convert z_Lymanalpha_array to a comoving volume array
 		comovingvolarrayLymanalpha = numpy.zeros(len(z_Lymanalpha_array))
@@ -1037,7 +1034,7 @@ if emline == "allends":
 			comovingvolarrayLymanalpha[r] = temparray #this is in Mpc^3
 
 
-		#DECam area of the sky is 18000/42000 of the whole sky
+		#DECam area of the sky is 3/42000 of the whole sky
 
 		#this is ending up as a weird number
 
@@ -1048,14 +1045,19 @@ if emline == "allends":
 
 
 		#integrates comovingphi over whole sky
-		total_number_FWHM_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
+		total_number_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
 		#print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
 		#DECam area
-		total_number_FWHM_DECamLymanalpha = total_number_FWHM_Lymanalpha*1
+		total_number_DECamLymanalpha = total_number_Lymanalpha*1
 
 
-		#print("the total expected number of galaxies in the DECam area (18000/42000) is:")
+		#print("the total expected number of galaxies in the DECam area (3/42000) is:")
 		#print("total_number_FWHM_DECamLymanalpha = ",total_number_FWHM_DECamLymanalpha)
+
+
+		#want average number density for gaussian-approximated filters, so will use from FWHM of each filter only
+		#use FWHMlow_actual and FWHMhigh_actual, which are wavelength values
+		average_number_density_FWHM = numpy.sum(comovingphiarrayLymanalpha_FWHM)/len(comovingphiarrayLymanalpha_FWHM)
 
 
 	else:
@@ -1065,13 +1067,16 @@ if emline == "allends":
 	print("end Lymanalpha")
 
 
+
 	print("the total expected number of galaxies in the whole area of the sky covered by DECam is:")
 
 
 	if len(z_Lymanalpha_array)>0:
-		print("total_number_FWHM_DECamLymanalpha = ",total_number_FWHM_DECamLymanalpha)
-		# arealphiLymanalpha = total_number_DECam_Lymanalpha/(4*numpy.pi)
-		# print("arealphiLymanalpha =",arealphiLymanalpha,"steradian^-1")
+
+		print("total_number_DECamLymanalpha = ",total_number_DECamLymanalpha)
+		print("average_number_density_FWHM = ",average_number_density_FWHM)
+		#arealphiLymanalpha = total_number_DECam_Lymanalpha/(4*numpy.pi)
+		#print("arealphiLymanalpha =",arealphiLymanalpha,"steradian^-1")
 
 
 
