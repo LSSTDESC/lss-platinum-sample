@@ -712,7 +712,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#plot(lumarray_2,yarray,style+"--")
 	#plot(lumarray_3,yarray,style+"--")
 	#plot(lumarray_4,yarray,style+"--")
-	xlim(39,46)
+	xlim(35,46)
 	ylim(-7,0)
 	legend(loc = "upper right")
 	#LaTeX is used with $ signs in the titles below
@@ -751,7 +751,7 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#plot(lumarray_3,yarray,style+"--")
 	#plot(lumarray_4,yarray,style+"--")
 	legend(loc = "upper right")
-	xlim(39,46)
+	xlim(35,46)
 	ylim(0,0.015)
 	#LaTeX is used with $ signs in the titles below
 	xlabel("$\log_{10}(L_{min} [ergs/s])$")
@@ -1232,8 +1232,8 @@ if emline == "allends":  #WHAT IS THE POINT OF THIS?  is it the same as allFWHM?
 	lambdacenter = lambdaarray[0]
 	FWHMlow = lambdaarray[1]  #not here
 	FWHMhigh = lambdaarray[2]  #not here
-	FWHMlow = 803.0
-	FWHMhigh = 938.5
+	FWHMlow = lambdalow
+	FWHMhigh = lambdahigh
 	
 
 
