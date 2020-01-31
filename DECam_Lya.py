@@ -23,16 +23,53 @@ lambda_Lymanalpha = 121.6 #in nm
 print("lambda_Lymanalpha",lambda_Lymanalpha)
 
 
+# #testband
+# #need the following to calculate the gaussian-like filter transmission
+# z_array_testband = numpy.linspace #NO IDEA - NEED TO CHECK ?? Paper values or our values?  (2.59-0.08,2.59+0.08,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+# wav_array_testband = (z_array_testband+1)*lambda_Lymanalpha
+# FWHM_val_testband = 50 #nm
+# stand_dev_testband = FWHM_val_testband/(2*numpy.sqrt(2*numpy.log(2)))
+# lambda_c_testband = 500.7 #nm
+# mean_mu_testband = lambda_c_testband
+# #calculating the gaussian-like filter transmission
+# gaussian_dist_testband = (1/(stand_dev_testband*numpy.sqrt(2*numpy.pi)))*(numpy.e**((-(wav_array_testband-mean_mu_testband)**2)/(2*(stand_dev_testband**2))))
+# #the two values to plot
+# DECam_filter_testband = gaussian_dist_testband #transmission
+# DECam_wav_testband = wav_array_testband #wavelengths
+# FWHMlow_wav_testband = wav_array_testband[0]+((wav_array_testband[-1]-wav_array_testband[0])/2)-(FWHM_val_testband/2) #nm
+# FWHMhigh_wav_testband = wav_array_testband[-1]-((wav_array_testband[-1]-wav_array_testband[0])/2)+(FWHM_val_testband/2) #nm
+# ABmag = 25.4
+
 #there are:
 #four possible gband narrowband filters
 #three possible rband filters
 #one possible zband filter
 
+#extra filter
+#rband4
+#need the following to calculate the gaussian-like filter transmission
+z_array_rband4 = numpy.linspace(4.54-0.04,4.54+0.04,num=2000)
+wav_array_rband4 = (z_array_rband4+1)*lambda_Lymanalpha
+FWHM_val_rband4 = 10 #nm 
+stand_dev_rband4 = FWHM_val_rband4/(2*numpy.sqrt(2*numpy.log(2)))
+lambda_c_rband4 = 673.5 #nm
+mean_mu_rband4 = lambda_c_rband4
+#calculating the gaussian-like filter transmission
+gaussian_dist_rband4 = (1/(stand_dev_rband4*numpy.sqrt(2*numpy.pi)))*(numpy.e**((-(wav_array_rband4-mean_mu_rband4)**2)/(2*(stand_dev_rband4**2))))
+#the two values to plot
+DECam_filter_rband4 = gaussian_dist_rband4 #transmission
+DECam_wav_rband4 = wav_array_rband4 #wavelengths
+FWHMlow_wav_rband4 = wav_array_rband4[0]+((wav_array_rband4[-1]-wav_array_rband4[0])/2)-(FWHM_val_rband4/2) #nm
+FWHMhigh_wav_rband4 = wav_array_rband4[-1]-((wav_array_rband4[-1]-wav_array_rband4[0])/2)+(FWHM_val_rband4/2) #nm
+
+
+#NEED TO FIX THE REST - PROPAGATE CORRECTED REDSHIFT RANGES INTO THE REST OF THE CODE AND SPREADSHEET
+
 #four possible gband filters:
 
 #gband1
 #need the following to calculate the gaussian-like filter transmission
-z_array_gband1 = numpy.linspace(2.59-0.08,2.59+0.08,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_gband1 = numpy.linspace(2.59-0.04,2.59+0.04,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_gband1 = (z_array_gband1+1)*lambda_Lymanalpha
 FWHM_val_gband1 = 10 #nm
 stand_dev_gband1 = FWHM_val_gband1/(2*numpy.sqrt(2*numpy.log(2)))
@@ -48,7 +85,7 @@ FWHMhigh_wav_gband1 = wav_array_gband1[-1]-((wav_array_gband1[-1]-wav_array_gban
 
 #gband2
 #need the following to calculate the gaussian-like filter transmission
-z_array_gband2 = numpy.linspace(2.59-0.036,2.59+0.036,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_gband2 = numpy.linspace(2.59-0.018,2.59+0.018,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_gband2 = (z_array_gband2+1)*lambda_Lymanalpha
 FWHM_val_gband2 = 4.4 #nm
 stand_dev_gband2 = FWHM_val_gband2/(2*numpy.sqrt(2*numpy.log(2)))
@@ -64,7 +101,7 @@ FWHMhigh_wav_gband2 = wav_array_gband2[-1]-((wav_array_gband2[-1]-wav_array_gban
 
 #gband3
 #need the following to calculate the gaussian-like filter transmission
-z_array_gband3 = numpy.linspace(3.12-0.08,3.12+0.08,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_gband3 = numpy.linspace(3.12-0.04,3.12+0.04,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_gband3 = (z_array_gband3+1)*lambda_Lymanalpha
 FWHM_val_gband3 = 10 #nm
 stand_dev_gband3 = FWHM_val_gband3/(2*numpy.sqrt(2*numpy.log(2)))
@@ -80,7 +117,7 @@ FWHMhigh_wav_gband3 = wav_array_gband3[-1]-((wav_array_gband3[-1]-wav_array_gban
 
 #gband4
 #need the following to calculate the gaussian-like filter transmission
-z_array_gband4 = numpy.linspace(3.12-0.045,3.12+0.045,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_gband4 = numpy.linspace(3.12-0.027,3.12+0.027,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_gband4 = (z_array_gband4+1)*lambda_Lymanalpha
 FWHM_val_gband4 = 5 #nm
 stand_dev_gband4 = FWHM_val_gband4/(2*numpy.sqrt(2*numpy.log(2)))
@@ -99,7 +136,7 @@ FWHMhigh_wav_gband4 = wav_array_gband4[-1]-((wav_array_gband4[-1]-wav_array_gban
 
 #rband1
 #need the following to calculate the gaussian-like filter transmission
-z_array_rband1 = numpy.linspace(4.40-0.08,4.40+0.08,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_rband1 = numpy.linspace(4.40-0.04,4.40+0.04,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_rband1 = (z_array_rband1+1)*lambda_Lymanalpha
 FWHM_val_rband1 = 10 #nm
 stand_dev_rband1 = FWHM_val_rband1/(2*numpy.sqrt(2*numpy.log(2)))
@@ -115,7 +152,7 @@ FWHMhigh_wav_rband1 = wav_array_rband1[-1]-((wav_array_rband1[-1]-wav_array_rban
 
 #rband2
 #need the following to calculate the gaussian-like filter transmission
-z_array_rband2 = numpy.linspace(4.40-0.054,4.40+0.054,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_rband2 = numpy.linspace(4.40-0.027,4.40+0.027,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_rband2 = (z_array_rband2+1)*lambda_Lymanalpha
 FWHM_val_rband2 = 6.6 #nm
 stand_dev_rband2 = FWHM_val_rband2/(2*numpy.sqrt(2*numpy.log(2)))
@@ -131,7 +168,7 @@ FWHMhigh_wav_rband2 = wav_array_rband2[-1]-((wav_array_rband2[-1]-wav_array_rban
 
 #rband3
 #need the following to calculate the gaussian-like filter transmission
-z_array_rband3 = numpy.linspace(4.45-0.14,4.45+0.14,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_rband3 = numpy.linspace(4.45-0.07,4.45+0.07,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_rband3 = (z_array_rband3+1)*lambda_Lymanalpha
 FWHM_val_rband3 = 17 #nm
 stand_dev_rband3 = FWHM_val_rband3/(2*numpy.sqrt(2*numpy.log(2)))
@@ -150,7 +187,7 @@ FWHMhigh_wav_rband3 = wav_array_rband3[-1]-((wav_array_rband3[-1]-wav_array_rban
 
 #zband
 #need the following to calculate the gaussian-like filter transmission
-z_array_zband = numpy.linspace(6.93-0.08,6.93+0.08,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+z_array_zband = numpy.linspace(6.93-0.04,6.93+0.04,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
 wav_array_zband = (z_array_zband+1)*lambda_Lymanalpha
 FWHM_val_zband = 9.5 #nm
 stand_dev_zband = FWHM_val_zband/(2*numpy.sqrt(2*numpy.log(2)))
@@ -163,6 +200,23 @@ DECam_filter_zband = gaussian_dist_zband #transmission
 DECam_wav_zband = wav_array_zband #wavelengths
 FWHMlow_wav_zband = wav_array_zband[0]+((wav_array_zband[-1]-wav_array_zband[0])/2)-(FWHM_val_zband/2) #nm
 FWHMhigh_wav_zband = wav_array_zband[-1]-((wav_array_zband[-1]-wav_array_zband[0])/2)+(FWHM_val_zband/2) #nm
+
+
+#zband_tenth
+#need the following to calculate the gaussian-like filter transmission
+z_array_zband_tenth = numpy.linspace(6.93-0.04,6.93+0.04,num=2000) #THIS IS IN REDSHIFT, IT NEEDS TO BE IN LAMBDA!!!!
+wav_array_zband_tenth = (z_array_zband_tenth+1)*lambda_Lymanalpha
+FWHM_val_zband_tenth = 9.5 #nm
+stand_dev_zband_tenth = FWHM_val_zband_tenth/(2*numpy.sqrt(2*numpy.log(2)))
+lambda_c_zband_tenth = 964 #nm
+mean_mu_zband_tenth = lambda_c_zband_tenth
+#calculating the gaussian-like filter transmission
+gaussian_dist_zband_tenth = (1/(stand_dev_zband_tenth*numpy.sqrt(2*numpy.pi)))*(numpy.e**((-(wav_array_zband_tenth-mean_mu_zband_tenth)**2)/(2*(stand_dev_zband_tenth**2))))
+#the two values to plot
+DECam_filter_zband_tenth = gaussian_dist_zband_tenth #transmission
+DECam_wav_zband_tenth = wav_array_zband_tenth #wavelengths
+FWHMlow_wav_zband_tenth = wav_array_zband_tenth[0]+((wav_array_zband_tenth[-1]-wav_array_zband_tenth[0])/2)-(FWHM_val_zband_tenth/2) #nm
+FWHMhigh_wav_zband_tenth = wav_array_zband_tenth[-1]-((wav_array_zband_tenth[-1]-wav_array_zband_tenth[0])/2)+(FWHM_val_zband_tenth/2) #nm
 
 
 #now to plot the transmission functions of the narrowband filters
@@ -205,14 +259,17 @@ print("emline = ", emline)
 #FIX THESE NUMBERS
 #the code will be able to use any filter
 print("The possible narrowband filter options with corresponding final coadded depths (5 sigma) are as follows:")
-print("gband1:  1 hour: 24.9  ;  10 hours: 26.2")
-print("gband2:  1 hour: 24.5  ;  10 hours: 25.7")
-print("gband3:  1 hour: 24.9  ;  10 hours: 26.2")
-print("gband4:  1 hour: 24.6  ;  10 hours: 25.9")
-print("rband1:  1 hour: 24.6  ;  10 hours: 25.8")
-print("rband2:  1 hour: 24.3  ;  10 hours: 25.6")
-print("rband3:  1 hour: 24.9  ;  10 hours: 26.1")
-print("zband:   1 hour: 23.3  ;  10 hours: 24.5")
+print("gband1:  1 hour: 24.9  ;  10 hours: 26.2  ;  3 hours: 25.5  ;  6 hours: 25.9 ")
+print("gband2:  1 hour: 24.5  ;  10 hours: 25.7  ;  3 hours: 25.1  ;  6 hours: 25.5 ")
+print("gband3:  1 hour: 24.9  ;  10 hours: 26.2  ;  3 hours: 25.5  ;  6 hours: 25.9 ")
+print("gband4:  1 hour: 24.6  ;  10 hours: 25.9  ;  3 hours: 25.2  ;  6 hours: 25.6 ")
+print("rband1:  1 hour: 24.6  ;  10 hours: 25.8  ;  3 hours: 25.2  ;  6 hours: 25.6 ")
+print("rband2:  1 hour: 24.3  ;  10 hours: 25.6  ;  3 hours: 24.9  ;  6 hours: 25.3 ")
+print("rband3:  1 hour: 24.9  ;  10 hours: 26.1  ;  3 hours: 25.5  ;  6 hours: 23.9 ")
+print("rband4:ALL OF THESE NEED TO BE UPDATED")
+print("zband:   1 hour: 23.3  ;  10 hours: 24.5  ;  3 hours: 25.9  ;  6 hours: 24.3 ")
+
+
 
 filt = input("Plot Schechter Luminosity Function for which filter?  (sample input: zband)")
 print("filter = ", filt)
@@ -228,17 +285,33 @@ def lineqLya(z):
 	#print("lineqLya has been called")
 
 	#this is used for the Lymanalpha line
-	#finds linear equation from two points in Ciardullo et al. 2012 paper and interpolates/extraoplates to find Lstar and phistar for different z values
 
-	z1 = 3.113
-	z2 = 2.063
+	#I AM NOT USING CIARDULLO ANYMORE, IF THIS WORKS
+	# #finds linear equation from two points in Ciardullo et al. 2012 paper and interpolates/extraoplates to find Lstar and phistar for different z values
+
+	# z1 = 3.113
+	# z2 = 2.063
+	# deltaz = z1 - z2
+
+	# log10Lstar1 = 42.76
+	# log10Lstar2 = 42.33
+
+	# log10phistar1 = -3.17
+	# log10phistar2 = -2.86
+
+	#finds linear equation from two points in UPDATED Sobral et al. 2018 paper and interpolates/extraoplates to find Lstar and phistar for different z values
+
+	#NOTE: NOT SURE IF I ASSUMED THE RIGHT THINGS, TAKEN FROM TABLE C3.
+
+	z1 = 5.4
+	z2 = 2.2
 	deltaz = z1 - z2
 
-	log10Lstar1 = 42.76
-	log10Lstar2 = 42.33
+	log10Lstar1 = 43.35
+	log10Lstar2 = 42.69
 
-	log10phistar1 = -3.17
-	log10phistar2 = -2.86
+	log10phistar1 = -3.78
+	log10phistar2 = -3.33
 
 	mlog10Lstar = (log10Lstar1 - log10Lstar2)/(deltaz)
 	mlog10phistar = (log10phistar1 - log10phistar2)/(deltaz)
@@ -259,8 +332,6 @@ def lineqLya(z):
 
 	log10Lstar = mlog10Lstar*z + blog10Lstar
 	log10phistar = mlog10phistar*z + blog10phistar
-	print("log10Lstar",log10Lstar)
-	print("log10phistar",log10phistar)
 
 	LstarLya = 10**log10Lstar
 	phistarLya = 10**log10phistar
@@ -357,6 +428,25 @@ def filter_int(filt):
 		lambdaFWHMleft = FWHMlow_wav_zband
 		lambdaFWHMright = FWHMhigh_wav_zband
 
+	if filt=="zband_tenth":
+		#use filter transmission functions calculated at beginning of code
+		DECam_filter = gaussian_dist_zband_tenth #transmission or throughput
+		DECamfilter = wav_array_zband_tenth #wavelengths
+		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_zband_tenth
+		lambdaFWHMright = FWHMhigh_wav_zband_tenth
+
+	if filt=="rband4":
+		#use filter transmission functions calculated at beginning of code
+		DECam_filter = gaussian_dist_rband4 #transmission or throughput
+		DECamfilter = wav_array_rband4 #wavelengths
+		DECamlambda = DECamfilter
+		#want to find the FWHM of each filter
+		#easier to just take directly from gaussian / given in beginning
+		lambdaFWHMleft = FWHMlow_wav_rband4
+		lambdaFWHMright = FWHMhigh_wav_rband4
 
 
 	#to find the midpoint, integrate over the entire filter, then find what value would give you half the integrated value
@@ -428,12 +518,26 @@ def lumlim(z,em,filt,exp_time):
 	#changed if statements (now deleted) to dictionaries below
 	#ABmag is the coadded depth for a 5 sigma magnitude limit in this filter
 	if exp_time=="1hour":
-		ABmag_dict = {"gband1":24.9,"gband2":24.5,"gband3":24.9,"gband4":24.6,"rband1":24.6,"rband2":24.3,"rband3":24.9,"zband":23.3}
-	if exp_time=="10hour":
-		ABmag_dict = {"gband1":26.2,"gband2":25.7,"gband3":26.2,"gband4":25.9,"rband1":25.8,"rband2":25.6,"rband3":26.1,"zband":24.5}
+		ABmag_dict = {"gband1":24.9,"gband2":24.5,"gband3":24.9,"gband4":24.6,"rband1":24.6,"rband2":24.3,"rband3":24.9,"zband":23.3,"zband_tenth":23.3,"rband4":24.6}
+
+	if exp_time=="3hour":
+		ABmag_dict = {"gband1":25.5,"gband2":25.1,"gband3":25.5,"gband4":25.2,"rband1":25.2,"rband2":24.9,"rband3":25.5,"zband":23.9,"zband_tenth":0,"rband4":25.2}
 	
-	lambdalow_dict = {"gband1":DECam_wav_gband1[0],"gband2":DECam_wav_gband2[0],"gband3":DECam_wav_gband3[0],"gband4":DECam_wav_gband4[0],"rband1":DECam_wav_rband1[0],"rband2":DECam_wav_rband2[0],"rband3":DECam_wav_rband3[0],"zband":DECam_wav_zband[0]} #in nm"
-	lambdahigh_dict = {"gband1":DECam_wav_gband1[-1],"gband2":DECam_wav_gband2[-1],"gband3":DECam_wav_gband3[-1],"gband4":DECam_wav_gband4[-1],"rband1":DECam_wav_rband1[-1],"rband2":DECam_wav_rband2[-1],"rband3":DECam_wav_rband3[-1],"zband":DECam_wav_zband[-1]} #in nm
+	if exp_time=="6hour":
+		ABmag_dict = {"gband1":25.9,"gband2":25.5,"gband3":25.9,"gband4":25.6,"rband1":25.6,"rband2":25.3,"rband3":25.9,"zband":24.3,"zband_tenth":0,"rband4":25.6}
+	
+	if exp_time=="7.5hour":
+		ABmag_dict = {"rband4":25.7}
+
+	if exp_time=="10hour":
+		ABmag_dict = {"gband1":26.2,"gband2":25.7,"gband3":26.2,"gband4":25.9,"rband1":25.8,"rband2":25.6,"rband3":26.1,"zband":24.5,"zband_tenth":24.5,"rband4":25.8}
+
+	if exp_time=="15hour":
+		ABmag_dict = {"rband4":26}
+
+
+	lambdalow_dict = {"gband1":DECam_wav_gband1[0],"gband2":DECam_wav_gband2[0],"gband3":DECam_wav_gband3[0],"gband4":DECam_wav_gband4[0],"rband1":DECam_wav_rband1[0],"rband2":DECam_wav_rband2[0],"rband3":DECam_wav_rband3[0],"zband":DECam_wav_zband[0],"zband_tenth":DECam_wav_zband[0],"rband4":DECam_wav_rband4[0]} #in nm"
+	lambdahigh_dict = {"gband1":DECam_wav_gband1[-1],"gband2":DECam_wav_gband2[-1],"gband3":DECam_wav_gband3[-1],"gband4":DECam_wav_gband4[-1],"rband1":DECam_wav_rband1[-1],"rband2":DECam_wav_rband2[-1],"rband3":DECam_wav_rband3[-1],"zband":DECam_wav_zband[-1],"zband_tenth":DECam_wav_zband[-1],"rband4":DECam_wav_rband4[-1]} #in nm
 	#these are at the endpoints of the filters, NOT the FWHM
 
 	ABmag = ABmag_dict[filt]
@@ -482,6 +586,15 @@ def lumlim(z,em,filt,exp_time):
 		DECamfilter = gaussian_dist_zband #transmission or throughput
 		DECamwav = wav_array_zband #wavelengths
 
+	if filt=="zband_tenth":
+		#use filter transmission functions calculated at beginning of code
+		DECamfilter = gaussian_dist_zband_tenth #transmission or throughput
+		DECamwav = wav_array_zband_tenth
+
+	if filt=="rband4":
+		#use filter transmission functions calculated at beginning of code
+		DECamfilter = gaussian_dist_rband4 #transmission or throughput
+		DECamwav = wav_array_rband4 #wavelengths
 
 
 	#the following calculates values I use in and plug into the lumlim function
@@ -645,22 +758,22 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#I have two different parametrizations for Lstar and phistar; the first one is from Comparat et al 2016, and the second one is from Sobral et al 2015
 	#I added a third one when I linearly parametrized Lymanalpha from Ciardullo et al 2012
 
-	if param == "first":
+	# if param == "first":
 
-		Lstar = fluxscale*Lstar0*((1+z)**betaL)
-		#print("Lstar = ", Lstar)
+	# 	Lstar = fluxscale*Lstar0*((1+z)**betaL)
+	# 	#print("Lstar = ", Lstar)
 
-		phistar = phistar0*((1+z)**betaphi)
-		#print("phistar = ", phistar)
+	# 	phistar = phistar0*((1+z)**betaphi)
+	# 	#print("phistar = ", phistar)
 
 
-	if param == "second":
+	# if param == "second":
 
-		Lstar = 10**(0.45*z + Lstar0)
-		#print("Lstar = ", Lstar)
+	# 	Lstar = 10**(0.45*z + Lstar0)
+	# 	#print("Lstar = ", Lstar)
 
-		phistar = 10**(-0.38*(z**2) + z + phistar0)
-		#print("phistar = ", phistar)
+	# 	phistar = 10**(-0.38*(z**2) + z + phistar0)
+	# 	#print("phistar = ", phistar)
 
 
 	if param == "third":
@@ -676,6 +789,29 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 		#print("phistar = ",phistar)
 		#print(type(phistar))
 
+	# if param == "fourth" #this is a cross-check with Gronwall et al. 2007, which is referenced in Gawiser et al. 2007
+
+	if param == "fourth":
+
+		print("Gronwall+2007 cross-check, only valid at z~3.1")
+
+		Lstar = 10**(42.66)
+
+		phistar = 1.28*(10**(-3))
+		
+
+	if param == "fifth":
+
+		print("Updated: Sobral+ 2018")
+
+		answersLya = lineqLya(z=z)
+		#print(type(answersLya))
+
+		Lstar = answersLya[0]
+
+		phistar = answersLya[1]
+
+	# 	#DO THIS LATER
 
 
 	#testing - weird results with smaller bands, need to see if follows LF and transmission function
@@ -714,8 +850,8 @@ def schechter_LF(z,lambdaemitted,alpha,Lstar0,betaL,phistar0,betaphi,zpaper,para
 	#the following calculates values I use in and plug into the lumlim function
 
 	#once again, dictionaries are better-formated than the previous (deleted) if statements
-	lambdalow_dict = {"gband1":DECam_wav_gband1[0],"gband2":DECam_wav_gband2[0],"gband3":DECam_wav_gband3[0],"gband4":DECam_wav_gband4[0],"rband1":DECam_wav_rband1[0],"rband2":DECam_wav_rband2[0],"rband3":DECam_wav_rband3[0],"zband":DECam_wav_zband[0]} #in nm"
-	lambdahigh_dict = {"gband1":DECam_wav_gband1[-1],"gband2":DECam_wav_gband2[-1],"gband3":DECam_wav_gband3[-1],"gband4":DECam_wav_gband4[-1],"rband1":DECam_wav_rband1[-1],"rband2":DECam_wav_rband2[-1],"rband3":DECam_wav_rband3[-1],"zband":DECam_wav_zband[-1]} #in nm
+	lambdalow_dict = {"gband1":DECam_wav_gband1[0],"gband2":DECam_wav_gband2[0],"gband3":DECam_wav_gband3[0],"gband4":DECam_wav_gband4[0],"rband1":DECam_wav_rband1[0],"rband2":DECam_wav_rband2[0],"rband3":DECam_wav_rband3[0],"zband":DECam_wav_zband[0],"zband_tenth":DECam_wav_zband[0],"rband4":DECam_wav_rband4[0]} #in nm"
+	lambdahigh_dict = {"gband1":DECam_wav_gband1[-1],"gband2":DECam_wav_gband2[-1],"gband3":DECam_wav_gband3[-1],"gband4":DECam_wav_gband4[-1],"rband1":DECam_wav_rband1[-1],"rband2":DECam_wav_rband2[-1],"rband3":DECam_wav_rband3[-1],"zband":DECam_wav_zband[-1],"zband_tenth":DECam_wav_zband[-1],"rband4":DECam_wav_rband4[-1]} #in nm
 	#these are at the endpoints of the filters, NOT the FWHM
 
 	lambdalow = lambdalow_dict[filt]
@@ -912,8 +1048,8 @@ if emline == "allends":
 
 
 	#changed if statements to dictionaries and deleted them
-	lambdalow_dict = {"gband1":DECam_wav_gband1[0],"gband2":DECam_wav_gband2[0],"gband3":DECam_wav_gband3[0],"gband4":DECam_wav_gband4[0],"rband1":DECam_wav_rband1[0],"rband2":DECam_wav_rband2[0],"rband3":DECam_wav_rband3[0],"zband":DECam_wav_zband[0]} #in nm"
-	lambdahigh_dict = {"gband1":DECam_wav_gband1[-1],"gband2":DECam_wav_gband2[-1],"gband3":DECam_wav_gband3[-1],"gband4":DECam_wav_gband4[-1],"rband1":DECam_wav_rband1[-1],"rband2":DECam_wav_rband2[-1],"rband3":DECam_wav_rband3[-1],"zband":DECam_wav_zband[-1]} #in nm
+	lambdalow_dict = {"gband1":DECam_wav_gband1[0],"gband2":DECam_wav_gband2[0],"gband3":DECam_wav_gband3[0],"gband4":DECam_wav_gband4[0],"rband1":DECam_wav_rband1[0],"rband2":DECam_wav_rband2[0],"rband3":DECam_wav_rband3[0],"zband":DECam_wav_zband[0],"zband_tenth":DECam_wav_zband[0],"rband4":DECam_wav_rband4[0]} #in nm"
+	lambdahigh_dict = {"gband1":DECam_wav_gband1[-1],"gband2":DECam_wav_gband2[-1],"gband3":DECam_wav_gband3[-1],"gband4":DECam_wav_gband4[-1],"rband1":DECam_wav_rband1[-1],"rband2":DECam_wav_rband2[-1],"rband3":DECam_wav_rband3[-1],"zband":DECam_wav_zband[-1],"zband_tenth":DECam_wav_zband[-1],"rband4":DECam_wav_rband4[-1]} #in nm
 	#these are at the endpoints of the filters, NOT the FWHM
 
 	lambdalow = lambdalow_dict[filt]
@@ -957,6 +1093,13 @@ if emline == "allends":
 		z_Lymanalpha_array = numpy.linspace(6.93-0.08,6.93+0.08,num=100)
 		# print("z_Lymanalpha_array")
 
+	if filt=="zband_tenth":
+		z_Lymanalpha_array = numpy.linspace(6.93-0.08,6.93+0.08,num=100)
+		# print("z_Lymanalpha_array")
+
+	if filt=="rband4":
+		z_Lymanalpha_array = numpy.linspace(4.54-0.04,4.54+0.04,num=100)
+
 	#don't want negative redshifts
 	z_Lymanalpha_array = z_Lymanalpha_array[numpy.where(z_Lymanalpha_array>0)]
 	#print("z_Lymanalpha_array",z_Lymanalpha_array)
@@ -971,10 +1114,12 @@ if emline == "allends":
 
 	if len(z_Lymanalpha_array)>0:
 
+		print("NOTE: FOR THE DECAM VALUES, USE ALPHA = -1.8, AND FOR GRONWALL+ 2007, USE ALPHA = -1.36")
+
 		for l in range(len(z_Lymanalpha_array)):
 			zLymanalpha = z_Lymanalpha_array[l]
-			#OKAY THIS NUMBER IS small?
-			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.65,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "third",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
+			#the alpha parameter SHOULD BE updated to the Sobral+ 2018 value, which is valid from z~2.2-5.4, with alpha=-1.93, I just need to figure out how to parametrize the values given in the paper, as I am having trouble finding any set parametrization of Lstar and phistar 
+			comovingphiarrayLymanalpha[l] = schechter_LF(z=zLymanalpha,lambdaemitted = lambda_Lymanalpha,alpha = -1.8,Lstar0 = 0,betaL = 0,phistar0 = 0,betaphi = 0,param = "fifth",zpaper = r"Ly$\alpha$ z = "+str(round(zLymanalpha,2))+" Ciardullo+ 2012",fluxscale = 1,em = "Lymanalpha",filt = filt,style = "y")
 			
 
 		#shortens to use only positive values
@@ -1047,12 +1192,8 @@ if emline == "allends":
 		#integrates comovingphi over whole sky
 		total_number_Lymanalpha = numpy.trapz(comovingphiarrayLymanalpha,x=comovingvolarrayLymanalpha)
 		#print("total_number_FWHM_Lymanalpha = ",total_number_FWHM_Lymanalpha)
-		#DECam area
-		total_number_DECamLymanalpha = total_number_Lymanalpha*1
-
-
-		#print("the total expected number of galaxies in the DECam area (3/42000) is:")
-		#print("total_number_FWHM_DECamLymanalpha = ",total_number_FWHM_DECamLymanalpha)
+		#DECam area is 3/42000
+		total_number_DECamLymanalpha = total_number_Lymanalpha*3/42000
 
 
 		#want average number density for gaussian-approximated filters, so will use from FWHM of each filter only
@@ -1062,6 +1203,8 @@ if emline == "allends":
 
 	else:
 		zLymanalpha = 0
+
+
 
 
 	print("end Lymanalpha")
